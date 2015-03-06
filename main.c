@@ -591,7 +591,7 @@ void TransceiverStateInit(void)
 	ts.xverter_mode		= 0;						// TRUE if transverter mode is active (e.g. offset of display)
 	ts.xverter_offset	= 0;						// Frequency offset in transverter mode (added to frequency display)
 	//
-	ts.refresh_freq_disp	= 1;					// TRUE if frequency/color display is to be refreshed when next called
+	ts.refresh_freq_disp	= 1;					// TRUE if frequency/color display is to be refreshed when next called - NORMALLY LEFT AT 0 (FALSE)!!!
 													// This is NOT reset by the LCD function, but must be enabled/disabled externally
 	//
 	ts.pwr_80m_5w_adj	= 1;
@@ -636,12 +636,14 @@ void TransceiverStateInit(void)
 	ts.misc_flags1		= 0;				// Used to hold individual status flags, stored in EEPROM location "EEPROM_MISC_FLAGS1"
 	ts.sysclock			= 0;				// This counts up from zero when the unit is powered up at precisely 100 Hz over the long term.  This
 											// is NEVER reset and is used for timing certain events.
-	ts.version_number_build	= 0;			// minor version number - used to hold version number and detect change
+	ts.version_number_release	= 0;		// version release - used to detect firmware change
+	ts.version_number_build = 0;			// version build - used to detect firmware change
 	ts.nb_agc_time_const	= 0;			// used to calculate the AGC time constant
 	ts.cw_offset_mode	= 0;				// CW offset mode (USB, LSB, etc.)
 	ts.cw_lsb			= 0;				// Flag that indicates CW operates in LSB mode when TRUE
 	ts.iq_freq_mode		= 0;				// used to set/configure the I/Q frequency/conversion mode
 	ts.lsb_usb_auto_select	= 0;			// holds setting of LSB/USB auto-select above/below 10 MHz
+	ts.hold_off_spectrum_scope	= 0;		// this is a timer used to hold off updates of the spectrum scope when an SPI LCD display interface is used
 
 }
 

@@ -191,7 +191,7 @@ typedef struct SMeter
 #define	AGC_KNEE	1000//4000	// ADC "knee" threshold for AGC action
 //
 #define	AGC_KNEE_REF		1000
-#define	AGC_VAL_MAX_REF		4096
+#define	AGC_VAL_MAX_REF		131072//4096
 #define	POST_AGC_GAIN_SCALING_REF	1.333
 
 #define	AGC_ATTACK		0.033	// Attack time multiplier for AGC
@@ -223,10 +223,10 @@ typedef struct SMeter
 #define	AM_SCALING		2		// Amount of gain multiplication to apply to audio and AGC to make recovery equal to that of SSB
 #define	AM_AUDIO_SCALING	1.4	// Additional correction factor applied to audio demodulation to make amplitude equal to that of SSB demodulation
 //
-#define	AGC_GAIN_CAL	15500//22440		// multiplier value (linear, not DB) to calibrate the S-Meter reading to the AGC value
+#define	AGC_GAIN_CAL	155000//22440		// multiplier value (linear, not DB) to calibrate the S-Meter reading to the AGC value
 //
 #define	AUTO_RFG_DECREASE_LOCKOUT	1
-#define	AUTO_RFG_INCREASE_TIMER		10
+#define	AUTO_RFG_INCREASE_TIMER		5//10
 //
 #define	AGC_SLOW			0		// Mode setting for slow AGC
 #define	AGC_MED				1		// Mode setting for medium AGC

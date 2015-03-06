@@ -114,6 +114,7 @@ typedef struct KeypadState
 #define	SPECTRUM_SCOPE_AGC_MAX				50	// maximum spectrum scope AGC rate setting
 #define	SPECTRUM_SCOPE_AGC_DEFAULT			10	// minimum spectrum scope AGC rate setting
 //
+#define SPECTRUM_SCOPE_SPI_HOLDOFF_TIME_TUNE	25	// time, in 100's of second to inhibit spectrum scope update after adjusting tuning while in SPI mode
 //
 #define SWR_SAMPLES_SKP						1	//5000
 #define SWR_SAMPLES_CNT						4
@@ -419,10 +420,14 @@ void 	UIDriverChangeAudioGain(uchar enabled);
 //
 void 	UiDriverShowStep(ulong step);
 //
-void UiCalcTxCompLevel(void);
-void UiCalcNB_AGC(void);
-void UiCWSidebandMode(void);
+void 	UiCalcTxCompLevel(void);
+void 	UiCalcNB_AGC(void);
+void 	UiCWSidebandMode(void);
 void 	UiDriverShowMode(void);
+void 	UiCalcAGCVals(void);
+void 	UiCalcRFGain(void);
+void 	UiCalcALCDecay(void);
+void 	UiCalcAGCDecay(void);
 //
 //
 #define	SIDETONE_MAX_GAIN	10		// Maximum sidetone gain

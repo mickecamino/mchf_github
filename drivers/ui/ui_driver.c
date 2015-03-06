@@ -221,39 +221,39 @@ const ButtonMap	bm[16] =
 const float S_Meter_Cal[] =
 {
 // - Dummy variable		1,		//0, S0, 0dB
-		1.41,	//1, S0.5, 3dB
-		2,		//2, S1, 6dB
-		2.81,	//3, S1.5, 9dB
-		3,		//4, S2, 12dB
-		5.62,	//5, S2.5, 15dB
-		7.94,	//6, S3, 18dB
-		11.22,	//7, S3.5, 21dB
-		15.85,	//8, S4, 24dB
-		22.39,	//9, S4.5, 27dB
-		31.63,	//10, S5, 30dB
-		44.67,	//11, S5.5, 33dB
-		63.10,	//12, S6, 36dB
-		89.13,	//13, S6.5, 39dB
-		125.89,	//14, S7, 42dB
-		177.83,	//15, S7.5, 45dB
-		251.19,	//16, S8, 48dB
-		354.81,	//17, S8.5, 51dB
-		501.19,	//18, S9, 54dB
-		891.25,	//19, +5, 59dB
-		1584.89,	//20, +10, 64dB
-		2818.38,	//21, +15, 69dB
-		5011.87,	//22, +20, 74dB
-		8912.51,	//23, +25, 79dB
-		15848.93,	//24, +30, 84dB
-		28183.82,	//25, +35, 89dB
-		50118.72,	//26, +35, 94dB
-		89125.09,	//27, +40, 99dB
-		158489.32,	//28, +45, 104dB
-		281838.29,	//29, +50, 109dB
-		501187.23,	//30, +55, 114dB
-		891250.94,	//31, +60, 119dB
-		1584893.19,	//32, +65, 124dB
-		2818382.93	//33, +70, 129dB
+		14.1,	//1.41,	//1, S0.5, 3dB
+		20,		//2,		//2, S1, 6dB
+		28.1,	//2.81,	//3, S1.5, 9dB
+		30,		//3,		//4, S2, 12dB
+		56.2,	//5.62,	//5, S2.5, 15dB
+		79.4,	//7.94,	//6, S3, 18dB
+		112.2,	//11.22,	//7, S3.5, 21dB
+		158.5,	//15.85,	//8, S4, 24dB
+		223.9,	//22.39,	//9, S4.5, 27dB
+		316.3,	//31.63,	//10, S5, 30dB
+		446.7,	//44.67,	//11, S5.5, 33dB
+		631,	//63.10,	//12, S6, 36dB
+		891.3,	//89.13,	//13, S6.5, 39dB
+		1258.9,	//125.89,	//14, S7, 42dB
+		1778.3,	//177.83,	//15, S7.5, 45dB
+		2511.9,	//251.19,	//16, S8, 48dB
+		3548.1,	//354.81,	//17, S8.5, 51dB
+		5011.9,	//501.19,	//18, S9, 54dB
+		8912.5,	//891.25,	//19, +5, 59dB
+		15848.9,	//1584.89,	//20, +10, 64dB
+		28183.8,	//2818.38,	//21, +15, 69dB
+		50118.7,	//5011.87,	//22, +20, 74dB
+		89125.1,	//8912.51,	//23, +25, 79dB
+		158489.3,	//15848.93,	//24, +30, 84dB
+		281838.2,	//28183.82,	//25, +35, 89dB
+		501187.2,	//50118.72,	//26, +35, 94dB
+		891250.9,	//89125.09,	//27, +40, 99dB
+		1585893.2,	//158489.32,	//28, +45, 104dB
+		2818382.9,	//281838.29,	//29, +50, 109dB
+		5011872.3,	//501187.23,	//30, +55, 114dB
+		8912509.4,	//891250.94,	//31, +60, 119dB
+		15848931.9,	//1584893.19,	//32, +65, 124dB
+		28183829.3,	//2818382.93	//33, +70, 129dB
 };
 //
 // Bands tuning values
@@ -1115,7 +1115,7 @@ static void UiDriverProcessKeyboard(void)
 					//
 					break;
 				case BUTTON_STEPP_PRESSED:
-					if(!UiDriverButtonCheck(BUTTON_STEPM_PRESSED))	{	// was button STEP+ pressed at the same time?
+					if(!UiDriverButtonCheck(BUTTON_STEPM_PRESSED))	{	// was button STEP- pressed at the same time?
 						ts.frequency_lock = !ts.frequency_lock;
 						ts.refresh_freq_disp = 1;		// force update of all digits
 						UiDriverUpdateFrequency(1);		// Update display of frequency to change color
@@ -2489,7 +2489,7 @@ void UiDrawSpectrumScopeFrequencyBarText(void)
 
 	//
 	// This function draws the frequency bar at the bottom of the spectrum scope, putting markers every at every graticule and the full frequency
-	// (rounded to the nearest kHz) in the center.  (by KA7OEI, 20140913)
+	// (rounded to the nearest kHz) in the "center".  (by KA7OEI, 20140913)
 	//
 	// get color for frequency scale
 	//
@@ -2539,7 +2539,7 @@ void UiDrawSpectrumScopeFrequencyBarText(void)
 		c = &txt[strlen(txt)-3];  // point at 2nd character from the end
 		UiLcdHy28_PrintText((POS_SPECTRUM_IND_X + 154),(POS_SPECTRUM_IND_Y + POS_SPECTRUM_IND_H - 17),c,clr,Black,4);
 	}
-	else if(ts.iq_freq_mode == 1)	{	// Translate mode is ON (LO is HIGH, center is left of middle of display
+	else if(ts.iq_freq_mode == 1)	{	// Translate mode is ON (LO is HIGH, center is left of middle of display)
 		sprintf(txt, "  %u  ", (unsigned)freq_calc-(unsigned)grat);	// build string for center frequency
 		i = 94-((strlen(txt)-2)*4);	// calculate position of center frequency text
 		UiLcdHy28_PrintText((POS_SPECTRUM_IND_X + i),(POS_SPECTRUM_IND_Y + POS_SPECTRUM_IND_H - 17),txt,clr,Black,4);
@@ -3011,16 +3011,22 @@ skip_check:
 	// Calculate actual tune frequency
 	ts.tune_freq = (dial_freq - df.transv_freq)*4;
 	second_freq = ts.tune_freq;					// get copy for secondary display
+	//
+	// Update second display for RIT offset
+	if(ts.txrx_mode == TRX_MODE_RX)		{
+		second_freq += (ts.rit_value*80);	// Add RIT on receive
+	}
 
 	//
 	// Offset dial frequency if the RX/TX frequency translation is active and we are not transmitting in CW mode
 	//
 	if(!((ts.dmod_mode == DEMOD_CW) && (ts.txrx_mode == TRX_MODE_TX)))	{
 		if(ts.iq_freq_mode == 1)
-			ts.tune_freq += FREQ_SHIFT_MAG * 4;
+			ts.tune_freq += FREQ_SHIFT_MAG * 4;		// magnitude of shift is quadrupled at actual Si570 operating frequency
 		else if(ts.iq_freq_mode == 2)
 			ts.tune_freq -= FREQ_SHIFT_MAG * 4;
 	}
+
 
 	// Frequency range check, moved from si570 routine here
 	if((ts.tune_freq > SI570_MAX_FREQ) || (ts.tune_freq < SI570_MIN_FREQ))
@@ -3034,12 +3040,13 @@ skip_check:
 	if(ts.txrx_mode == TRX_MODE_RX)		{
 		ts.tune_freq += (ts.rit_value*80);	// Add RIT on receive
 	}
+	//
 
 	//printf("--------------------\n\r");
 	//printf("dial: %dHz, tune: %dHz\n\r",dial_freq,tune_freq);
 
-	if(ts.tune_freq == ts.tune_freq_old)	// has the frequency changed?
-		return;								// no - bail out
+	if((ts.tune_freq == ts.tune_freq_old) && (!ts.refresh_freq_disp))	// has the frequency changed and full display refresh not requested
+		return;								// no - bail out - save time by NOT updating synthesizer!
 
 	ts.tune_freq_old = ts.tune_freq;		// frequency change required - update change detector
 
@@ -3056,6 +3063,13 @@ skip_check:
 	}
 	//
 //	ts.dsp_inhibit = dsp_temp;		// restore status of DSP muting
+
+	//
+	// If using a serial (SPI) LCD, hold off on updating the spectrum scope for a time AFTER we stop twiddling the tuning knob.
+	//
+	if(sd.use_spi)
+		ts.hold_off_spectrum_scope	= ts.sysclock + SPECTRUM_SCOPE_SPI_HOLDOFF_TIME_TUNE;	// schedule the time after which we again update the spectrum scope
+
 	//
 	// Update main frequency display
 	//
@@ -3083,6 +3097,7 @@ skip_check:
 	//
 
 	Codec_Mute(0);	// un-mute audio
+	//
 }
 
 //*----------------------------------------------------------------------------
@@ -3147,7 +3162,7 @@ void UiDriverUpdateFrequencyFast(void)
 	//
 	// detect - and eliminate - unnecessary synthesizer frequency changes
 	//
-	if(ts.tune_freq == ts.tune_freq_old)	// did the frequency NOT change?
+	if((ts.tune_freq == ts.tune_freq_old) && (!ts.refresh_freq_disp))	// did the frequency NOT change and display refresh NOT requested??
 		return;		// yes - bail out - no need to do anything!
 
 	ts.tune_freq_old = ts.tune_freq;		// frequency change is required - save change detector
@@ -3717,7 +3732,6 @@ static void UiDriverTimeScheduler(void)
 		}
 	}
 	//
-	//
 	if(!(ts.misc_flags1 & 1))	{			// If auto-switch on TX/RX is enabled
 		if(ts.txrx_mode == TRX_MODE_TX)	{
 			if(!was_tx)	{
@@ -3810,12 +3824,14 @@ static void UiDriverTimeScheduler(void)
 	// and stop working.  It also does a delayed detection - and action - on the presence of a new version of firmware being installed.
 	//
 	if((ts.sysclock > DSP_STARTUP_DELAY) && (!startup_flag))	{	// has it been long enough after startup?
-		if(ts.version_number_build != TRX4M_VER_BUILD)	{	// Yes - check for new version number
+		if((ts.version_number_build != TRX4M_VER_BUILD) || (ts.version_number_release != TRX4M_VER_RELEASE))	{	// Yes - check for new version
 			ts.version_number_build = TRX4M_VER_BUILD;	// save new F/W version
+			ts.version_number_release = TRX4M_VER_RELEASE;
 			UiDriverClearSpectrumDisplay();			// clear display under spectrum scope
 			UiLcdHy28_PrintText(110,156,"- New F/W detected -",Cyan,Black,0);
 			UiLcdHy28_PrintText(110,168," Preparing EEPROM ",Cyan,Black,0);
-			Write_VirtEEPROM(EEPROM_VERSION_NUMBER, ts.version_number_build);	// save version number to EEPROM
+			Write_VirtEEPROM(EEPROM_VERSION_NUMBER, ts.version_number_release);	// save version number information to EEPROM
+			Write_VirtEEPROM(EEPROM_VERSION_BUILD, ts.version_number_build);	//
 			for(i = 0; i < 6; i++)			// delay so that it may be read
 				non_os_delay();
 			UiLcdHy28_PrintText(110,180,"      Done!       ",Cyan,Black,0);
@@ -4078,8 +4094,8 @@ static void UiDriverChangeBand(uchar is_up)
 	// Display frequency update
 	UiDriverUpdateFrequency(1);
 
-	// Also reset second freq display
-	UiDriverUpdateSecondLcdFreq(df.tune_new/4);
+//	// Also reset second freq display
+//	UiDriverUpdateSecondLcdFreq(df.tune_new/4);
 
 	// Change decode mode if need to
 	if(ts.dmod_mode != band_decod_mode[new_band_index])
@@ -4429,13 +4445,8 @@ static void UiDriverCheckEncoderTwo(void)
 				//
 				// get RF gain value and calculate new value
 				//
-				tcalc = (float)ts.rf_gain;	// use temp var as the resulting
-				tcalc -= 20;				// variable may be used during
-				tcalc /= 10;				// the actual calculation!
-				tcalc = powf(10, tcalc);
-				ads.agc_rf_gain = tcalc;
-				// RF gain
-				UiDriverChangeRfGain(1);
+				UiCalcRFGain();		// convert from user RF gain value to "working" RF gain value
+				UiDriverChangeRfGain(1);	// change on screen
 
 				break;
 			}
@@ -5415,8 +5426,8 @@ static void UiDriverReDrawSpectrumDisplay(void)
 	//if(ts.dmod_mode == DEMOD_DIGI)
 	//	return;
 
-	// Nothing to do here otherwise
-	if(!sd.enabled)
+	// Nothing to do here otherwise, or if scope is to be held off while other parts of the display are to be updated
+	if((!sd.enabled) || (ts.hold_off_spectrum_scope > ts.sysclock))
 		return;
 
 	// The state machine will rest
@@ -5708,10 +5719,10 @@ static ulong UiDriverGetScopeTraceColour(void)
 static void UiDriverHandleSmeter(void)
 {
 	uchar 	val;
-	u_int 	rfg_calc;
+	float 	rfg_calc;
 	float gcalc;
 	static bool 		clip_indicate = 0;
-	static	u_int		auto_rfg = 8;
+	static	float		auto_rfg = 8;
 	static	uint16_t 	rfg_timer= 0;	// counter used for timing RFG control decay
 //	char temp[10];
 	//
@@ -5727,7 +5738,7 @@ static void UiDriverHandleSmeter(void)
 	sm.skip = 0;
 
 	// ************************
-	// Update S-Meter
+	// Update S-Meter and control the input gain of the codec to maximize A/D and receiver dynamic range
 	// ************************
 	//
 	// Calculate attenuation of "RF Codec Gain" setting so that S-meter reading can be compensated.
@@ -5736,17 +5747,17 @@ static void UiDriverHandleSmeter(void)
 	if(ts.rf_codec_gain == 9)		// Is RF gain in "AUTO" mode?
 		rfg_calc = auto_rfg;
 	else	{				// not in "AUTO" mode
-		rfg_calc = (u_int)ts.rf_codec_gain;		// get copy of RF gain setting
+		rfg_calc = (float)ts.rf_codec_gain;		// get copy of RF gain setting
 		auto_rfg = rfg_calc;		// keep "auto" variable updated with manual setting when in manual mode
 		rfg_timer = 0;
 	}
 	//
 	rfg_calc += 1;	// offset to prevent zero
-	rfg_calc *= 2;	// double the range
+	rfg_calc *= 2;	// double the range of adjustment
 	rfg_calc += 13;	// offset, as bottom of range of A/D gain control is not useful (e.g. ADC saturates before RX hardware)
 	if(rfg_calc >31)	// limit calc to hardware range
 		rfg_calc = 31;
-	Codec_Line_Gain_Adj(rfg_calc);	// set the RX gain
+	Codec_Line_Gain_Adj((uchar)rfg_calc);	// set the RX gain on the codec
 	//
 	// Now calculate the RF gain setting
 	//
@@ -5754,30 +5765,36 @@ static void UiDriverHandleSmeter(void)
 	gcalc *= 1.5;	// codec has 1.5 dB/step
 	gcalc -= 34.5;	// offset codec setting by 34.5db (full gain = 12dB)
 	gcalc = pow10(gcalc/10);	// convert to power ratio
-	ads.codec_gain_calc = sqrt(gcalc);		// convert to voltage ratio
+	ads.codec_gain_calc = sqrt(gcalc);		// convert to voltage ratio - we now have current A/D (codec) gain setting
 	//
 	sm.gain_calc = ads.agc_val;		// get AGC loop gain setting
-	sm.gain_calc = 1/sm.gain_calc;	// invert gain to calculate amount of attenuation
+	sm.gain_calc /= AGC_GAIN_CAL;	// divide by AGC gain calibration factor
 	//
-	sm.gain_calc *= AGC_GAIN_CAL;	// multiply by AGC gain calibration factor
+	sm.gain_calc = 1/sm.gain_calc;	// invert gain to convert to amount of attenuation
+	//
 	sm.gain_calc /= ads.codec_gain_calc;	// divide by known A/D gain setting
 	//
-	sm.s_count = 0;		// Init search counter
-	while ((sm.gain_calc >= S_Meter_Cal[sm.s_count]) && (sm.s_count <= S_Meter_Cal_Size))	{	// find
+	sm.s_count = 0;		// Init S-meter search counter
+	while ((sm.gain_calc >= S_Meter_Cal[sm.s_count]) && (sm.s_count <= S_Meter_Cal_Size))	{	// find corresponding signal level
 		sm.s_count++;;
 	}
 	val = (uchar)sm.s_count;
+	if(!val)	// make sure that the S meter always reads something!
+		val = 1;
+	//
 	UiDriverUpdateTopMeterA(val,sm.old);
 	sm.old = val;
-
+	//
+	// Now handle automatic A/D input gain control timing
+	//
 	rfg_timer++;	// bump RFG timer
 	if(rfg_timer > 10000)	// limit count of RFG timer
 		rfg_timer = 10000;
 	//
 	if(ads.adc_half_clip)	{	// did clipping almost occur?
-		if(rfg_timer >	AUTO_RFG_DECREASE_LOCKOUT)	{	// has enough time passed since the last gain decrease?
+		if(rfg_timer >=	AUTO_RFG_DECREASE_LOCKOUT)	{	// has enough time passed since the last gain decrease?
 			if(auto_rfg)	{	// yes - is this NOT zero?
-				auto_rfg--;	// yes - decrease gain a bit
+				auto_rfg -= 0.5;	// decrease gain one step, 1.5dB (it is multiplied by 2, above)
 				//sprintf(temp, " %d ", auto_rfg);		// Display auto RFG for debug
 				//UiLcdHy28_PrintText((POS_BG_IND_X + 82),(POS_BG_IND_Y + 1), temp,White,Black,0);
 				rfg_timer = 0;	// reset the adjustment timer
@@ -5785,8 +5802,8 @@ static void UiDriverHandleSmeter(void)
 		}
 	}
 	else if(!ads.adc_quarter_clip)	{	// no clipping occurred
-		if(rfg_timer > AUTO_RFG_INCREASE_TIMER)	{	// has it been long enough since the last increase?
-			auto_rfg++;		// yes - increase the gain
+		if(rfg_timer >= AUTO_RFG_INCREASE_TIMER)	{	// has it been long enough since the last increase?
+			auto_rfg += 0.5;	// increase gain by one step, 1.5dB (it is multiplied by 2, above)
 			rfg_timer = 0;	// reset the timer to prevent this from executing too often
 			if(auto_rfg > 8)	// limit it to 8
 				auto_rfg = 8;
@@ -5950,7 +5967,7 @@ static void UiDriverHandleSWRMeter(void)
 		scale_calc *= scale_calc;		// square the value
 		scale_calc = log10f(scale_calc);	// get the log10
 		scale_calc *= -10;		// convert it to DeciBels and switch sign and then scale it for the meter
-		if(scale_calc > 34)
+		if(scale_calc > 34)		// limit range of values being sent to the meter
 			scale_calc = 34;
 		else if(scale_calc < 0)
 			scale_calc = 0;
@@ -5971,7 +5988,7 @@ static void UiDriverHandleSWRMeter(void)
 		scale_calc *= 10;					// convert to DeciBels and scale for the meter
 		scale_calc += 11;					// offset for meter
 		//
-		if(scale_calc > 34)					// enforce a "ceiling" for the meter
+		if(scale_calc > 34)					// limit range of values being sent to the meter
 			scale_calc = 34;
 		else if(scale_calc < 0)
 			scale_calc = 0;
@@ -6725,6 +6742,103 @@ void UiDriverSetBandPowerFactor(uchar band)
 	ts.tx_power_factor *= pf_temp;	// rescale this for the actual power level
 }
 //
+//
+//*----------------------------------------------------------------------------
+//* Function Name       : UiCalcAGCDecay
+//* Object              : Calculate Decay timing for AGC (RECEIVE!)
+//* Input Parameters    :
+//* Output Parameters   :
+//* Functions called    :
+//*----------------------------------------------------------------------------
+//
+void UiCalcAGCDecay(void)
+{
+	float tcalc;	// temporary holder - used to avoid conflict during operation
+
+	// Set AGC rate - this needs to be moved to its own function (and the one in "ui_menu.c")
+	//
+	if(ts.agc_mode == AGC_SLOW)
+		ads.agc_decay = AGC_SLOW_DECAY;
+	else if(ts.agc_mode == AGC_FAST)
+		ads.agc_decay = AGC_FAST_DECAY;
+	else if(ts.agc_mode == AGC_CUSTOM)	{	// calculate custom AGC setting
+		tcalc = (float)ts.agc_custom_decay;
+		tcalc += 30;
+		tcalc /= 10;
+		tcalc = -tcalc;
+		ads.agc_decay = powf(10, tcalc);
+	}
+	else
+		ads.agc_decay = AGC_MED_DECAY;
+}
+//
+//
+//*----------------------------------------------------------------------------
+//* Function Name       : UiCalcALCDecay
+//* Object              : Calculate Decay timing for ALC (TRANSMIT!)
+//* Input Parameters    :
+//* Output Parameters   :
+//* Functions called    :
+//*----------------------------------------------------------------------------
+//
+void UiCalcALCDecay(void)
+{
+	float tcalc;	// temporary holder - used to avoid conflict during operation
+
+	// calculate ALC decay (release) time constant - this needs to be moved to its own function (and the one in "ui_menu.c")
+	//
+	tcalc = (float)ts.alc_decay;
+	tcalc += 35;
+	tcalc /= 10;
+	tcalc *= -1;
+	ads.alc_decay = powf(10, tcalc);
+}
+//
+//
+//*----------------------------------------------------------------------------
+//* Function Name       : UiCalcRFGain
+//* Object              : Calculate RF Gain internal value from user setting
+//* Input Parameters    :
+//* Output Parameters   :
+//* Functions called    :
+//*----------------------------------------------------------------------------
+//
+void UiCalcRFGain(void)
+{
+	float tcalc;	// temporary value as "ads.agc_rf_gain" may be used during the calculation!
+
+	// calculate working RF gain value
+	tcalc = (float)ts.rf_gain;
+	tcalc *= 1.4;
+	tcalc -= 20;
+	tcalc /= 10;
+	ads.agc_rf_gain = powf(10, tcalc);
+
+}
+//
+//
+//*----------------------------------------------------------------------------
+//* Function Name       : UiCalcAGCVals
+//* Object              : Calculate internal AGC values from user settings
+//* Input Parameters    :
+//* Output Parameters   :
+//* Functions called    :
+//*----------------------------------------------------------------------------
+//
+void UiCalcAGCVals(void)
+{
+	if(ts.max_rf_gain <= MAX_RF_GAIN_MAX)	{
+		ads.agc_knee = AGC_KNEE_REF * (float)(ts.max_rf_gain + 1);
+		ads.agc_val_max = AGC_VAL_MAX_REF / ((float)(ts.max_rf_gain + 1));
+		ads.post_agc_gain = POST_AGC_GAIN_SCALING_REF / (float)(ts.max_rf_gain + 1);
+	}
+	else	{
+		ads.agc_knee = AGC_KNEE_REF * MAX_RF_GAIN_DEFAULT+1;
+		ads.agc_val_max = AGC_VAL_MAX_REF / MAX_RF_GAIN_DEFAULT+1;
+		ads.post_agc_gain = POST_AGC_GAIN_SCALING_REF /  (float)(ts.max_rf_gain + 1);
+	}
+}
+//
 //*----------------------------------------------------------------------------
 //* Function Name       : UiCWSidebandMode
 //* Object              : Determine CW sideband and offset mode settings
@@ -7102,7 +7216,6 @@ void UiCalcTxPhaseAdj(void)
 		}
 	}
 	//
-
 	arm_fir_init_f32(&FIR_I_TX,fc.tx_i_num_taps,(float32_t *)&fc.tx_filt_i[0], &FirState_I_TX[0],fc.tx_i_block_size);
 	arm_fir_init_f32(&FIR_Q_TX,fc.tx_q_num_taps,(float32_t *)&fc.tx_filt_q[0], &FirState_Q_TX[0],fc.tx_q_block_size);
 
@@ -8192,14 +8305,25 @@ void UiDriverLoadEepromValues(void)
 	}
 	//
 	// ------------------------------------------------------------------------------------
-	// Try to read version number
+	// Try to read version (release) number
 	if(Read_VirtEEPROM(EEPROM_VERSION_NUMBER, &value) == 0)
 	{
 		if(value > 255)	// if out of range, it was bogus
 			value = 0;	// reset to default
 		//
+		ts.version_number_release = value;
+		//printf("-->Version (release) number loaded\n\r");
+	}
+	//
+	// ------------------------------------------------------------------------------------
+	// Try to read version (build) number
+	if(Read_VirtEEPROM(EEPROM_VERSION_BUILD, &value) == 0)
+	{
+		if(value > 255)	// if out of range, it was bogus
+			value = 0;	// reset to default
+		//
 		ts.version_number_build = value;
-		//printf("-->Version number loaded\n\r");
+		//printf("-->Version (build) number loaded\n\r");
 	}
 	//
 	// ------------------------------------------------------------------------------------
@@ -9454,16 +9578,29 @@ void UiDriverSaveEepromValuesPowerDown(void)
 	}
 	//
 	// ------------------------------------------------------------------------------------
-	// Try to read currently-stored version number - update if changed
+	// Try to read currently-stored version number - release - update if changed
 	if(Read_VirtEEPROM(EEPROM_VERSION_NUMBER, &value) == 0)
 	{
-		Write_VirtEEPROM(EEPROM_VERSION_NUMBER, ts.version_number_build);
+		Write_VirtEEPROM(EEPROM_VERSION_NUMBER, ts.version_number_release);
 		//printf("-->Version number saved\n\r");
 	}
 	else	// create
 	{
 		Write_VirtEEPROM(EEPROM_VERSION_NUMBER, 0);
 		//printf("-->Version number value created\n\r");
+	}
+	//
+	// ------------------------------------------------------------------------------------
+	// Try to read currently-stored version - build number - update if changed
+	if(Read_VirtEEPROM(EEPROM_VERSION_BUILD, &value) == 0)
+	{
+		Write_VirtEEPROM(EEPROM_VERSION_BUILD, ts.version_number_build);
+		//printf("-->Version number saved\n\r");
+	}
+	else	// create
+	{
+		Write_VirtEEPROM(EEPROM_VERSION_BUILD, 0);
+		//printf("-->Version number value (build) created\n\r");
 	}
 	//
 	// ------------------------------------------------------------------------------------

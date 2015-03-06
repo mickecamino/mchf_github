@@ -110,7 +110,10 @@ void UiDriverUpdateMenu(uchar mode)
 	uchar var;
 	bool  update_vars;
 	static uchar screen_disp = 1;	// used to detect screen display switching and prevent unnecessary blanking
+	static uchar screen_disp_old = 99;
 	ulong	m_clr, c_clr;
+	static	int	menu_var_changed = 99;
+	static	bool menu_var_change_detect = 0;
 
 	m_clr = Yellow;
 	c_clr = Cyan;
@@ -322,12 +325,20 @@ void UiDriverUpdateMenu(uchar mode)
 		c_clr = Black;
 	//
 	UiLcdHy28_PrintText(POS_SPECTRUM_IND_X - 2, POS_SPECTRUM_IND_Y + 60, " Save settings using POWER OFF!  ", c_clr, Black, 0);
-
+	//
+	//
+	if((sd.use_spi) && (ts.menu_var != menu_var_changed))	{	// if LCD SPI mode is active, do additional validation to avoid additional updates on display
+		update_vars = 1;
+	}
+	menu_var_changed = ts.menu_var;
+	//
 	//
 	// These functions are used to scan the individual menu items and display the items.
 	// In each of the FOR loops below, make CERTAIN that the precise number of items are included for each menu!
 	//
-	if((mode == 0) || update_vars)	{		// display all items and their current settings
+
+	if(((mode == 0) && (sd.use_spi) && (screen_disp != screen_disp_old)) || (((mode == 0) && (!sd.use_spi))) || update_vars)	{		// display all items and their current settings
+		// but minimize updates if the LCD is using an SPI interface
 		update_vars = 0;
 		if(ts.menu_item < 6)	{	// first screen of items
 			for(var = 0; var < 6; var++)
@@ -390,6 +401,9 @@ void UiDriverUpdateMenu(uchar mode)
 					UiDriverUpdateConfigMenuLines(var-MAX_MENU_ITEM, 0);
 		}
 	}
+
+	//
+	screen_disp_old = screen_disp;
 	//
 	if(mode == 1)	{	// individual item selected/changed
 		if(ts.menu_item < MAX_MENU_ITEM)					// main menu item
@@ -934,20 +948,7 @@ static void UiDriverUpdateMenuLines(uchar index, uchar mode)
 		//
 		if(fchange)	{
 			// now set the AGC
-			if(ts.agc_mode == AGC_SLOW)
-				ads.agc_decay = AGC_SLOW_DECAY;
-			else if(ts.agc_mode == AGC_FAST)
-				ads.agc_decay = AGC_FAST_DECAY;
-			else if(ts.agc_mode == AGC_CUSTOM)	{
-				tcalc = (float)ts.agc_custom_decay;	// use temp var "tcalc" as audio function
-				tcalc += 30;			// can be called mid-calculation!
-				tcalc /= 10;
-				tcalc *= -1;
-				tcalc = powf(10, tcalc);
-				ads.agc_decay = tcalc;
-			}
-			else
-				ads.agc_decay = AGC_MED_DECAY;
+			UiCalcAGCDecay();	// initialize AGC decay ("hang time") values
 		}
 		//
 		if(ts.txrx_mode == TRX_MODE_TX)	// Orange if in TX mode
@@ -981,11 +982,7 @@ static void UiDriverUpdateMenuLines(uchar index, uchar mode)
 		// calculate RF gain setting
 		//
 		if(fchange)	{
-			tcalc = (float)ts.rf_gain;	// use temp var as the resulting
-			tcalc -= 20;				// variable may be used during
-			tcalc /= 10;				// the actual calculation!
-			tcalc = powf(10, tcalc);
-			ads.agc_rf_gain = tcalc;
+			UiCalcRFGain();
 		}
 		//
 		if(ts.rf_gain < 20)
@@ -1309,12 +1306,7 @@ static void UiDriverUpdateMenuLines(uchar index, uchar mode)
 				ts.alc_decay = ALC_DECAY_MAX;
 				//
 			if(fchange)	{		// value changed?  Recalculate
-				tcalc = (float)ts.alc_decay;	// use temp var "tcalc" as audio function
-				tcalc += 35;			// can be called mid-calculation!
-				tcalc /= 10;
-				tcalc *= -1;
-				tcalc = powf(10, tcalc);
-				ads.alc_decay = tcalc;
+				UiCalcALCDecay();
 			}
 		}
 		else			// indicate RED if "Compression Level" below was nonzero
@@ -2415,9 +2407,7 @@ static void UiDriverUpdateConfigMenuLines(uchar index, uchar mode)
 		}
 		//
 		if(tchange)	{
-			ads.agc_knee = AGC_KNEE_REF * (float)(ts.max_rf_gain + 1);
-			ads.agc_val_max = AGC_VAL_MAX_REF / ((float)(ts.max_rf_gain + 1));
-			ads.post_agc_gain = POST_AGC_GAIN_SCALING_REF / (float)(ts.max_rf_gain + 1);
+			UiCalcAGCVals();	// calculate new internal AGC values from user settings
 		}
 		//
 		if(ts.max_rf_gain > MAX_RF_GAIN_MAX)		// limit selection ranges for this mode

@@ -44,8 +44,8 @@
 //
 #define 	TRX4M_VER_MAJOR			0
 #define 	TRX4M_VER_MINOR			0
-#define 	TRX4M_VER_RELEASE		0
-#define 	TRX4M_VER_BUILD			218
+#define 	TRX4M_VER_RELEASE		219
+#define 	TRX4M_VER_BUILD			1
 //
 #define		ATTRIB_STRING1			"Additional Contributions by"
 #define		ATTRIB_STRING2			"KA7OEI and the Open Source and"
@@ -791,11 +791,12 @@ typedef struct ButtonMap
 //
 #define	EEPROM_TX_DISABLE			126		// TRUE of transmit is to be disabled
 #define	EEPROM_MISC_FLAGS1			127		// Miscellaneous status flag, saved in EEPROM - see variable "misc_flags1"
-#define	EEPROM_VERSION_NUMBER		128		// Storage of current version number (build number) - used to detect change of firmware
+#define	EEPROM_VERSION_NUMBER		128		// Storage of current version release - used to detect change of firmware
 #define	EEPROM_NB_AGC_TIME_CONST	129		// Noise blanker AGC time constant setting
 #define	EEPROM_CW_OFFSET_MODE		130		// CW Offset mode
 #define	EEPROM_FREQ_CONV_MODE		131		// Frequency Conversion Mode (e.g. I/Q frequency conversion done in receive/transmit to offset from zero)
 #define	EEPROM_LSB_USB_AUTO_SELECT	132		// Auto selection of LSB/USB above/below 10 MHz (including 60 meters)
+#define	EEPROM_VERSION_BUILD		133		// Storage of current version build number - used to detect change of firmware
 //
 // *******************************************************************************************************
 //
@@ -1050,12 +1051,14 @@ typedef struct TransceiverState
 										// LSB+3 = 1 if AM TX has transmit filter DISABLED
 	ulong	sysclock;					// This counts up from zero when the unit is powered up at precisely 100 Hz over the long term.  This
 										// is NEVER reset and is used for timing certain events.
-	uchar	version_number_build;		// minor version number - used to hold version number and detect change
+	uint16_t	version_number_build;	// version number - build - used to hold version number and detect change
+	uint16_t	version_number_release;	// version number - release - used to hold version number and detect change
 	uchar	nb_agc_time_const;			// used to calculate the AGC time constant
 	uchar	cw_offset_mode;				// CW offset mode (USB, LSB, etc.)
 	bool	cw_lsb;						// flag used to indicate that CW is to operate in LSB when TRUE
 	uchar	iq_freq_mode;				// used to set/configure the I/Q frequency/conversion mode
 	uchar	lsb_usb_auto_select;		// holds setting of LSB/USB auto-select above/below 10 MHz
+	ulong	hold_off_spectrum_scope;	// this is a timer used to hold off updates of the spectrum scope when an SPI LCD display interface is used
 
 } TransceiverState;
 //
