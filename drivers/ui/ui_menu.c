@@ -934,7 +934,20 @@ static void UiDriverUpdateMenuLines(uchar index, uchar mode)
 		//
 		if(fchange)	{
 			// now set the AGC
-			UiCalcAGCDecay();	// initialize AGC decay ("hang time") values
+			if(ts.agc_mode == AGC_SLOW)
+				ads.agc_decay = AGC_SLOW_DECAY;
+			else if(ts.agc_mode == AGC_FAST)
+				ads.agc_decay = AGC_FAST_DECAY;
+			else if(ts.agc_mode == AGC_CUSTOM)	{
+				tcalc = (float)ts.agc_custom_decay;	// use temp var "tcalc" as audio function
+				tcalc += 30;			// can be called mid-calculation!
+				tcalc /= 10;
+				tcalc *= -1;
+				tcalc = powf(10, tcalc);
+				ads.agc_decay = tcalc;
+			}
+			else
+				ads.agc_decay = AGC_MED_DECAY;
 		}
 		//
 		if(ts.txrx_mode == TRX_MODE_TX)	// Orange if in TX mode
@@ -968,7 +981,11 @@ static void UiDriverUpdateMenuLines(uchar index, uchar mode)
 		// calculate RF gain setting
 		//
 		if(fchange)	{
-			UiCalcRFGain();
+			tcalc = (float)ts.rf_gain;	// use temp var as the resulting
+			tcalc -= 20;				// variable may be used during
+			tcalc /= 10;				// the actual calculation!
+			tcalc = powf(10, tcalc);
+			ads.agc_rf_gain = tcalc;
 		}
 		//
 		if(ts.rf_gain < 20)
@@ -1292,7 +1309,12 @@ static void UiDriverUpdateMenuLines(uchar index, uchar mode)
 				ts.alc_decay = ALC_DECAY_MAX;
 				//
 			if(fchange)	{		// value changed?  Recalculate
-				UiCalcALCDecay();
+				tcalc = (float)ts.alc_decay;	// use temp var "tcalc" as audio function
+				tcalc += 35;			// can be called mid-calculation!
+				tcalc /= 10;
+				tcalc *= -1;
+				tcalc = powf(10, tcalc);
+				ads.alc_decay = tcalc;
 			}
 		}
 		else			// indicate RED if "Compression Level" below was nonzero
@@ -2393,7 +2415,9 @@ static void UiDriverUpdateConfigMenuLines(uchar index, uchar mode)
 		}
 		//
 		if(tchange)	{
-			UiCalcAGCVals();	// calculate new internal AGC values from user settings
+			ads.agc_knee = AGC_KNEE_REF * (float)(ts.max_rf_gain + 1);
+			ads.agc_val_max = AGC_VAL_MAX_REF / ((float)(ts.max_rf_gain + 1));
+			ads.post_agc_gain = POST_AGC_GAIN_SCALING_REF / (float)(ts.max_rf_gain + 1);
 		}
 		//
 		if(ts.max_rf_gain > MAX_RF_GAIN_MAX)		// limit selection ranges for this mode

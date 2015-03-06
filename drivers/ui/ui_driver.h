@@ -419,14 +419,10 @@ void 	UIDriverChangeAudioGain(uchar enabled);
 //
 void 	UiDriverShowStep(ulong step);
 //
-void 	UiCalcTxCompLevel(void);
-void 	UiCalcNB_AGC(void);
-void 	UiCWSidebandMode(void);
+void UiCalcTxCompLevel(void);
+void UiCalcNB_AGC(void);
+void UiCWSidebandMode(void);
 void 	UiDriverShowMode(void);
-void 	UiCalcAGCVals(void);
-void 	UiCalcRFGain(void);
-void 	UiCalcALCDecay(void);
-void 	UiCalcAGCDecay(void);
 //
 //
 #define	SIDETONE_MAX_GAIN	10		// Maximum sidetone gain

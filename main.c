@@ -591,7 +591,7 @@ void TransceiverStateInit(void)
 	ts.xverter_mode		= 0;						// TRUE if transverter mode is active (e.g. offset of display)
 	ts.xverter_offset	= 0;						// Frequency offset in transverter mode (added to frequency display)
 	//
-	ts.refresh_freq_disp	= 1;					// TRUE if frequency/color display is to be refreshed when next called - NORMALLY LEFT AT 0 (FALSE)!!!
+	ts.refresh_freq_disp	= 1;					// TRUE if frequency/color display is to be refreshed when next called
 													// This is NOT reset by the LCD function, but must be enabled/disabled externally
 	//
 	ts.pwr_80m_5w_adj	= 1;

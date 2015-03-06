@@ -10,7 +10,7 @@
 **  Last Modified:                                                                 **
 **  Licence:		For radio amateurs experimentation, non-commercial use only!   **
 ************************************************************************************/
-// 218b
+
 // Common
 #include "mchf_board.h"
 #include "audio_driver.h"
@@ -120,7 +120,6 @@ void Codec_Reset(uint32_t AudioFreq,ulong word_size)
 //* Output Parameters   :
 //* Functions called    :
 //*----------------------------------------------------------------------------
-
 void Codec_RX_TX(void)
 {
 
@@ -157,9 +156,9 @@ void Codec_RX_TX(void)
 		//
 		ads.agc_holder = ads.agc_val;		// store AGC value at instant we went to TX for recovery when we return to RX
 		//
-		if((ts.dmod_mode == DEMOD_CW) || ((ts.dmod_mode == DEMOD_CW) && ts.tune))	{	// Turn sidetone on for CW or TUNE mode in CW mode
+		if((ts.dmod_mode == DEMOD_CW) && ts.tune)	{	// Turn sidetone on for CW in TUNE mode
 			//
-			Codec_SidetoneSetgain();	// set sidetone level
+			Codec_SidetoneSetgain();
 			//
 		}
 		else if(ts.tune)	{	// Not in CW mode - but in TUNE mode
@@ -225,7 +224,6 @@ float vcalc, vcalc1;
 // Note that this function is called from places OTHER than Codec_RX_TX(), above!
 
 	// bail out if not in transmit mode
-	if(ts.txrx_mode != TRX_MODE_TX)		// bail out if not in transmit mode
 		return;
 	//
 	if(ts.st_gain)	{	// calculate if the sidetone gain is non-zero
@@ -259,7 +257,6 @@ float vcalc, vcalc1;
 //* Output Parameters   :
 //* Functions called    :
 //*----------------------------------------------------------------------------
-
 void Codec_Volume(uchar vol)
 {
 //	ts.codec_vol = vol;		// copy codec volume for global use

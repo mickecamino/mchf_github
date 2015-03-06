@@ -145,29 +145,6 @@ extern __IO	KeypadState				ks;
 //
 extern __IO	FilterCoeffs		fc;
 //
-//
-//*----------------------------------------------------------------------------
-//* Function Name       : audio_driver_config_nco
-//* Object              :
-//* Object              :
-//* Input Parameters    :
-//* Output Parameters   :
-//* Functions called    :
-//*----------------------------------------------------------------------------
-void audio_driver_config_nco(void)
-{
-	// Configure NCO for the frequency translate function - NOT USED for the "Static" local oscillator!
-	// see "audio_driver.h" for values
-	ads.Osc_Cos = CONV_NCO_COS;
-	ads.Osc_Sin = CONV_NCO_SIN;
-	ads.Osc_Vect_Q = 1;
-	ads.Osc_Vect_I = 0;
-	ads.Osc_Gain = 0;
-	ads.Osc_Q = 0;
-	ads.Osc_I = 0;
-}
-//
-//
 //*----------------------------------------------------------------------------
 //* Function Name       : audio_driver_init
 //* Object              :
@@ -204,21 +181,65 @@ void audio_driver_init(void)
 	//
 	ads.decimation_rate	=	RX_DECIMATION_RATE_12KHZ;		// Decimation rate, when enabled
 	//
-	UiCalcAGCDecay();	// initialize AGC decay ("hang time") values
+	// Set AGC rate - this needs to be moved to its own function (and the one in "ui_menu.c")
 	//
-	UiCalcRFGain();		// convert from user RF gain value to "working" RF gain value
+	if(ts.agc_mode == AGC_SLOW)
+		ads.agc_decay = AGC_SLOW_DECAY;
+	else if(ts.agc_mode == AGC_FAST)
+		ads.agc_decay = AGC_FAST_DECAY;
+	else if(ts.agc_mode == AGC_CUSTOM)	{	// calculate custom AGC setting
+		ads.agc_decay = (float)ts.agc_custom_decay;
+		ads.agc_decay += 30;
+		ads.agc_decay /= 10;
+		ads.agc_decay = -ads.agc_decay;
+		ads.agc_decay = powf(10, ads.agc_decay);
+	}
+	else
+		ads.agc_decay = AGC_MED_DECAY;
 	//
-	UiCalcALCDecay();	// initialize ALC decay values
+	// get RF gain value - this needs to be moved to its own function (and the one in "ui_menu.c")
+	ads.agc_rf_gain = (float)ts.rf_gain;
+	ads.agc_rf_gain -= 20;
+	ads.agc_rf_gain /= 10;
+	ads.agc_rf_gain = powf(10, ads.agc_rf_gain);
 	//
-	UiCalcAGCVals();	// calculate AGC internal values from user settings
+	//
+	// calculate ALC decay (release) time constant - this needs to be moved to its own function (and the one in "ui_menu.c")
+	//
+	ads.alc_decay = (float)ts.alc_decay;
+	ads.alc_decay += 35;
+	ads.alc_decay /= 10;
+	ads.alc_decay *= -1;
+	ads.alc_decay = powf(10, ads.alc_decay);
+	//
+	//
+	// calculate values that set the maximum AGC sensitivity/lowest S-meter reading
+	//
+	ads.agc_knee = AGC_KNEE;
+	ads.agc_val_max = AGC_VAL_MAX_REF / MAX_RF_GAIN_DEFAULT+1;
+
+	if(ts.max_rf_gain <= MAX_RF_GAIN_MAX)	{
+		ads.agc_knee = AGC_KNEE_REF * (float)(ts.max_rf_gain + 1);
+		ads.agc_val_max = AGC_VAL_MAX_REF / ((float)(ts.max_rf_gain + 1));
+		ads.post_agc_gain = POST_AGC_GAIN_SCALING_REF / (float)(ts.max_rf_gain + 1);
+	}
+	else	{
+		ads.agc_knee = AGC_KNEE_REF * MAX_RF_GAIN_DEFAULT+1;
+		ads.agc_val_max = AGC_VAL_MAX_REF / MAX_RF_GAIN_DEFAULT+1;
+		ads.post_agc_gain = POST_AGC_GAIN_SCALING_REF /  (float)(ts.max_rf_gain + 1);
+	}
 	//
 	UiCalcNB_AGC();		// set up noise blanker AGC values
 	//
 	UiCWSidebandMode();	// set up CW sideband mode setting
 	//
-	// The "active" NCO in the frequency translate function is NOT used, but rather a "static" sine that is an integer divisor of the sample rate.
-	//
-	//audio_driver_config_nco();	// Configure the NCO in the frequency translate function
+	ads.Osc_Cos = CONV_NCO_COS;
+	ads.Osc_Sin = CONV_NCO_SIN;
+	ads.Osc_Vect_Q = 1;
+	ads.Osc_Vect_I = 0;
+	ads.Osc_Gain = 0;
+	ads.Osc_Q = 0;
+	ads.Osc_I = 0;
 	//
 	ads.tx_filter_adjusting = 0;	// used to disable TX I/Q filter during adjustment
 	// Audio init
@@ -802,12 +823,9 @@ static void audio_rx_freq_conv(int16_t size, int16_t dir)
 //	static float32_t	q_temp, i_temp;
 	static bool flag = 0;
 	//
-	// Below is the "on-the-fly" version of the frequency translator, generating a "live" version of the oscillator (NCO), which can be any
+	// Below is the "on-the-fly" version of the frequency translator, generating a "live" version of the oscillator, which can be any
 	// frequency, based on the values of "ads.Osc_Cos" and "ads.Osc_Sin".  While this does function, the generation of the SINE takes a LOT
 	// of processor time!
-	//
-	// The values for the NCO are configured in the function "audio_driver_config_nco()".
-	//
 	// This commented-out version also lacks the "dir" (direction) control which selects either high or low side translation.
 	// This code is left here so that everyone can see how it is actually done in plain, "un-ARM" code.
 	//
@@ -849,7 +867,7 @@ static void audio_rx_freq_conv(int16_t size, int16_t dir)
 		flag = 1;	// signal that once we have generated the quadrature sine waves, we should not do it again
 	}
 	//
-	// Do frequency conversion using optimized ARM math functions
+	// Do frequency conversion
 	//
 	if(!dir)	{	// Conversion is "above" on RX (LO needs to be set lower)
 		arm_mult_f32(ads.i_buffer, ads.Osc_Q_buffer, ads.a_buffer, size/2);	// multiply products for converted I channel
@@ -1435,7 +1453,7 @@ static void audio_tx_processor(int16_t *src, int16_t *dst, int16_t size)
 	// -----------------------------
 	// AM handler
 	//
-	else if(ts.dmod_mode == DEMOD_AM)	{	//	Is it in AM mode *AND* is frequency translation active?
+	else if(ts.dmod_mode == DEMOD_AM)	{	//	Is it in AM mode *AND* frequency translation active?
 		if(ts.iq_freq_mode)	{				// is translation active?
 			// Translation is active - Fill I and Q buffers with left channel(same as right)
 			for(i = 0; i < size/2; i++)	{				// Copy to single buffer
@@ -1491,7 +1509,7 @@ static void audio_tx_processor(int16_t *src, int16_t *dst, int16_t size)
 			//
 			// First, generate the LOWER sideband of the AM signal
 			//
-			for(i = 0; i < size/2; i++)	{				// copy contents to temporary holding buffers for later generation of USB AM carrier
+			for(i = 0; i < size/2; i++)	{				// copy contents to temporary holding buffers
 				ads.e_buffer[i] = ads.i_buffer[i];
 				ads.f_buffer[i] = ads.q_buffer[i];
 			}
@@ -1503,20 +1521,19 @@ static void audio_tx_processor(int16_t *src, int16_t *dst, int16_t size)
 			//
 			// check and apply correct translate mode
 			//
-			if(ts.iq_freq_mode == FREQ_IQ_CONV_LO_HIGH)			// is it "RX LO HIGH" mode?
-				audio_rx_freq_conv(size, 0);	// set "RX LO IS HIGH" mode
-			else								// It must be "RX LO LOW" mode
-				audio_rx_freq_conv(size, 1);	// set conversion to "RX LO IS LOW" mode
-			//
+			if(ts.iq_freq_mode == FREQ_IQ_CONV_LO_HIGH)			// LO is HIGH
+				audio_rx_freq_conv(size, 0);
+			else								// LO is HIGH
+				audio_rx_freq_conv(size, 1);
 			//
 			// Equalize based on band and simultaneously apply I/Q gain adjustments
 			//
 			arm_scale_f32(ads.i_buffer, (float32_t)(ts.tx_power_factor * ts.tx_adj_gain_var_i * AM_GAIN_COMP), ads.i_buffer, size/2);
 			arm_scale_f32(ads.q_buffer, (float32_t)(ts.tx_power_factor * ts.tx_adj_gain_var_q * AM_GAIN_COMP), ads.q_buffer, size/2);
 			//
-			ptr = dst;	// save a copy of the destination pointer to the DMA data before we increment it for production of USB data
+			ptr = dst;	// save a copy of the destination pointer before we increment it for production of USB data
 			//
-			// Output I and Q as stereo - storing an LSB AM signal in the DMA buffer
+			// Output I and Q as stereo - we have now stored an LSB AM signal
 			//
 			for(i = 0; i < size/2; i++)	{
 				// Prepare data for DAC
@@ -1548,7 +1565,7 @@ static void audio_tx_processor(int16_t *src, int16_t *dst, int16_t size)
 			arm_scale_f32(ads.i_buffer, (float32_t)(ts.tx_power_factor * ts.tx_adj_gain_var_i * AM_GAIN_COMP), ads.i_buffer, size/2);
 			arm_scale_f32(ads.q_buffer, (float32_t)(ts.tx_power_factor * ts.tx_adj_gain_var_q * AM_GAIN_COMP), ads.q_buffer, size/2);
 			//
-			dst = ptr;	// restore the copy of the pointer to the DMA data (yes, I know we could have used "ptr" below...)
+			dst = ptr;	// restore the copy of the pointer
 			//
 			// Output I and Q as stereo
 			for(i = 0; i < size/2; i++)	{
@@ -1562,7 +1579,7 @@ static void audio_tx_processor(int16_t *src, int16_t *dst, int16_t size)
 			}
 		}
 		else	{	// Translate mode is NOT active - we CANNOT do full-carrier AM! (if we tried, we'd end up with DSB SSB because of the "DC hole"!)
-			for(i = 0; i < size/2; i++)	{				// send nothing out to the DAC if AM attempted with translate mode turned off!
+			for(i = 0; i < size/2; i++)	{				// send nothing out to the DAC
 				*dst++ = 0;	// save left channel
 				*dst++ = 0;	// save right channel
 			}

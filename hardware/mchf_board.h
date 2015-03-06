@@ -45,7 +45,7 @@
 #define 	TRX4M_VER_MAJOR			0
 #define 	TRX4M_VER_MINOR			0
 #define 	TRX4M_VER_RELEASE		0
-#define 	TRX4M_VER_BUILD			219
+#define 	TRX4M_VER_BUILD			218
 //
 #define		ATTRIB_STRING1			"Additional Contributions by"
 #define		ATTRIB_STRING2			"KA7OEI and the Open Source and"
