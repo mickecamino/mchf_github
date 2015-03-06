@@ -3063,13 +3063,6 @@ skip_check:
 	}
 	//
 //	ts.dsp_inhibit = dsp_temp;		// restore status of DSP muting
-
-	//
-	// If using a serial (SPI) LCD, hold off on updating the spectrum scope for a time AFTER we stop twiddling the tuning knob.
-	//
-	if(sd.use_spi)
-		ts.hold_off_spectrum_scope	= ts.sysclock + SPECTRUM_SCOPE_SPI_HOLDOFF_TIME_TUNE;	// schedule the time after which we again update the spectrum scope
-
 	//
 	// Update main frequency display
 	//
@@ -3097,7 +3090,6 @@ skip_check:
 	//
 
 	Codec_Mute(0);	// un-mute audio
-	//
 }
 
 //*----------------------------------------------------------------------------
@@ -3732,6 +3724,7 @@ static void UiDriverTimeScheduler(void)
 		}
 	}
 	//
+	//
 	if(!(ts.misc_flags1 & 1))	{			// If auto-switch on TX/RX is enabled
 		if(ts.txrx_mode == TRX_MODE_TX)	{
 			if(!was_tx)	{
@@ -3824,14 +3817,12 @@ static void UiDriverTimeScheduler(void)
 	// and stop working.  It also does a delayed detection - and action - on the presence of a new version of firmware being installed.
 	//
 	if((ts.sysclock > DSP_STARTUP_DELAY) && (!startup_flag))	{	// has it been long enough after startup?
-		if((ts.version_number_build != TRX4M_VER_BUILD) || (ts.version_number_release != TRX4M_VER_RELEASE))	{	// Yes - check for new version
+		if(ts.version_number_build != TRX4M_VER_BUILD)	{	// Yes - check for new version number
 			ts.version_number_build = TRX4M_VER_BUILD;	// save new F/W version
-			ts.version_number_release = TRX4M_VER_RELEASE;
 			UiDriverClearSpectrumDisplay();			// clear display under spectrum scope
 			UiLcdHy28_PrintText(110,156,"- New F/W detected -",Cyan,Black,0);
 			UiLcdHy28_PrintText(110,168," Preparing EEPROM ",Cyan,Black,0);
-			Write_VirtEEPROM(EEPROM_VERSION_NUMBER, ts.version_number_release);	// save version number information to EEPROM
-			Write_VirtEEPROM(EEPROM_VERSION_BUILD, ts.version_number_build);	//
+			Write_VirtEEPROM(EEPROM_VERSION_NUMBER, ts.version_number_build);	// save version number to EEPROM
 			for(i = 0; i < 6; i++)			// delay so that it may be read
 				non_os_delay();
 			UiLcdHy28_PrintText(110,180,"      Done!       ",Cyan,Black,0);
@@ -5426,8 +5417,8 @@ static void UiDriverReDrawSpectrumDisplay(void)
 	//if(ts.dmod_mode == DEMOD_DIGI)
 	//	return;
 
-	// Nothing to do here otherwise, or if scope is to be held off while other parts of the display are to be updated
-	if((!sd.enabled) || (ts.hold_off_spectrum_scope > ts.sysclock))
+	// Nothing to do here otherwise
+	if(!sd.enabled)
 		return;
 
 	// The state machine will rest
@@ -8305,25 +8296,14 @@ void UiDriverLoadEepromValues(void)
 	}
 	//
 	// ------------------------------------------------------------------------------------
-	// Try to read version (release) number
+	// Try to read version number
 	if(Read_VirtEEPROM(EEPROM_VERSION_NUMBER, &value) == 0)
 	{
 		if(value > 255)	// if out of range, it was bogus
 			value = 0;	// reset to default
 		//
-		ts.version_number_release = value;
-		//printf("-->Version (release) number loaded\n\r");
-	}
-	//
-	// ------------------------------------------------------------------------------------
-	// Try to read version (build) number
-	if(Read_VirtEEPROM(EEPROM_VERSION_BUILD, &value) == 0)
-	{
-		if(value > 255)	// if out of range, it was bogus
-			value = 0;	// reset to default
-		//
 		ts.version_number_build = value;
-		//printf("-->Version (build) number loaded\n\r");
+		//printf("-->Version number loaded\n\r");
 	}
 	//
 	// ------------------------------------------------------------------------------------
@@ -9578,29 +9558,16 @@ void UiDriverSaveEepromValuesPowerDown(void)
 	}
 	//
 	// ------------------------------------------------------------------------------------
-	// Try to read currently-stored version number - release - update if changed
+	// Try to read currently-stored version number - update if changed
 	if(Read_VirtEEPROM(EEPROM_VERSION_NUMBER, &value) == 0)
 	{
-		Write_VirtEEPROM(EEPROM_VERSION_NUMBER, ts.version_number_release);
+		Write_VirtEEPROM(EEPROM_VERSION_NUMBER, ts.version_number_build);
 		//printf("-->Version number saved\n\r");
 	}
 	else	// create
 	{
 		Write_VirtEEPROM(EEPROM_VERSION_NUMBER, 0);
 		//printf("-->Version number value created\n\r");
-	}
-	//
-	// ------------------------------------------------------------------------------------
-	// Try to read currently-stored version - build number - update if changed
-	if(Read_VirtEEPROM(EEPROM_VERSION_BUILD, &value) == 0)
-	{
-		Write_VirtEEPROM(EEPROM_VERSION_BUILD, ts.version_number_build);
-		//printf("-->Version number saved\n\r");
-	}
-	else	// create
-	{
-		Write_VirtEEPROM(EEPROM_VERSION_BUILD, 0);
-		//printf("-->Version number value (build) created\n\r");
 	}
 	//
 	// ------------------------------------------------------------------------------------

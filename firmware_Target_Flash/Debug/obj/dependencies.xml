@@ -998,7 +998,7 @@
       <source file="..\..\..\usb\otg\inc\usb_dcd_int.h" lastModified="1363c5e22c0">
          <include file="..\..\..\usb\otg\inc\usb_dcd.h"/>
       </source>
-      <source file="..\..\..\drivers\ui\ui_driver.h" lastModified="14bdda82bb8">
+      <source file="..\..\..\drivers\ui\ui_driver.h" lastModified="14bce6d5dfa">
          <include file="..\..\..\hardware\mchf_board.h"/>
       </source>
       <source file="..\..\..\drivers\audio\filters\iir_10k.h" lastModified="14881f253a1">
@@ -1006,32 +1006,36 @@
       <source file="..\..\..\drivers\audio\audio_driver.h" lastModified="14bce91631d">
          <include file="..\..\..\cmsis\arm_math.h"/>
       </source>
+      <source file="..\..\..\drivers\ui\ui_driver.c" lastModified="14bce97c235">
+         <include file="..\..\..\hardware\mchf_board.h"/>
+         <include file="..\..\..\cmsis\arm_math.h"/>
+         <include file="..\..\..\drivers\audio\codec\codec.h"/>
+         <include file="..\..\..\drivers\ui\ui_menu.h"/>
+         <include file="..\..\..\drivers\ui\lcd\ui_lcd_hy28.h"/>
+         <include file="..\..\..\drivers\ui\encoder\ui_rotary.h"/>
+         <include file="..\..\..\drivers\ui\oscillator\ui_si570.h"/>
+         <include file="..\..\..\drivers\ui\oscillator\ui_soft_tcxo.h"/>
+         <include file="..\..\..\drivers\audio\codec\codec.h"/>
+         <include file="..\..\..\drivers\audio\softdds\softdds.h"/>
+         <include file="..\..\..\drivers\audio\audio_driver.h"/>
+         <include file="..\..\..\drivers\ui\misc\hamm_wnd.h"/>
+         <include file="..\..\..\drivers\ui\ui_driver.h"/>
+         <include file="..\..\..\drivers\cat\cat_driver.h"/>
+         <include file="..\..\..\misc\v_eprom\eeprom.h"/>
+         <include file="..\..\..\drivers\audio\cw\cw_gen.h"/>
+         <include file="..\..\..\drivers\audio\filters\q_rx_filter_10kHz.h"/>
+         <include file="..\..\..\drivers\audio\filters\i_rx_filter_10kHz.h"/>
+         <include file="..\..\..\drivers\audio\filters\q_rx_filter_3k6.h"/>
+         <include file="..\..\..\drivers\audio\filters\i_rx_filter_3k6.h"/>
+         <include file="..\..\..\drivers\audio\filters\q_tx_filter.h"/>
+         <include file="..\..\..\drivers\audio\filters\i_tx_filter.h"/>
+         <include file="..\..\..\drivers\audio\filters\iq_rx_filter_am_10kHz.h"/>
+         <include file="..\..\..\drivers\audio\filters\iq_rx_filter_am_3k6.h"/>
+         <include file="..\..\..\drivers\audio\filters\iq_rx_filter_am_2k3.h"/>
+      </source>
       <source file="..\..\..\drivers\keyboard\usb\usbh_usr.h" lastModified="13cffa86ac8">
          <include file="..\..\..\usb\usbh\core\inc\usbh_core.h"/>
          <include file="..\..\..\usb\usb_conf.h"/>
-      </source>
-      <source file="..\..\..\drivers\audio\audio_driver.c" lastModified="14bcea6720d">
-         <include file="..\..\..\hardware\mchf_board.h"/>
-         <include file="..\..\..\drivers\audio\codec\codec.h"/>
-         <include file="..\..\..\drivers\audio\codec\i2s.h"/>
-         <include file="..\..\..\drivers\audio\cw\cw_gen.h"/>
-         <include file="..\..\..\drivers\audio\audio_driver.h"/>
-         <include file="..\..\..\drivers\ui\ui_driver.h"/>
-         <include file="..\..\..\drivers\audio\filters\fir_10k.h"/>
-         <include file="..\..\..\drivers\audio\filters\fir_3_6k.h"/>
-         <include file="..\..\..\drivers\audio\filters\fir_2_3k.h"/>
-         <include file="..\..\..\drivers\audio\filters\fir_1_8k.h"/>
-         <include file="..\..\..\drivers\audio\filters\iir_300hz.h"/>
-         <include file="..\..\..\drivers\audio\filters\iir_500hz.h"/>
-         <include file="..\..\..\drivers\audio\filters\iir_1_8k.h"/>
-         <include file="..\..\..\drivers\audio\filters\iir_2_3k.h"/>
-         <include file="..\..\..\drivers\audio\filters\iir_3_6k.h"/>
-         <include file="..\..\..\drivers\audio\filters\iir_10k.h"/>
-         <include file="..\..\..\drivers\audio\filters\iir_2k7_tx_bpf.h"/>
-         <include file="..\..\..\drivers\audio\filters\fir_rx_decimate_4.h"/>
-         <include file="..\..\..\drivers\audio\filters\fir_rx_decimate_4_min_lpf.h"/>
-         <include file="..\..\..\drivers\audio\filters\fir_rx_interpolate_16.h"/>
-         <include file="..\..\..\drivers\audio\filters\fir_rx_interpolate_16_10kHz.h"/>
       </source>
       <source file="..\..\..\usb\otg\src\usb_dcd.c" lastModified="144941acbe0">
          <include file="..\..\..\usb\otg\inc\usb_dcd.h"/>
@@ -1099,7 +1103,7 @@
       <source file="..\..\..\cmsis\arm_math.h" lastModified="1334b5f1778">
          <include file="..\..\..\cmsis\core_cm4.h"/>
       </source>
-      <source file="..\..\..\drivers\ui\lcd\ui_lcd_hy28.c" lastModified="14bd6eee2ad">
+      <source file="..\..\..\drivers\ui\lcd\ui_lcd_hy28.c" lastModified="14b93f007a3">
          <include file="..\..\..\hardware\mchf_board.h"/>
          <include file="..\..\..\misc\v_eprom\eeprom.h"/>
          <include file="..\..\..\drivers\ui\lcd\ui_lcd_hy28_fonts.h"/>
@@ -1127,7 +1131,7 @@
          <include file="..\..\..\cmsis_lib\include\stm32f4xx_usart.h"/>
          <include file="..\..\..\cmsis_lib\include\stm32f4xx_rcc.h"/>
       </source>
-      <source file="..\..\..\main.c" lastModified="14bd6fbb5ab">
+      <source file="..\..\..\main.c" lastModified="14bb2cad603">
          <include file="..\..\..\hardware\mchf_board.h"/>
          <include file="..\..\..\drivers\audio\audio_driver.h"/>
          <include file="..\..\..\drivers\audio\cw\cw_gen.h"/>
@@ -1155,7 +1159,7 @@
          <include file="..\..\..\usb\otg\inc\usb_regs.h"/>
          <include file="..\..\..\usb\otg\inc\usb_core.h"/>
       </source>
-      <source file="..\..\..\hardware\mchf_board.h" lastModified="14bdda030d8">
+      <source file="..\..\..\hardware\mchf_board.h" lastModified="14bb2d99fff">
          <include file="..\..\..\cmsis_lib\include\stm32f4xx_rcc.h"/>
          <include file="..\..\..\cmsis_lib\include\stm32f4xx_gpio.h"/>
          <include file="..\..\..\cmsis_lib\include\stm32f4xx_exti.h"/>
@@ -1462,6 +1466,10 @@
          <include file="..\..\..\usb\otg\inc\usb_defines.h"/>
          <include file="..\..\..\usb\otg\inc\usb_hcd_int.h"/>
       </source>
+      <source file="..\..\..\drivers\cat\usb\usbd_cdc_vcp.h" lastModified="1363c5e8080">
+         <include file="..\..\..\usb\usbd\class\cdc\inc\usbd_cdc_core.h"/>
+         <include file="..\..\..\drivers\cat\usb\usbd_conf.h"/>
+      </source>
       <source file="..\..\..\drivers\audio\cw\cw_sm_tbl.h" lastModified="144ff5e1600">
       </source>
       <source file="..\..\..\drivers\cat\usb\usbd_cdc_vcp.c" lastModified="14a6459dd7b">
@@ -1488,7 +1496,7 @@
       </source>
       <source file="..\..\..\drivers\audio\filters\fir_rx_interpolate_16_10kHz.h" lastModified="14a64be26aa">
       </source>
-      <source file="..\..\..\drivers\ui\ui_menu.c" lastModified="14bd716fe5c">
+      <source file="..\..\..\drivers\ui\ui_menu.c" lastModified="14bce6ef3e8">
          <include file="..\..\..\hardware\mchf_board.h"/>
          <include file="..\..\..\drivers\ui\ui_menu.h"/>
          <include file="..\..\..\cmsis\arm_math.h"/>

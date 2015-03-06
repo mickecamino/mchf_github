@@ -159,7 +159,7 @@ SET_TEST_MODE       0x4               ..\obj\usbd_core.o
 pwmt                0x10              ..\obj\ui_menu.o
 ps                  0x18              ..\obj\cw_gen.o
 test_a              0x2710            ..\obj\audio_driver.o
-ts                  0x138             ..\obj\main.o
+ts                  0x130             ..\obj\main.o
 test_d              0x7d0             ..\obj\audio_driver.o
 band_filter_mode    0x28              ..\obj\ui_driver.o
 band_dial_value     0x28              ..\obj\ui_driver.o
@@ -1109,7 +1109,7 @@ Discarded input sections
  .data          0x00000000        0x0 ..\obj\usb_dcd_int.o
  .bss           0x00000000        0x0 ..\obj\usb_dcd_int.o
  .text          0x00000000        0x0 ..\obj\ui_menu.o
- .bss           0x00000000        0x4 ..\obj\ui_menu.o
+ .bss           0x00000000        0x0 ..\obj\ui_menu.o
  .text          0x00000000        0x0 ..\obj\usbd_cdc_core.o
  .text          0x00000000        0x0 ..\obj\usb_hcd.o
  .data          0x00000000        0x0 ..\obj\usb_hcd.o
@@ -2014,7 +2014,7 @@ LOAD c:/program files (x86)/gnu tools arm embedded/4.7 2014q2/bin/../lib/gcc/arm
 LOAD c:/program files (x86)/gnu tools arm embedded/4.7 2014q2/bin/../lib/gcc/arm-none-eabi/4.7.4/../../../../arm-none-eabi/lib/armv7e-m/fpu/crt0.o
                 0x20020000                _eram = 0x20020000
 
-.text           0x08010000    0x3e598
+.text           0x08010000    0x3e230
  *(.isr_vector)
  .isr_vector    0x08010000      0x188 ..\obj\startup_stm32f4xx.o
                 0x08010000                g_pfnVectors
@@ -2327,1157 +2327,1157 @@ LOAD c:/program files (x86)/gnu tools arm embedded/4.7 2014q2/bin/../lib/gcc/arm
                 0x08013134       0x18 ..\obj\main.o
                 0x08013134                EXTI15_10_IRQHandler
  .text.TransceiverStateInit
-                0x0801314c      0x720 ..\obj\main.o
+                0x0801314c      0x700 ..\obj\main.o
                 0x0801314c                TransceiverStateInit
  .text.MiscInit
-                0x0801386c       0x24 ..\obj\main.o
-                0x0801386c                MiscInit
- .text.main     0x08013890       0x68 ..\obj\main.o
-                0x08013890                main
+                0x0801384c       0x24 ..\obj\main.o
+                0x0801384c                MiscInit
+ .text.main     0x08013870       0x68 ..\obj\main.o
+                0x08013870                main
  .text.RCC_MCO2Config
-                0x080138f8       0x48 ..\obj\stm32f4xx_rcc.o
-                0x080138f8                RCC_MCO2Config
+                0x080138d8       0x48 ..\obj\stm32f4xx_rcc.o
+                0x080138d8                RCC_MCO2Config
  .text.RCC_GetClocksFreq
-                0x08013940      0x1c8 ..\obj\stm32f4xx_rcc.o
-                0x08013940                RCC_GetClocksFreq
+                0x08013920      0x1c8 ..\obj\stm32f4xx_rcc.o
+                0x08013920                RCC_GetClocksFreq
  .text.RCC_AHB1PeriphClockCmd
-                0x08013b08       0x54 ..\obj\stm32f4xx_rcc.o
-                0x08013b08                RCC_AHB1PeriphClockCmd
+                0x08013ae8       0x54 ..\obj\stm32f4xx_rcc.o
+                0x08013ae8                RCC_AHB1PeriphClockCmd
  .text.RCC_AHB2PeriphClockCmd
-                0x08013b5c       0x54 ..\obj\stm32f4xx_rcc.o
-                0x08013b5c                RCC_AHB2PeriphClockCmd
+                0x08013b3c       0x54 ..\obj\stm32f4xx_rcc.o
+                0x08013b3c                RCC_AHB2PeriphClockCmd
  .text.RCC_AHB3PeriphClockCmd
-                0x08013bb0       0x54 ..\obj\stm32f4xx_rcc.o
-                0x08013bb0                RCC_AHB3PeriphClockCmd
+                0x08013b90       0x54 ..\obj\stm32f4xx_rcc.o
+                0x08013b90                RCC_AHB3PeriphClockCmd
  .text.RCC_APB1PeriphClockCmd
-                0x08013c04       0x54 ..\obj\stm32f4xx_rcc.o
-                0x08013c04                RCC_APB1PeriphClockCmd
+                0x08013be4       0x54 ..\obj\stm32f4xx_rcc.o
+                0x08013be4                RCC_APB1PeriphClockCmd
  .text.RCC_APB2PeriphClockCmd
-                0x08013c58       0x54 ..\obj\stm32f4xx_rcc.o
-                0x08013c58                RCC_APB2PeriphClockCmd
+                0x08013c38       0x54 ..\obj\stm32f4xx_rcc.o
+                0x08013c38                RCC_APB2PeriphClockCmd
  .text.RCC_APB1PeriphResetCmd
-                0x08013cac       0x54 ..\obj\stm32f4xx_rcc.o
-                0x08013cac                RCC_APB1PeriphResetCmd
+                0x08013c8c       0x54 ..\obj\stm32f4xx_rcc.o
+                0x08013c8c                RCC_APB1PeriphResetCmd
  .text.RCC_APB2PeriphResetCmd
-                0x08013d00       0x54 ..\obj\stm32f4xx_rcc.o
-                0x08013d00                RCC_APB2PeriphResetCmd
+                0x08013ce0       0x54 ..\obj\stm32f4xx_rcc.o
+                0x08013ce0                RCC_APB2PeriphResetCmd
  .text.Codec_Init
-                0x08013d54       0x2c ..\obj\codec.o
-                0x08013d54                Codec_Init
+                0x08013d34       0x2c ..\obj\codec.o
+                0x08013d34                Codec_Init
  .text.Codec_Reset
-                0x08013d80       0xd8 ..\obj\codec.o
-                0x08013d80                Codec_Reset
+                0x08013d60       0xd8 ..\obj\codec.o
+                0x08013d60                Codec_Reset
  .text.Codec_RX_TX
-                0x08013e58      0x1fc ..\obj\codec.o
-                0x08013e58                Codec_RX_TX
+                0x08013e38      0x1fc ..\obj\codec.o
+                0x08013e38                Codec_RX_TX
  .text.Codec_SidetoneSetgain
-                0x08014054      0x108 ..\obj\codec.o
-                0x08014054                Codec_SidetoneSetgain
+                0x08014034      0x108 ..\obj\codec.o
+                0x08014034                Codec_SidetoneSetgain
  .text.Codec_Volume
-                0x0801415c       0xb8 ..\obj\codec.o
-                0x0801415c                Codec_Volume
+                0x0801413c       0xb8 ..\obj\codec.o
+                0x0801413c                Codec_Volume
  .text.Codec_Mute
-                0x08014214       0x34 ..\obj\codec.o
-                0x08014214                Codec_Mute
+                0x080141f4       0x34 ..\obj\codec.o
+                0x080141f4                Codec_Mute
  .text.Codec_WriteRegister
-                0x08014248       0x50 ..\obj\codec.o
-                0x08014248                Codec_WriteRegister
+                0x08014228       0x50 ..\obj\codec.o
+                0x08014228                Codec_WriteRegister
  .text.Codec_AudioInterface_Init
-                0x08014298       0x6c ..\obj\codec.o
-                0x08014298                Codec_AudioInterface_Init
+                0x08014278       0x6c ..\obj\codec.o
+                0x08014278                Codec_AudioInterface_Init
  .text.Codec_GPIO_Init
-                0x08014304       0xf4 ..\obj\codec.o
-                0x08014304                Codec_GPIO_Init
+                0x080142e4       0xf4 ..\obj\codec.o
+                0x080142e4                Codec_GPIO_Init
  .text.Codec_Line_Gain_Adj
-                0x080143f8       0x2c ..\obj\codec.o
-                0x080143f8                Codec_Line_Gain_Adj
+                0x080143d8       0x2c ..\obj\codec.o
+                0x080143d8                Codec_Line_Gain_Adj
  .text.ADC_Init
-                0x08014424       0xb8 ..\obj\stm32f4xx_adc.o
-                0x08014424                ADC_Init
+                0x08014404       0xb8 ..\obj\stm32f4xx_adc.o
+                0x08014404                ADC_Init
  .text.ADC_StructInit
-                0x080144dc       0x4c ..\obj\stm32f4xx_adc.o
-                0x080144dc                ADC_StructInit
+                0x080144bc       0x4c ..\obj\stm32f4xx_adc.o
+                0x080144bc                ADC_StructInit
  .text.ADC_CommonInit
-                0x08014528       0x5c ..\obj\stm32f4xx_adc.o
-                0x08014528                ADC_CommonInit
- .text.ADC_Cmd  0x08014584       0x38 ..\obj\stm32f4xx_adc.o
-                0x08014584                ADC_Cmd
+                0x08014508       0x5c ..\obj\stm32f4xx_adc.o
+                0x08014508                ADC_CommonInit
+ .text.ADC_Cmd  0x08014564       0x38 ..\obj\stm32f4xx_adc.o
+                0x08014564                ADC_Cmd
  .text.ADC_RegularChannelConfig
-                0x080145bc      0x1bc ..\obj\stm32f4xx_adc.o
-                0x080145bc                ADC_RegularChannelConfig
+                0x0801459c      0x1bc ..\obj\stm32f4xx_adc.o
+                0x0801459c                ADC_RegularChannelConfig
  .text.ADC_SoftwareStartConv
-                0x08014778       0x20 ..\obj\stm32f4xx_adc.o
-                0x08014778                ADC_SoftwareStartConv
+                0x08014758       0x20 ..\obj\stm32f4xx_adc.o
+                0x08014758                ADC_SoftwareStartConv
  .text.ADC_GetConversionValue
-                0x08014798       0x1c ..\obj\stm32f4xx_adc.o
-                0x08014798                ADC_GetConversionValue
+                0x08014778       0x1c ..\obj\stm32f4xx_adc.o
+                0x08014778                ADC_GetConversionValue
  .text.UiLcdHy28_Delay
-                0x080147b4       0x40 ..\obj\ui_lcd_hy28.o
-                0x080147b4                UiLcdHy28_Delay
+                0x08014794       0x40 ..\obj\ui_lcd_hy28.o
+                0x08014794                UiLcdHy28_Delay
  .text.UiLcdHy28_BacklightInit
-                0x080147f4       0x4c ..\obj\ui_lcd_hy28.o
-                0x080147f4                UiLcdHy28_BacklightInit
+                0x080147d4       0x4c ..\obj\ui_lcd_hy28.o
+                0x080147d4                UiLcdHy28_BacklightInit
  .text.UiLcdHy28_SpiInit
-                0x08014840      0x160 ..\obj\ui_lcd_hy28.o
-                0x08014840                UiLcdHy28_SpiInit
+                0x08014820      0x160 ..\obj\ui_lcd_hy28.o
+                0x08014820                UiLcdHy28_SpiInit
  .text.UiLcdHy28_SpiDeInit
-                0x080149a0       0x90 ..\obj\ui_lcd_hy28.o
-                0x080149a0                UiLcdHy28_SpiDeInit
+                0x08014980       0x90 ..\obj\ui_lcd_hy28.o
+                0x08014980                UiLcdHy28_SpiDeInit
  .text.UiLcdHy28_ParallelInit
-                0x08014a30      0x224 ..\obj\ui_lcd_hy28.o
-                0x08014a30                UiLcdHy28_ParallelInit
+                0x08014a10      0x224 ..\obj\ui_lcd_hy28.o
+                0x08014a10                UiLcdHy28_ParallelInit
  .text.UiLcdHy28_Reset
-                0x08014c54       0x54 ..\obj\ui_lcd_hy28.o
-                0x08014c54                UiLcdHy28_Reset
+                0x08014c34       0x54 ..\obj\ui_lcd_hy28.o
+                0x08014c34                UiLcdHy28_Reset
  .text.UiLcdHy28_FSMCConfig
-                0x08014ca8       0xb0 ..\obj\ui_lcd_hy28.o
-                0x08014ca8                UiLcdHy28_FSMCConfig
+                0x08014c88       0xb0 ..\obj\ui_lcd_hy28.o
+                0x08014c88                UiLcdHy28_FSMCConfig
  .text.UiLcdHy28_SendByteSpi
-                0x08014d58       0x60 ..\obj\ui_lcd_hy28.o
+                0x08014d38       0x60 ..\obj\ui_lcd_hy28.o
  .text.UiLcdHy28_ReadByteSpi
-                0x08014db8       0xb0 ..\obj\ui_lcd_hy28.o
+                0x08014d98       0xb0 ..\obj\ui_lcd_hy28.o
  .text.UiLcdHy28_WriteIndexSpi
-                0x08014e68       0x4c ..\obj\ui_lcd_hy28.o
-                0x08014e68                UiLcdHy28_WriteIndexSpi
+                0x08014e48       0x4c ..\obj\ui_lcd_hy28.o
+                0x08014e48                UiLcdHy28_WriteIndexSpi
  .text.UiLcdHy28_WriteDataSpi
-                0x08014eb4       0x54 ..\obj\ui_lcd_hy28.o
-                0x08014eb4                UiLcdHy28_WriteDataSpi
+                0x08014e94       0x54 ..\obj\ui_lcd_hy28.o
+                0x08014e94                UiLcdHy28_WriteDataSpi
  .text.UiLcdHy28_WriteDataSpiStart
-                0x08014f08       0x10 ..\obj\ui_lcd_hy28.o
-                0x08014f08                UiLcdHy28_WriteDataSpiStart
+                0x08014ee8       0x10 ..\obj\ui_lcd_hy28.o
+                0x08014ee8                UiLcdHy28_WriteDataSpiStart
  .text.UiLcdHy28_WriteDataOnly
-                0x08014f18       0x4c ..\obj\ui_lcd_hy28.o
-                0x08014f18                UiLcdHy28_WriteDataOnly
+                0x08014ef8       0x4c ..\obj\ui_lcd_hy28.o
+                0x08014ef8                UiLcdHy28_WriteDataOnly
  .text.UiLcdHy28_ReadDataSpi
-                0x08014f64       0x64 ..\obj\ui_lcd_hy28.o
-                0x08014f64                UiLcdHy28_ReadDataSpi
+                0x08014f44       0x64 ..\obj\ui_lcd_hy28.o
+                0x08014f44                UiLcdHy28_ReadDataSpi
  .text.UiLcdHy28_WriteReg
-                0x08014fc8       0x50 ..\obj\ui_lcd_hy28.o
-                0x08014fc8                UiLcdHy28_WriteReg
+                0x08014fa8       0x50 ..\obj\ui_lcd_hy28.o
+                0x08014fa8                UiLcdHy28_WriteReg
  .text.UiLcdHy28_ReadReg
-                0x08015018       0x4c ..\obj\ui_lcd_hy28.o
-                0x08015018                UiLcdHy28_ReadReg
+                0x08014ff8       0x4c ..\obj\ui_lcd_hy28.o
+                0x08014ff8                UiLcdHy28_ReadReg
  .text.UiLcdHy28_SetCursorA
-                0x08015064       0x30 ..\obj\ui_lcd_hy28.o
+                0x08015044       0x30 ..\obj\ui_lcd_hy28.o
  .text.UiLcdHy28_LcdClear
-                0x08015094       0xb4 ..\obj\ui_lcd_hy28.o
-                0x08015094                UiLcdHy28_LcdClear
+                0x08015074       0xb4 ..\obj\ui_lcd_hy28.o
+                0x08015074                UiLcdHy28_LcdClear
  .text.UiLcdHy28_WriteRAM_Prepare
-                0x08015148       0x40 ..\obj\ui_lcd_hy28.o
-                0x08015148                UiLcdHy28_WriteRAM_Prepare
+                0x08015128       0x40 ..\obj\ui_lcd_hy28.o
+                0x08015128                UiLcdHy28_WriteRAM_Prepare
  .text.UiLcdHy28_DrawStraightLine
-                0x08015188       0xd0 ..\obj\ui_lcd_hy28.o
-                0x08015188                UiLcdHy28_DrawStraightLine
+                0x08015168       0xd0 ..\obj\ui_lcd_hy28.o
+                0x08015168                UiLcdHy28_DrawStraightLine
  .text.UiLcdHy28_DrawHorizLineWithGrad
-                0x08015258       0xe4 ..\obj\ui_lcd_hy28.o
-                0x08015258                UiLcdHy28_DrawHorizLineWithGrad
+                0x08015238       0xe4 ..\obj\ui_lcd_hy28.o
+                0x08015238                UiLcdHy28_DrawHorizLineWithGrad
  .text.UiLcdHy28_DrawEmptyRect
-                0x0801533c       0x88 ..\obj\ui_lcd_hy28.o
-                0x0801533c                UiLcdHy28_DrawEmptyRect
+                0x0801531c       0x88 ..\obj\ui_lcd_hy28.o
+                0x0801531c                UiLcdHy28_DrawEmptyRect
  .text.UiLcdHy28_DrawBottomButton
-                0x080153c4       0x64 ..\obj\ui_lcd_hy28.o
-                0x080153c4                UiLcdHy28_DrawBottomButton
+                0x080153a4       0x64 ..\obj\ui_lcd_hy28.o
+                0x080153a4                UiLcdHy28_DrawBottomButton
  .text.UiLcdHy28_DrawFullRect
-                0x08015428      0x130 ..\obj\ui_lcd_hy28.o
-                0x08015428                UiLcdHy28_DrawFullRect
+                0x08015408       0x50 ..\obj\ui_lcd_hy28.o
+                0x08015408                UiLcdHy28_DrawFullRect
  .text.UiLcdHy28_DrawChar
-                0x08015558      0x230 ..\obj\ui_lcd_hy28.o
-                0x08015558                UiLcdHy28_DrawChar
+                0x08015458      0x154 ..\obj\ui_lcd_hy28.o
+                0x08015458                UiLcdHy28_DrawChar
  .text.UiLcdHy28_PrintText
-                0x08015788      0x10c ..\obj\ui_lcd_hy28.o
-                0x08015788                UiLcdHy28_PrintText
+                0x080155ac      0x10c ..\obj\ui_lcd_hy28.o
+                0x080155ac                UiLcdHy28_PrintText
  .text.UiLcdHy28_DrawSpectrum_Interleaved
-                0x08015894      0x5e0 ..\obj\ui_lcd_hy28.o
-                0x08015894                UiLcdHy28_DrawSpectrum_Interleaved
+                0x080156b8      0x5e0 ..\obj\ui_lcd_hy28.o
+                0x080156b8                UiLcdHy28_DrawSpectrum_Interleaved
  .text.UiLcdHy28_InitA
-                0x08015e74      0x808 ..\obj\ui_lcd_hy28.o
-                0x08015e74                UiLcdHy28_InitA
+                0x08015c98      0x808 ..\obj\ui_lcd_hy28.o
+                0x08015c98                UiLcdHy28_InitA
  .text.UiLcdHy28_Test
-                0x0801667c        0xc ..\obj\ui_lcd_hy28.o
-                0x0801667c                UiLcdHy28_Test
+                0x080164a0        0xc ..\obj\ui_lcd_hy28.o
+                0x080164a0                UiLcdHy28_Test
  .text.UiLcdHy28_Init
-                0x08016688       0x5c ..\obj\ui_lcd_hy28.o
-                0x08016688                UiLcdHy28_Init
+                0x080164ac       0x5c ..\obj\ui_lcd_hy28.o
+                0x080164ac                UiLcdHy28_Init
  .text.UiLcdHy28_ShowStartUpScreen
-                0x080166e4      0x354 ..\obj\ui_lcd_hy28.o
-                0x080166e4                UiLcdHy28_ShowStartUpScreen
+                0x08016508      0x354 ..\obj\ui_lcd_hy28.o
+                0x08016508                UiLcdHy28_ShowStartUpScreen
  .text.PrintChar
-                0x08016a38       0x14 ..\obj\printf.o
-                0x08016a38                PrintChar
- .text.PutChar  0x08016a4c       0x24 ..\obj\printf.o
-                0x08016a4c                PutChar
+                0x0801685c       0x14 ..\obj\printf.o
+                0x0801685c                PrintChar
+ .text.PutChar  0x08016870       0x24 ..\obj\printf.o
+                0x08016870                PutChar
  .text.PutString
-                0x08016a70       0x48 ..\obj\printf.o
-                0x08016a70                PutString
+                0x08016894       0x48 ..\obj\printf.o
+                0x08016894                PutString
  .text.PutUnsignedInt
-                0x08016ab8       0xbc ..\obj\printf.o
-                0x08016ab8                PutUnsignedInt
+                0x080168dc       0xbc ..\obj\printf.o
+                0x080168dc                PutUnsignedInt
  .text.PutSignedInt
-                0x08016b74      0x12c ..\obj\printf.o
-                0x08016b74                PutSignedInt
- .text.PutHexa  0x08016ca0       0xe8 ..\obj\printf.o
-                0x08016ca0                PutHexa
+                0x08016998      0x12c ..\obj\printf.o
+                0x08016998                PutSignedInt
+ .text.PutHexa  0x08016ac4       0xe8 ..\obj\printf.o
+                0x08016ac4                PutHexa
  .text.vsnprintf
-                0x08016d88      0x2a4 ..\obj\printf.o
-                0x08016d88                vsnprintf
+                0x08016bac      0x2a4 ..\obj\printf.o
+                0x08016bac                vsnprintf
  .text.vsprintf
-                0x0801702c       0x28 ..\obj\printf.o
-                0x0801702c                vsprintf
+                0x08016e50       0x28 ..\obj\printf.o
+                0x08016e50                vsprintf
  .text.vfprintf
-                0x08017054       0x8c ..\obj\printf.o
-                0x08017054                vfprintf
- .text.vprintf  0x080170e0       0x2c ..\obj\printf.o
-                0x080170e0                vprintf
- .text.printf   0x0801710c       0x2c ..\obj\printf.o
-                0x0801710c                printf
- .text.sprintf  0x08017138       0x30 ..\obj\printf.o
-                0x08017138                sprintf
- .text.fputc    0x08017168       0x4c ..\obj\printf.o
-                0x08017168                fputc
- .text.fputs    0x080171b4       0x50 ..\obj\printf.o
-                0x080171b4                fputs
+                0x08016e78       0x8c ..\obj\printf.o
+                0x08016e78                vfprintf
+ .text.vprintf  0x08016f04       0x2c ..\obj\printf.o
+                0x08016f04                vprintf
+ .text.printf   0x08016f30       0x2c ..\obj\printf.o
+                0x08016f30                printf
+ .text.sprintf  0x08016f5c       0x30 ..\obj\printf.o
+                0x08016f5c                sprintf
+ .text.fputc    0x08016f8c       0x4c ..\obj\printf.o
+                0x08016f8c                fputc
+ .text.fputs    0x08016fd8       0x50 ..\obj\printf.o
+                0x08016fd8                fputs
  .text.USBH_OTG_BSP_TimerIRQ
-                0x08017204       0x58 ..\obj\usbh_bsp.o
-                0x08017204                USBH_OTG_BSP_TimerIRQ
+                0x08017028       0x58 ..\obj\usbh_bsp.o
+                0x08017028                USBH_OTG_BSP_TimerIRQ
  .text.USBD_USR_DeviceDescriptor
-                0x0801725c       0x28 ..\obj\usbd_desc.o
-                0x0801725c                USBD_USR_DeviceDescriptor
+                0x08017080       0x28 ..\obj\usbd_desc.o
+                0x08017080                USBD_USR_DeviceDescriptor
  .text.USBD_USR_LangIDStrDescriptor
-                0x08017284       0x28 ..\obj\usbd_desc.o
-                0x08017284                USBD_USR_LangIDStrDescriptor
+                0x080170a8       0x28 ..\obj\usbd_desc.o
+                0x080170a8                USBD_USR_LangIDStrDescriptor
  .text.USBD_USR_ProductStrDescriptor
-                0x080172ac       0x54 ..\obj\usbd_desc.o
-                0x080172ac                USBD_USR_ProductStrDescriptor
+                0x080170d0       0x54 ..\obj\usbd_desc.o
+                0x080170d0                USBD_USR_ProductStrDescriptor
  .text.USBD_USR_ManufacturerStrDescriptor
-                0x08017300       0x34 ..\obj\usbd_desc.o
-                0x08017300                USBD_USR_ManufacturerStrDescriptor
+                0x08017124       0x34 ..\obj\usbd_desc.o
+                0x08017124                USBD_USR_ManufacturerStrDescriptor
  .text.USBD_USR_SerialStrDescriptor
-                0x08017334       0x54 ..\obj\usbd_desc.o
-                0x08017334                USBD_USR_SerialStrDescriptor
+                0x08017158       0x54 ..\obj\usbd_desc.o
+                0x08017158                USBD_USR_SerialStrDescriptor
  .text.USBD_USR_ConfigStrDescriptor
-                0x08017388       0x54 ..\obj\usbd_desc.o
-                0x08017388                USBD_USR_ConfigStrDescriptor
+                0x080171ac       0x54 ..\obj\usbd_desc.o
+                0x080171ac                USBD_USR_ConfigStrDescriptor
  .text.USBD_USR_InterfaceStrDescriptor
-                0x080173dc       0x54 ..\obj\usbd_desc.o
-                0x080173dc                USBD_USR_InterfaceStrDescriptor
+                0x08017200       0x54 ..\obj\usbd_desc.o
+                0x08017200                USBD_USR_InterfaceStrDescriptor
  .text.FSMC_NORSRAMInit
-                0x08017430      0x150 ..\obj\stm32f4xx_fsmc.o
-                0x08017430                FSMC_NORSRAMInit
+                0x08017254      0x150 ..\obj\stm32f4xx_fsmc.o
+                0x08017254                FSMC_NORSRAMInit
  .text.FSMC_NORSRAMCmd
-                0x08017580       0x54 ..\obj\stm32f4xx_fsmc.o
-                0x08017580                FSMC_NORSRAMCmd
+                0x080173a4       0x54 ..\obj\stm32f4xx_fsmc.o
+                0x080173a4                FSMC_NORSRAMCmd
  .text.GPIO_Init
-                0x080175d4      0x144 ..\obj\stm32f4xx_gpio.o
-                0x080175d4                GPIO_Init
+                0x080173f8      0x144 ..\obj\stm32f4xx_gpio.o
+                0x080173f8                GPIO_Init
  .text.GPIO_ReadInputDataBit
-                0x08017718       0x3c ..\obj\stm32f4xx_gpio.o
-                0x08017718                GPIO_ReadInputDataBit
+                0x0801753c       0x3c ..\obj\stm32f4xx_gpio.o
+                0x0801753c                GPIO_ReadInputDataBit
  .text.GPIO_SetBits
-                0x08017754       0x1c ..\obj\stm32f4xx_gpio.o
-                0x08017754                GPIO_SetBits
+                0x08017578       0x1c ..\obj\stm32f4xx_gpio.o
+                0x08017578                GPIO_SetBits
  .text.GPIO_ResetBits
-                0x08017770       0x1c ..\obj\stm32f4xx_gpio.o
-                0x08017770                GPIO_ResetBits
+                0x08017594       0x1c ..\obj\stm32f4xx_gpio.o
+                0x08017594                GPIO_ResetBits
  .text.GPIO_PinAFConfig
-                0x0801778c       0xa8 ..\obj\stm32f4xx_gpio.o
-                0x0801778c                GPIO_PinAFConfig
+                0x080175b0       0xa8 ..\obj\stm32f4xx_gpio.o
+                0x080175b0                GPIO_PinAFConfig
  .text.FLASH_Unlock
-                0x08017834       0x3c ..\obj\stm32f4xx_flash.o
-                0x08017834                FLASH_Unlock
+                0x08017658       0x3c ..\obj\stm32f4xx_flash.o
+                0x08017658                FLASH_Unlock
  .text.FLASH_Lock
-                0x08017870       0x24 ..\obj\stm32f4xx_flash.o
-                0x08017870                FLASH_Lock
+                0x08017694       0x24 ..\obj\stm32f4xx_flash.o
+                0x08017694                FLASH_Lock
  .text.FLASH_EraseSector
-                0x08017894      0x118 ..\obj\stm32f4xx_flash.o
-                0x08017894                FLASH_EraseSector
+                0x080176b8      0x118 ..\obj\stm32f4xx_flash.o
+                0x080176b8                FLASH_EraseSector
  .text.FLASH_ProgramHalfWord
-                0x080179ac       0x9c ..\obj\stm32f4xx_flash.o
-                0x080179ac                FLASH_ProgramHalfWord
+                0x080177d0       0x9c ..\obj\stm32f4xx_flash.o
+                0x080177d0                FLASH_ProgramHalfWord
  .text.FLASH_GetStatus
-                0x08017a48       0x88 ..\obj\stm32f4xx_flash.o
-                0x08017a48                FLASH_GetStatus
+                0x0801786c       0x88 ..\obj\stm32f4xx_flash.o
+                0x0801786c                FLASH_GetStatus
  .text.FLASH_WaitForLastOperation
-                0x08017ad0       0x34 ..\obj\stm32f4xx_flash.o
-                0x08017ad0                FLASH_WaitForLastOperation
+                0x080178f4       0x34 ..\obj\stm32f4xx_flash.o
+                0x080178f4                FLASH_WaitForLastOperation
  .text.VCP_Init
-                0x08017b04       0x18 ..\obj\usbd_cdc_vcp.o
+                0x08017928       0x18 ..\obj\usbd_cdc_vcp.o
  .text.VCP_DeInit
-                0x08017b1c       0x10 ..\obj\usbd_cdc_vcp.o
+                0x08017940       0x10 ..\obj\usbd_cdc_vcp.o
  .text.VCP_Ctrl
-                0x08017b2c      0x230 ..\obj\usbd_cdc_vcp.o
+                0x08017950      0x230 ..\obj\usbd_cdc_vcp.o
  .text.VCP_DataTx
-                0x08017d5c       0x5c ..\obj\usbd_cdc_vcp.o
+                0x08017b80       0x5c ..\obj\usbd_cdc_vcp.o
  .text.VCP_DataRx
-                0x08017db8       0x34 ..\obj\usbd_cdc_vcp.o
+                0x08017bdc       0x34 ..\obj\usbd_cdc_vcp.o
  .text.VCP_COMConfig
-                0x08017dec       0x8c ..\obj\usbd_cdc_vcp.o
+                0x08017c10       0x8c ..\obj\usbd_cdc_vcp.o
  .text.SystemInit
-                0x08017e78       0xb4 ..\obj\system_stm32f4xx.o
-                0x08017e78                SystemInit
+                0x08017c9c       0xb4 ..\obj\system_stm32f4xx.o
+                0x08017c9c                SystemInit
  .text.SetSysClock
-                0x08017f2c      0x210 ..\obj\system_stm32f4xx.o
+                0x08017d50      0x210 ..\obj\system_stm32f4xx.o
  .text.DMA_DeInit
-                0x0801813c      0x244 ..\obj\stm32f4xx_dma.o
-                0x0801813c                DMA_DeInit
+                0x08017f60      0x244 ..\obj\stm32f4xx_dma.o
+                0x08017f60                DMA_DeInit
  .text.DMA_Init
-                0x08018380       0xb0 ..\obj\stm32f4xx_dma.o
-                0x08018380                DMA_Init
- .text.DMA_Cmd  0x08018430       0x38 ..\obj\stm32f4xx_dma.o
-                0x08018430                DMA_Cmd
+                0x080181a4       0xb0 ..\obj\stm32f4xx_dma.o
+                0x080181a4                DMA_Init
+ .text.DMA_Cmd  0x08018254       0x38 ..\obj\stm32f4xx_dma.o
+                0x08018254                DMA_Cmd
  .text.DMA_GetFlagStatus
-                0x08018468       0x84 ..\obj\stm32f4xx_dma.o
-                0x08018468                DMA_GetFlagStatus
+                0x0801828c       0x84 ..\obj\stm32f4xx_dma.o
+                0x0801828c                DMA_GetFlagStatus
  .text.DMA_ClearFlag
-                0x080184ec       0x60 ..\obj\stm32f4xx_dma.o
-                0x080184ec                DMA_ClearFlag
+                0x08018310       0x60 ..\obj\stm32f4xx_dma.o
+                0x08018310                DMA_ClearFlag
  .text.DMA_ITConfig
-                0x0801854c       0x74 ..\obj\stm32f4xx_dma.o
-                0x0801854c                DMA_ITConfig
+                0x08018370       0x74 ..\obj\stm32f4xx_dma.o
+                0x08018370                DMA_ITConfig
  .text.NVIC_EnableIRQ
-                0x080185c0       0x38 ..\obj\i2s.o
+                0x080183e4       0x38 ..\obj\i2s.o
  .text.I2S_Block_Init
-                0x080185f8      0x260 ..\obj\i2s.o
-                0x080185f8                I2S_Block_Init
+                0x0801841c      0x260 ..\obj\i2s.o
+                0x0801841c                I2S_Block_Init
  .text.I2S_Block_Process
-                0x08018858       0xf0 ..\obj\i2s.o
-                0x08018858                I2S_Block_Process
+                0x0801867c       0xf0 ..\obj\i2s.o
+                0x0801867c                I2S_Block_Process
  .text.DMA1_Stream2_IRQHandler
-                0x08018948      0x168 ..\obj\i2s.o
-                0x08018948                DMA1_Stream2_IRQHandler
+                0x0801876c      0x168 ..\obj\i2s.o
+                0x0801876c                DMA1_Stream2_IRQHandler
  .text.arm_sqrt_f32
-                0x08018ab0       0x4c ..\obj\audio_driver.o
+                0x080188d4       0x4c ..\obj\audio_driver.o
  .text.audio_driver_init
-                0x08018afc      0x11c ..\obj\audio_driver.o
-                0x08018afc                audio_driver_init
+                0x08018920      0x11c ..\obj\audio_driver.o
+                0x08018920                audio_driver_init
  .text.audio_driver_set_rx_audio_filter
-                0x08018c18      0xb54 ..\obj\audio_driver.o
-                0x08018c18                audio_driver_set_rx_audio_filter
+                0x08018a3c      0xb54 ..\obj\audio_driver.o
+                0x08018a3c                audio_driver_set_rx_audio_filter
  .text.Audio_Init
-                0x0801976c       0xbc ..\obj\audio_driver.o
+                0x08019590       0xbc ..\obj\audio_driver.o
+ *fill*         0x0801964c        0x4 00
  .text.audio_rx_noise_blanker
-                0x08019828      0x9c0 ..\obj\audio_driver.o
+                0x08019650      0x9c0 ..\obj\audio_driver.o
  .text.audio_rx_freq_conv
-                0x0801a1e8      0x294 ..\obj\audio_driver.o
- *fill*         0x0801a47c        0x4 00
+                0x0801a010      0x294 ..\obj\audio_driver.o
+ *fill*         0x0801a2a4        0x4 00
  .text.audio_rx_processor
-                0x0801a480     0x14f0 ..\obj\audio_driver.o
+                0x0801a2a8     0x14f0 ..\obj\audio_driver.o
  .text.audio_tx_compressor
-                0x0801b970      0x378 ..\obj\audio_driver.o
+                0x0801b798      0x378 ..\obj\audio_driver.o
  .text.audio_tx_processor
-                0x0801bce8     0x1508 ..\obj\audio_driver.o
+                0x0801bb10     0x1508 ..\obj\audio_driver.o
  .text.I2S_RX_CallBack
-                0x0801d1f0      0x21c ..\obj\audio_driver.o
-                0x0801d1f0                I2S_RX_CallBack
+                0x0801d018      0x21c ..\obj\audio_driver.o
+                0x0801d018                I2S_RX_CallBack
  .text.USBD_StdDevReq
-                0x0801d40c       0xa4 ..\obj\usbd_req.o
-                0x0801d40c                USBD_StdDevReq
+                0x0801d234       0xa4 ..\obj\usbd_req.o
+                0x0801d234                USBD_StdDevReq
  .text.USBD_StdItfReq
-                0x0801d4b0       0x6c ..\obj\usbd_req.o
-                0x0801d4b0                USBD_StdItfReq
+                0x0801d2d8       0x6c ..\obj\usbd_req.o
+                0x0801d2d8                USBD_StdItfReq
  .text.USBD_StdEPReq
-                0x0801d51c      0x1e4 ..\obj\usbd_req.o
-                0x0801d51c                USBD_StdEPReq
+                0x0801d344      0x1e4 ..\obj\usbd_req.o
+                0x0801d344                USBD_StdEPReq
  .text.USBD_GetDescriptor
-                0x0801d700      0x1c8 ..\obj\usbd_req.o
+                0x0801d528      0x1c8 ..\obj\usbd_req.o
  .text.USBD_SetAddress
-                0x0801d8c8       0x80 ..\obj\usbd_req.o
+                0x0801d6f0       0x80 ..\obj\usbd_req.o
  .text.USBD_SetConfig
-                0x0801d948      0x134 ..\obj\usbd_req.o
+                0x0801d770      0x134 ..\obj\usbd_req.o
  .text.USBD_GetConfig
-                0x0801da7c       0x68 ..\obj\usbd_req.o
+                0x0801d8a4       0x68 ..\obj\usbd_req.o
  .text.USBD_GetStatus
-                0x0801dae4       0x70 ..\obj\usbd_req.o
+                0x0801d90c       0x70 ..\obj\usbd_req.o
  .text.USBD_SetFeature
-                0x0801db54       0xf0 ..\obj\usbd_req.o
+                0x0801d97c       0xf0 ..\obj\usbd_req.o
  .text.USBD_ClrFeature
-                0x0801dc44       0x58 ..\obj\usbd_req.o
+                0x0801da6c       0x58 ..\obj\usbd_req.o
  .text.USBD_ParseSetupRequest
-                0x0801dc9c       0x94 ..\obj\usbd_req.o
-                0x0801dc9c                USBD_ParseSetupRequest
+                0x0801dac4       0x94 ..\obj\usbd_req.o
+                0x0801dac4                USBD_ParseSetupRequest
  .text.USBD_CtlError
-                0x0801dd30       0x2c ..\obj\usbd_req.o
-                0x0801dd30                USBD_CtlError
+                0x0801db58       0x2c ..\obj\usbd_req.o
+                0x0801db58                USBD_CtlError
  .text.USBD_GetString
-                0x0801dd5c       0x9c ..\obj\usbd_req.o
-                0x0801dd5c                USBD_GetString
+                0x0801db84       0x9c ..\obj\usbd_req.o
+                0x0801db84                USBD_GetString
  .text.USBD_GetLen
-                0x0801ddf8       0x38 ..\obj\usbd_req.o
+                0x0801dc20       0x38 ..\obj\usbd_req.o
  .text.USBD_OTG_ISR_Handler
-                0x0801de30      0x164 ..\obj\usb_dcd_int.o
-                0x0801de30                USBD_OTG_ISR_Handler
+                0x0801dc58      0x164 ..\obj\usb_dcd_int.o
+                0x0801dc58                USBD_OTG_ISR_Handler
  .text.DCD_HandleResume_ISR
-                0x0801df94       0x8c ..\obj\usb_dcd_int.o
+                0x0801ddbc       0x8c ..\obj\usb_dcd_int.o
  .text.DCD_HandleUSBSuspend_ISR
-                0x0801e020       0xd0 ..\obj\usb_dcd_int.o
+                0x0801de48       0xd0 ..\obj\usb_dcd_int.o
  .text.DCD_HandleInEP_ISR
-                0x0801e0f0      0x1d0 ..\obj\usb_dcd_int.o
+                0x0801df18      0x1d0 ..\obj\usb_dcd_int.o
  .text.DCD_HandleOutEP_ISR
-                0x0801e2c0      0x184 ..\obj\usb_dcd_int.o
+                0x0801e0e8      0x184 ..\obj\usb_dcd_int.o
  .text.DCD_HandleSof_ISR
-                0x0801e444       0x3c ..\obj\usb_dcd_int.o
+                0x0801e26c       0x3c ..\obj\usb_dcd_int.o
  .text.DCD_HandleRxStatusQueueLevel_ISR
-                0x0801e480      0x118 ..\obj\usb_dcd_int.o
+                0x0801e2a8      0x118 ..\obj\usb_dcd_int.o
  .text.DCD_WriteEmptyTxFifo
-                0x0801e598      0x104 ..\obj\usb_dcd_int.o
+                0x0801e3c0      0x104 ..\obj\usb_dcd_int.o
  .text.DCD_HandleUsbReset_ISR
-                0x0801e69c      0x158 ..\obj\usb_dcd_int.o
+                0x0801e4c4      0x158 ..\obj\usb_dcd_int.o
  .text.DCD_HandleEnumDone_ISR
-                0x0801e7f4       0x88 ..\obj\usb_dcd_int.o
+                0x0801e61c       0x88 ..\obj\usb_dcd_int.o
  .text.DCD_IsoINIncomplete_ISR
-                0x0801e87c       0x3c ..\obj\usb_dcd_int.o
+                0x0801e6a4       0x3c ..\obj\usb_dcd_int.o
  .text.DCD_IsoOUTIncomplete_ISR
-                0x0801e8b8       0x3c ..\obj\usb_dcd_int.o
+                0x0801e6e0       0x3c ..\obj\usb_dcd_int.o
  .text.DCD_ReadDevInEP
-                0x0801e8f4       0x58 ..\obj\usb_dcd_int.o
+                0x0801e71c       0x58 ..\obj\usb_dcd_int.o
  .text.UiDriverUpdateMenu
-                0x0801e94c     0x15f4 ..\obj\ui_menu.o
-                0x0801e94c                UiDriverUpdateMenu
+                0x0801e774     0x155c ..\obj\ui_menu.o
+                0x0801e774                UiDriverUpdateMenu
  .text.UiDriverUpdateMenuLines
-                0x0801ff40     0x3d10 ..\obj\ui_menu.o
+                0x0801fcd0     0x3d10 ..\obj\ui_menu.o
  .text.UiDriverUpdateConfigMenuLines
-                0x08023c50     0x4190 ..\obj\ui_menu.o
+                0x080239e0     0x4190 ..\obj\ui_menu.o
  .text.usbd_cdc_Init
-                0x08027de0       0x94 ..\obj\usbd_cdc_core.o
+                0x08027b70       0x94 ..\obj\usbd_cdc_core.o
  .text.usbd_cdc_DeInit
-                0x08027e74       0x44 ..\obj\usbd_cdc_core.o
+                0x08027c04       0x44 ..\obj\usbd_cdc_core.o
  .text.usbd_cdc_Setup
-                0x08027eb8      0x168 ..\obj\usbd_cdc_core.o
+                0x08027c48      0x168 ..\obj\usbd_cdc_core.o
  .text.usbd_cdc_EP0_RxReady
-                0x08028020       0x60 ..\obj\usbd_cdc_core.o
+                0x08027db0       0x60 ..\obj\usbd_cdc_core.o
  .text.usbd_cdc_DataIn
-                0x08028080       0xf8 ..\obj\usbd_cdc_core.o
+                0x08027e10       0xf8 ..\obj\usbd_cdc_core.o
  .text.usbd_cdc_DataOut
-                0x08028178       0x64 ..\obj\usbd_cdc_core.o
+                0x08027f08       0x64 ..\obj\usbd_cdc_core.o
  .text.usbd_cdc_SOF
-                0x080281dc       0x50 ..\obj\usbd_cdc_core.o
+                0x08027f6c       0x50 ..\obj\usbd_cdc_core.o
  .text.Handle_USBAsynchXfer
-                0x0802822c      0x178 ..\obj\usbd_cdc_core.o
+                0x08027fbc      0x178 ..\obj\usbd_cdc_core.o
  .text.USBD_cdc_GetCfgDesc
-                0x080283a4       0x28 ..\obj\usbd_cdc_core.o
+                0x08028134       0x28 ..\obj\usbd_cdc_core.o
  .text.ui_si570_setbits
-                0x080283cc       0x2c ..\obj\ui_si570.o
+                0x0802815c       0x2c ..\obj\ui_si570.o
  .text.ui_si570_verify_frequency
-                0x080283f8       0x74 ..\obj\ui_si570.o
+                0x08028188       0x74 ..\obj\ui_si570.o
  .text.ui_si570_small_frequency_change
-                0x0802846c       0xd4 ..\obj\ui_si570.o
+                0x080281fc       0xd4 ..\obj\ui_si570.o
  .text.ui_si570_large_frequency_change
-                0x08028540      0x158 ..\obj\ui_si570.o
+                0x080282d0      0x158 ..\obj\ui_si570.o
  .text.ui_si570_is_large_change
-                0x08028698       0xe8 ..\obj\ui_si570.o
+                0x08028428       0xe8 ..\obj\ui_si570.o
  .text.ui_si570_get_configuration
-                0x08028780      0x288 ..\obj\ui_si570.o
-                0x08028780                ui_si570_get_configuration
+                0x08028510      0x288 ..\obj\ui_si570.o
+                0x08028510                ui_si570_get_configuration
  .text.ui_si570_change_frequency
-                0x08028a08      0x3b4 ..\obj\ui_si570.o
- *fill*         0x08028dbc        0x4 00
+                0x08028798      0x3b4 ..\obj\ui_si570.o
+ *fill*         0x08028b4c        0x4 00
  .text.ui_si570_set_frequency
-                0x08028dc0       0xf0 ..\obj\ui_si570.o
-                0x08028dc0                ui_si570_set_frequency
+                0x08028b50       0xf0 ..\obj\ui_si570.o
+                0x08028b50                ui_si570_set_frequency
  .text.ui_si570_init_temp_sensor
-                0x08028eb0       0x78 ..\obj\ui_si570.o
-                0x08028eb0                ui_si570_init_temp_sensor
+                0x08028c40       0x78 ..\obj\ui_si570.o
+                0x08028c40                ui_si570_init_temp_sensor
  .text.ui_si570_read_temp
-                0x08028f28       0x48 ..\obj\ui_si570.o
-                0x08028f28                ui_si570_read_temp
+                0x08028cb8       0x48 ..\obj\ui_si570.o
+                0x08028cb8                ui_si570_read_temp
  .text.ui_si570_conv_temp
-                0x08028f70       0xb4 ..\obj\ui_si570.o
-                0x08028f70                ui_si570_conv_temp
+                0x08028d00       0xb4 ..\obj\ui_si570.o
+                0x08028d00                ui_si570_conv_temp
  .text.OTG_FS_IRQHandler
-                0x08029024       0x14 ..\obj\cat_driver.o
-                0x08029024                OTG_FS_IRQHandler
+                0x08028db4       0x14 ..\obj\cat_driver.o
+                0x08028db4                OTG_FS_IRQHandler
  .text.cat_driver_init
-                0x08029038       0x40 ..\obj\cat_driver.o
-                0x08029038                cat_driver_init
+                0x08028dc8       0x40 ..\obj\cat_driver.o
+                0x08028dc8                cat_driver_init
  .text.cat_driver_stop
-                0x08029078       0x20 ..\obj\cat_driver.o
-                0x08029078                cat_driver_stop
+                0x08028e08       0x20 ..\obj\cat_driver.o
+                0x08028e08                cat_driver_stop
  .text.SPI_I2S_DeInit
-                0x08029098       0x88 ..\obj\stm32f4xx_spi.o
-                0x08029098                SPI_I2S_DeInit
+                0x08028e28       0x88 ..\obj\stm32f4xx_spi.o
+                0x08028e28                SPI_I2S_DeInit
  .text.SPI_Init
-                0x08029120       0x88 ..\obj\stm32f4xx_spi.o
-                0x08029120                SPI_Init
+                0x08028eb0       0x88 ..\obj\stm32f4xx_spi.o
+                0x08028eb0                SPI_Init
  .text.I2S_Init
-                0x080291a8      0x214 ..\obj\stm32f4xx_spi.o
-                0x080291a8                I2S_Init
- .text.SPI_Cmd  0x080293bc       0x40 ..\obj\stm32f4xx_spi.o
-                0x080293bc                SPI_Cmd
- .text.I2S_Cmd  0x080293fc       0x40 ..\obj\stm32f4xx_spi.o
-                0x080293fc                I2S_Cmd
+                0x08028f38      0x214 ..\obj\stm32f4xx_spi.o
+                0x08028f38                I2S_Init
+ .text.SPI_Cmd  0x0802914c       0x40 ..\obj\stm32f4xx_spi.o
+                0x0802914c                SPI_Cmd
+ .text.I2S_Cmd  0x0802918c       0x40 ..\obj\stm32f4xx_spi.o
+                0x0802918c                I2S_Cmd
  .text.I2S_FullDuplexConfig
-                0x0802943c       0xa4 ..\obj\stm32f4xx_spi.o
-                0x0802943c                I2S_FullDuplexConfig
+                0x080291cc       0xa4 ..\obj\stm32f4xx_spi.o
+                0x080291cc                I2S_FullDuplexConfig
  .text.SPI_I2S_ReceiveData
-                0x080294e0       0x1c ..\obj\stm32f4xx_spi.o
-                0x080294e0                SPI_I2S_ReceiveData
+                0x08029270       0x1c ..\obj\stm32f4xx_spi.o
+                0x08029270                SPI_I2S_ReceiveData
  .text.SPI_I2S_SendData
-                0x080294fc       0x1c ..\obj\stm32f4xx_spi.o
-                0x080294fc                SPI_I2S_SendData
+                0x0802928c       0x1c ..\obj\stm32f4xx_spi.o
+                0x0802928c                SPI_I2S_SendData
  .text.SPI_I2S_DMACmd
-                0x08029518       0x48 ..\obj\stm32f4xx_spi.o
-                0x08029518                SPI_I2S_DMACmd
+                0x080292a8       0x48 ..\obj\stm32f4xx_spi.o
+                0x080292a8                SPI_I2S_DMACmd
  .text.SPI_I2S_GetFlagStatus
-                0x08029560       0x40 ..\obj\stm32f4xx_spi.o
-                0x08029560                SPI_I2S_GetFlagStatus
+                0x080292f0       0x40 ..\obj\stm32f4xx_spi.o
+                0x080292f0                SPI_I2S_GetFlagStatus
  .text.softdds_setfreq
-                0x080295a0       0x6c ..\obj\softdds.o
-                0x080295a0                softdds_setfreq
+                0x08029330       0x6c ..\obj\softdds.o
+                0x08029330                softdds_setfreq
  .text.softdds_runf
-                0x0802960c       0xcc ..\obj\softdds.o
-                0x0802960c                softdds_runf
+                0x0802939c       0xcc ..\obj\softdds.o
+                0x0802939c                softdds_runf
  .text.I2C_DeInit
-                0x080296d8       0x88 ..\obj\stm32f4xx_i2c.o
-                0x080296d8                I2C_DeInit
+                0x08029468       0x88 ..\obj\stm32f4xx_i2c.o
+                0x08029468                I2C_DeInit
  .text.I2C_Init
-                0x08029760      0x1ac ..\obj\stm32f4xx_i2c.o
-                0x08029760                I2C_Init
- .text.I2C_Cmd  0x0802990c       0x40 ..\obj\stm32f4xx_i2c.o
-                0x0802990c                I2C_Cmd
+                0x080294f0      0x1ac ..\obj\stm32f4xx_i2c.o
+                0x080294f0                I2C_Init
+ .text.I2C_Cmd  0x0802969c       0x40 ..\obj\stm32f4xx_i2c.o
+                0x0802969c                I2C_Cmd
  .text.I2C_GenerateSTART
-                0x0802994c       0x40 ..\obj\stm32f4xx_i2c.o
-                0x0802994c                I2C_GenerateSTART
+                0x080296dc       0x40 ..\obj\stm32f4xx_i2c.o
+                0x080296dc                I2C_GenerateSTART
  .text.I2C_GenerateSTOP
-                0x0802998c       0x40 ..\obj\stm32f4xx_i2c.o
-                0x0802998c                I2C_GenerateSTOP
+                0x0802971c       0x40 ..\obj\stm32f4xx_i2c.o
+                0x0802971c                I2C_GenerateSTOP
  .text.I2C_Send7bitAddress
-                0x080299cc       0x3c ..\obj\stm32f4xx_i2c.o
-                0x080299cc                I2C_Send7bitAddress
+                0x0802975c       0x3c ..\obj\stm32f4xx_i2c.o
+                0x0802975c                I2C_Send7bitAddress
  .text.I2C_AcknowledgeConfig
-                0x08029a08       0x40 ..\obj\stm32f4xx_i2c.o
-                0x08029a08                I2C_AcknowledgeConfig
+                0x08029798       0x40 ..\obj\stm32f4xx_i2c.o
+                0x08029798                I2C_AcknowledgeConfig
  .text.I2C_SendData
-                0x08029a48       0x20 ..\obj\stm32f4xx_i2c.o
-                0x08029a48                I2C_SendData
+                0x080297d8       0x20 ..\obj\stm32f4xx_i2c.o
+                0x080297d8                I2C_SendData
  .text.I2C_ReceiveData
-                0x08029a68       0x1c ..\obj\stm32f4xx_i2c.o
-                0x08029a68                I2C_ReceiveData
+                0x080297f8       0x1c ..\obj\stm32f4xx_i2c.o
+                0x080297f8                I2C_ReceiveData
  .text.I2C_CheckEvent
-                0x08029a84       0x70 ..\obj\stm32f4xx_i2c.o
-                0x08029a84                I2C_CheckEvent
+                0x08029814       0x70 ..\obj\stm32f4xx_i2c.o
+                0x08029814                I2C_CheckEvent
  .text.I2C_GetFlagStatus
-                0x08029af4       0x78 ..\obj\stm32f4xx_i2c.o
-                0x08029af4                I2C_GetFlagStatus
+                0x08029884       0x78 ..\obj\stm32f4xx_i2c.o
+                0x08029884                I2C_GetFlagStatus
  .text.I2C_ClearFlag
-                0x08029b6c       0x30 ..\obj\stm32f4xx_i2c.o
-                0x08029b6c                I2C_ClearFlag
+                0x080298fc       0x30 ..\obj\stm32f4xx_i2c.o
+                0x080298fc                I2C_ClearFlag
  .text.EXTI_Init
-                0x08029b9c      0x138 ..\obj\stm32f4xx_exti.o
-                0x08029b9c                EXTI_Init
+                0x0802992c      0x138 ..\obj\stm32f4xx_exti.o
+                0x0802992c                EXTI_Init
  .text.EXTI_GetITStatus
-                0x08029cd4       0x58 ..\obj\stm32f4xx_exti.o
-                0x08029cd4                EXTI_GetITStatus
+                0x08029a64       0x58 ..\obj\stm32f4xx_exti.o
+                0x08029a64                EXTI_GetITStatus
  .text.EXTI_ClearITPendingBit
-                0x08029d2c       0x20 ..\obj\stm32f4xx_exti.o
-                0x08029d2c                EXTI_ClearITPendingBit
+                0x08029abc       0x20 ..\obj\stm32f4xx_exti.o
+                0x08029abc                EXTI_ClearITPendingBit
  .text.NVIC_PriorityGroupConfig
-                0x08029d4c       0x28 ..\obj\misc.o
-                0x08029d4c                NVIC_PriorityGroupConfig
+                0x08029adc       0x28 ..\obj\misc.o
+                0x08029adc                NVIC_PriorityGroupConfig
  .text.NVIC_Init
-                0x08029d74       0xe4 ..\obj\misc.o
-                0x08029d74                NVIC_Init
+                0x08029b04       0xe4 ..\obj\misc.o
+                0x08029b04                NVIC_Init
  .text.SysTick_CLKSourceConfig
-                0x08029e58       0x4c ..\obj\misc.o
-                0x08029e58                SysTick_CLKSourceConfig
+                0x08029be8       0x4c ..\obj\misc.o
+                0x08029be8                SysTick_CLKSourceConfig
  .text.DCD_Init
-                0x08029ea4      0x134 ..\obj\usb_dcd.o
-                0x08029ea4                DCD_Init
+                0x08029c34      0x134 ..\obj\usb_dcd.o
+                0x08029c34                DCD_Init
  .text.DCD_DeInit
-                0x08029fd8       0x18 ..\obj\usb_dcd.o
-                0x08029fd8                DCD_DeInit
+                0x08029d68       0x18 ..\obj\usb_dcd.o
+                0x08029d68                DCD_DeInit
  .text.DCD_EP_Open
-                0x08029ff0       0xb4 ..\obj\usb_dcd.o
-                0x08029ff0                DCD_EP_Open
+                0x08029d80       0xb4 ..\obj\usb_dcd.o
+                0x08029d80                DCD_EP_Open
  .text.DCD_EP_Close
-                0x0802a0a4       0x88 ..\obj\usb_dcd.o
-                0x0802a0a4                DCD_EP_Close
+                0x08029e34       0x88 ..\obj\usb_dcd.o
+                0x08029e34                DCD_EP_Close
  .text.DCD_EP_PrepareRx
-                0x0802a12c       0x90 ..\obj\usb_dcd.o
-                0x0802a12c                DCD_EP_PrepareRx
+                0x08029ebc       0x90 ..\obj\usb_dcd.o
+                0x08029ebc                DCD_EP_PrepareRx
  .text.DCD_EP_Tx
-                0x0802a1bc       0x88 ..\obj\usb_dcd.o
-                0x0802a1bc                DCD_EP_Tx
+                0x08029f4c       0x88 ..\obj\usb_dcd.o
+                0x08029f4c                DCD_EP_Tx
  .text.DCD_EP_Stall
-                0x0802a244       0x8c ..\obj\usb_dcd.o
-                0x0802a244                DCD_EP_Stall
+                0x08029fd4       0x8c ..\obj\usb_dcd.o
+                0x08029fd4                DCD_EP_Stall
  .text.DCD_EP_ClrStall
-                0x0802a2d0       0x8c ..\obj\usb_dcd.o
-                0x0802a2d0                DCD_EP_ClrStall
+                0x0802a060       0x8c ..\obj\usb_dcd.o
+                0x0802a060                DCD_EP_ClrStall
  .text.DCD_EP_SetAddress
-                0x0802a35c       0x3c ..\obj\usb_dcd.o
-                0x0802a35c                DCD_EP_SetAddress
+                0x0802a0ec       0x3c ..\obj\usb_dcd.o
+                0x0802a0ec                DCD_EP_SetAddress
  .text.mchf_hw_i2c2_init
-                0x0802a398       0xc4 ..\obj\mchf_hw_i2c2.o
-                0x0802a398                mchf_hw_i2c2_init
+                0x0802a128       0xc4 ..\obj\mchf_hw_i2c2.o
+                0x0802a128                mchf_hw_i2c2_init
  .text.mchf_hw_i2c2_WriteRegister
-                0x0802a45c      0x27c ..\obj\mchf_hw_i2c2.o
-                0x0802a45c                mchf_hw_i2c2_WriteRegister
+                0x0802a1ec      0x27c ..\obj\mchf_hw_i2c2.o
+                0x0802a1ec                mchf_hw_i2c2_WriteRegister
  .text.cw_gen_init
-                0x0802a6d8       0x84 ..\obj\cw_gen.o
-                0x0802a6d8                cw_gen_init
+                0x0802a468       0x84 ..\obj\cw_gen.o
+                0x0802a468                cw_gen_init
  .text.cw_gen_remove_click_on_rising_edge
-                0x0802a75c       0xfc ..\obj\cw_gen.o
-                0x0802a75c                cw_gen_remove_click_on_rising_edge
+                0x0802a4ec       0xfc ..\obj\cw_gen.o
+                0x0802a4ec                cw_gen_remove_click_on_rising_edge
  .text.cw_gen_remove_click_on_falling_edge
-                0x0802a858      0x118 ..\obj\cw_gen.o
-                0x0802a858                cw_gen_remove_click_on_falling_edge
+                0x0802a5e8      0x118 ..\obj\cw_gen.o
+                0x0802a5e8                cw_gen_remove_click_on_falling_edge
  .text.cw_gen_check_keyer_state
-                0x0802a970       0xd4 ..\obj\cw_gen.o
-                0x0802a970                cw_gen_check_keyer_state
+                0x0802a700       0xd4 ..\obj\cw_gen.o
+                0x0802a700                cw_gen_check_keyer_state
  .text.cw_gen_process
-                0x0802aa44       0x44 ..\obj\cw_gen.o
-                0x0802aa44                cw_gen_process
+                0x0802a7d4       0x44 ..\obj\cw_gen.o
+                0x0802a7d4                cw_gen_process
  .text.cw_gen_process_strk
-                0x0802aa88      0x168 ..\obj\cw_gen.o
-                0x0802aa88                cw_gen_process_strk
+                0x0802a818      0x168 ..\obj\cw_gen.o
+                0x0802a818                cw_gen_process_strk
  .text.cw_gen_process_iamb
-                0x0802abf0      0x3ac ..\obj\cw_gen.o
-                0x0802abf0                cw_gen_process_iamb
+                0x0802a980      0x3ac ..\obj\cw_gen.o
+                0x0802a980                cw_gen_process_iamb
  .text.cw_gen_dah_IRQ
-                0x0802af9c       0xac ..\obj\cw_gen.o
-                0x0802af9c                cw_gen_dah_IRQ
+                0x0802ad2c       0xac ..\obj\cw_gen.o
+                0x0802ad2c                cw_gen_dah_IRQ
  .text.cw_gen_dit_IRQ
-                0x0802b048       0x40 ..\obj\cw_gen.o
-                0x0802b048                cw_gen_dit_IRQ
+                0x0802add8       0x40 ..\obj\cw_gen.o
+                0x0802add8                cw_gen_dit_IRQ
  .text.NVIC_SetPriority
-                0x0802b088       0x5c ..\obj\mchf_board.o
+                0x0802ae18       0x5c ..\obj\mchf_board.o
  .text.SysTick_Config
-                0x0802b0e4       0x64 ..\obj\mchf_board.o
+                0x0802ae74       0x64 ..\obj\mchf_board.o
  .text.mchf_board_led_init
-                0x0802b148       0x54 ..\obj\mchf_board.o
+                0x0802aed8       0x54 ..\obj\mchf_board.o
  .text.mchf_board_debug_init
-                0x0802b19c        0xc ..\obj\mchf_board.o
+                0x0802af2c        0xc ..\obj\mchf_board.o
  .text.mchf_board_keypad_init
-                0x0802b1a8       0x64 ..\obj\mchf_board.o
+                0x0802af38       0x64 ..\obj\mchf_board.o
  .text.mchf_board_ptt_init
-                0x0802b20c       0x3c ..\obj\mchf_board.o
+                0x0802af9c       0x3c ..\obj\mchf_board.o
  .text.mchf_board_keyer_irq_init
-                0x0802b248      0x110 ..\obj\mchf_board.o
+                0x0802afd8      0x110 ..\obj\mchf_board.o
  .text.mchf_board_power_button_irq_init
-                0x0802b358       0x94 ..\obj\mchf_board.o
+                0x0802b0e8       0x94 ..\obj\mchf_board.o
  .text.mchf_board_dac0_init
-                0x0802b3ec       0x7c ..\obj\mchf_board.o
+                0x0802b17c       0x7c ..\obj\mchf_board.o
  .text.mchf_board_dac1_init
-                0x0802b468       0x7c ..\obj\mchf_board.o
+                0x0802b1f8       0x7c ..\obj\mchf_board.o
  .text.mchf_board_adc1_init
-                0x0802b4e4       0xd4 ..\obj\mchf_board.o
+                0x0802b274       0xd4 ..\obj\mchf_board.o
  .text.mchf_board_adc2_init
-                0x0802b5b8       0xd4 ..\obj\mchf_board.o
+                0x0802b348       0xd4 ..\obj\mchf_board.o
  .text.mchf_board_adc3_init
-                0x0802b68c       0xd4 ..\obj\mchf_board.o
+                0x0802b41c       0xd4 ..\obj\mchf_board.o
  .text.mchf_board_power_down_init
-                0x0802b760       0x4c ..\obj\mchf_board.o
+                0x0802b4f0       0x4c ..\obj\mchf_board.o
  .text.mchf_board_band_cntr_init
-                0x0802b7ac       0x68 ..\obj\mchf_board.o
+                0x0802b53c       0x68 ..\obj\mchf_board.o
  .text.mchf_board_set_system_tick_value
-                0x0802b814       0x38 ..\obj\mchf_board.o
+                0x0802b5a4       0x38 ..\obj\mchf_board.o
  .text.mchf_board_green_led
-                0x0802b84c       0x58 ..\obj\mchf_board.o
-                0x0802b84c                mchf_board_green_led
+                0x0802b5dc       0x58 ..\obj\mchf_board.o
+                0x0802b5dc                mchf_board_green_led
  .text.mchf_board_power_off
-                0x0802b8a4      0x2d8 ..\obj\mchf_board.o
-                0x0802b8a4                mchf_board_power_off
+                0x0802b634      0x2d8 ..\obj\mchf_board.o
+                0x0802b634                mchf_board_power_off
  .text.mchf_board_init
-                0x0802bb7c       0x88 ..\obj\mchf_board.o
-                0x0802bb7c                mchf_board_init
+                0x0802b90c       0x88 ..\obj\mchf_board.o
+                0x0802b90c                mchf_board_init
  .text.mchf_board_post_init
-                0x0802bc04       0x18 ..\obj\mchf_board.o
-                0x0802bc04                mchf_board_post_init
+                0x0802b994       0x18 ..\obj\mchf_board.o
+                0x0802b994                mchf_board_post_init
  .text.Read_VirtEEPROM
-                0x0802bc1c       0x30 ..\obj\mchf_board.o
-                0x0802bc1c                Read_VirtEEPROM
+                0x0802b9ac       0x30 ..\obj\mchf_board.o
+                0x0802b9ac                Read_VirtEEPROM
  .text.Write_VirtEEPROM
-                0x0802bc4c       0x38 ..\obj\mchf_board.o
-                0x0802bc4c                Write_VirtEEPROM
+                0x0802b9dc       0x38 ..\obj\mchf_board.o
+                0x0802b9dc                Write_VirtEEPROM
  .text.USBD_CtlSendData
-                0x0802bc84       0x48 ..\obj\usbd_ioreq.o
-                0x0802bc84                USBD_CtlSendData
+                0x0802ba14       0x48 ..\obj\usbd_ioreq.o
+                0x0802ba14                USBD_CtlSendData
  .text.USBD_CtlContinueSendData
-                0x0802bccc       0x30 ..\obj\usbd_ioreq.o
-                0x0802bccc                USBD_CtlContinueSendData
+                0x0802ba5c       0x30 ..\obj\usbd_ioreq.o
+                0x0802ba5c                USBD_CtlContinueSendData
  .text.USBD_CtlPrepareRx
-                0x0802bcfc       0x48 ..\obj\usbd_ioreq.o
-                0x0802bcfc                USBD_CtlPrepareRx
+                0x0802ba8c       0x48 ..\obj\usbd_ioreq.o
+                0x0802ba8c                USBD_CtlPrepareRx
  .text.USBD_CtlContinueRx
-                0x0802bd44       0x30 ..\obj\usbd_ioreq.o
-                0x0802bd44                USBD_CtlContinueRx
+                0x0802bad4       0x30 ..\obj\usbd_ioreq.o
+                0x0802bad4                USBD_CtlContinueRx
  .text.USBD_CtlSendStatus
-                0x0802bd74       0x3c ..\obj\usbd_ioreq.o
-                0x0802bd74                USBD_CtlSendStatus
+                0x0802bb04       0x3c ..\obj\usbd_ioreq.o
+                0x0802bb04                USBD_CtlSendStatus
  .text.USBD_CtlReceiveStatus
-                0x0802bdb0       0x3c ..\obj\usbd_ioreq.o
-                0x0802bdb0                USBD_CtlReceiveStatus
+                0x0802bb40       0x3c ..\obj\usbd_ioreq.o
+                0x0802bb40                USBD_CtlReceiveStatus
  .text.USBD_OTG_BSP_Init
-                0x0802bdec       0x74 ..\obj\usbd_bsp.o
-                0x0802bdec                USBD_OTG_BSP_Init
+                0x0802bb7c       0x74 ..\obj\usbd_bsp.o
+                0x0802bb7c                USBD_OTG_BSP_Init
  .text.USBD_OTG_BSP_DeInit
-                0x0802be60       0x5c ..\obj\usbd_bsp.o
-                0x0802be60                USBD_OTG_BSP_DeInit
+                0x0802bbf0       0x5c ..\obj\usbd_bsp.o
+                0x0802bbf0                USBD_OTG_BSP_DeInit
  .text.USBD_OTG_BSP_EnableInterrupt
-                0x0802bebc       0x3c ..\obj\usbd_bsp.o
-                0x0802bebc                USBD_OTG_BSP_EnableInterrupt
+                0x0802bc4c       0x3c ..\obj\usbd_bsp.o
+                0x0802bc4c                USBD_OTG_BSP_EnableInterrupt
  .text.USBD_OTG_BSP_uDelay
-                0x0802bef8       0x58 ..\obj\usbd_bsp.o
-                0x0802bef8                USBD_OTG_BSP_uDelay
+                0x0802bc88       0x58 ..\obj\usbd_bsp.o
+                0x0802bc88                USBD_OTG_BSP_uDelay
  .text.USBD_OTG_BSP_mDelay
-                0x0802bf50       0x20 ..\obj\usbd_bsp.o
-                0x0802bf50                USBD_OTG_BSP_mDelay
+                0x0802bce0       0x20 ..\obj\usbd_bsp.o
+                0x0802bce0                USBD_OTG_BSP_mDelay
  .text.TIM_TimeBaseInit
-                0x0802bf70       0xf4 ..\obj\stm32f4xx_tim.o
-                0x0802bf70                TIM_TimeBaseInit
+                0x0802bd00       0xf4 ..\obj\stm32f4xx_tim.o
+                0x0802bd00                TIM_TimeBaseInit
  .text.TIM_GetCounter
-                0x0802c064       0x18 ..\obj\stm32f4xx_tim.o
-                0x0802c064                TIM_GetCounter
- .text.TIM_Cmd  0x0802c07c       0x40 ..\obj\stm32f4xx_tim.o
-                0x0802c07c                TIM_Cmd
+                0x0802bdf4       0x18 ..\obj\stm32f4xx_tim.o
+                0x0802bdf4                TIM_GetCounter
+ .text.TIM_Cmd  0x0802be0c       0x40 ..\obj\stm32f4xx_tim.o
+                0x0802be0c                TIM_Cmd
  .text.TIM_GetITStatus
-                0x0802c0bc       0x60 ..\obj\stm32f4xx_tim.o
-                0x0802c0bc                TIM_GetITStatus
+                0x0802be4c       0x60 ..\obj\stm32f4xx_tim.o
+                0x0802be4c                TIM_GetITStatus
  .text.TIM_ClearITPendingBit
-                0x0802c11c       0x24 ..\obj\stm32f4xx_tim.o
-                0x0802c11c                TIM_ClearITPendingBit
+                0x0802beac       0x24 ..\obj\stm32f4xx_tim.o
+                0x0802beac                TIM_ClearITPendingBit
  .text.TIM_EncoderInterfaceConfig
-                0x0802c140       0x94 ..\obj\stm32f4xx_tim.o
-                0x0802c140                TIM_EncoderInterfaceConfig
+                0x0802bed0       0x94 ..\obj\stm32f4xx_tim.o
+                0x0802bed0                TIM_EncoderInterfaceConfig
  .text.arm_sqrt_f32
-                0x0802c1d4       0x4c ..\obj\ui_driver.o
+                0x0802bf64       0x4c ..\obj\ui_driver.o
  .text.ui_driver_init
-                0x0802c220      0x158 ..\obj\ui_driver.o
-                0x0802c220                ui_driver_init
+                0x0802bfb0      0x158 ..\obj\ui_driver.o
+                0x0802bfb0                ui_driver_init
  .text.ui_driver_thread
-                0x0802c378        0xc ..\obj\ui_driver.o
-                0x0802c378                ui_driver_thread
+                0x0802c108        0xc ..\obj\ui_driver.o
+                0x0802c108                ui_driver_thread
  .text.ui_driver_irq
-                0x0802c384       0xd4 ..\obj\ui_driver.o
-                0x0802c384                ui_driver_irq
+                0x0802c114       0xd4 ..\obj\ui_driver.o
+                0x0802c114                ui_driver_irq
  .text.ui_driver_toggle_tx
-                0x0802c458      0x264 ..\obj\ui_driver.o
-                0x0802c458                ui_driver_toggle_tx
+                0x0802c1e8      0x264 ..\obj\ui_driver.o
+                0x0802c1e8                ui_driver_toggle_tx
  .text.UiDriverPublicsInit
-                0x0802c6bc      0x184 ..\obj\ui_driver.o
+                0x0802c44c      0x184 ..\obj\ui_driver.o
  .text.UiDriverProcessKeyboard
-                0x0802c840      0xd8c ..\obj\ui_driver.o
+                0x0802c5d0      0xd8c ..\obj\ui_driver.o
  .text.UiDriverPressHoldStep
-                0x0802d5cc      0x134 ..\obj\ui_driver.o
+                0x0802d35c      0x134 ..\obj\ui_driver.o
  .text.UiDriverProcessActiveFilterScan
-                0x0802d700      0x330 ..\obj\ui_driver.o
+                0x0802d490      0x330 ..\obj\ui_driver.o
  .text.UiDriverProcessFunctionKeyClick
-                0x0802da30      0x72c ..\obj\ui_driver.o
+                0x0802d7c0      0x72c ..\obj\ui_driver.o
  .text.UiDriverShowMode
-                0x0802e15c      0x11c ..\obj\ui_driver.o
-                0x0802e15c                UiDriverShowMode
+                0x0802deec      0x11c ..\obj\ui_driver.o
+                0x0802deec                UiDriverShowMode
  .text.UiDriverShowStep
-                0x0802e278      0x254 ..\obj\ui_driver.o
-                0x0802e278                UiDriverShowStep
+                0x0802e008      0x254 ..\obj\ui_driver.o
+                0x0802e008                UiDriverShowStep
  .text.UiDriverShowBand
-                0x0802e4cc      0x1e4 ..\obj\ui_driver.o
+                0x0802e25c      0x1e4 ..\obj\ui_driver.o
  .text.UiDriverChangeBandFilter
-                0x0802e6b0      0x38c ..\obj\ui_driver.o
-                0x0802e6b0                UiDriverChangeBandFilter
+                0x0802e440      0x38c ..\obj\ui_driver.o
+                0x0802e440                UiDriverChangeBandFilter
  .text.UiDriverCreateDesktop
-                0x0802ea3c      0x1ec ..\obj\ui_driver.o
+                0x0802e7cc      0x1ec ..\obj\ui_driver.o
  .text.UiDriverCreateFunctionButtons
-                0x0802ec28      0x20c ..\obj\ui_driver.o
+                0x0802e9b8      0x20c ..\obj\ui_driver.o
  .text.UiDriverDrawWhiteSMeter
-                0x0802ee34       0xe8 ..\obj\ui_driver.o
+                0x0802ebc4       0xe8 ..\obj\ui_driver.o
  .text.UiDriverDrawRedSMeter
-                0x0802ef1c       0xe8 ..\obj\ui_driver.o
+                0x0802ecac       0xe8 ..\obj\ui_driver.o
  .text.UiDriverDeleteSMeter
-                0x0802f004       0x50 ..\obj\ui_driver.o
+                0x0802ed94       0x50 ..\obj\ui_driver.o
  .text.UiDriverCreateSMeter
-                0x0802f054      0xa78 ..\obj\ui_driver.o
+                0x0802ede4      0xa78 ..\obj\ui_driver.o
  .text.UiDriverUpdateTopMeterA
-                0x0802facc       0xfc ..\obj\ui_driver.o
+                0x0802f85c       0xfc ..\obj\ui_driver.o
  .text.UiDriverUpdateBtmMeter
-                0x0802fbc8      0x108 ..\obj\ui_driver.o
+                0x0802f958      0x108 ..\obj\ui_driver.o
  .text.UiDrawSpectrumScopeFrequencyBarText
-                0x0802fcd0      0x6ac ..\obj\ui_driver.o
-                0x0802fcd0                UiDrawSpectrumScopeFrequencyBarText
+                0x0802fa60      0x6ac ..\obj\ui_driver.o
+                0x0802fa60                UiDrawSpectrumScopeFrequencyBarText
  .text.UiDriverCreateSpectrumScope
-                0x0803037c      0x398 ..\obj\ui_driver.o
+                0x0803010c      0x398 ..\obj\ui_driver.o
  .text.UiDriverClearSpectrumDisplay
-                0x08030714       0x60 ..\obj\ui_driver.o
-                0x08030714                UiDriverClearSpectrumDisplay
+                0x080304a4       0x60 ..\obj\ui_driver.o
+                0x080304a4                UiDriverClearSpectrumDisplay
  .text.UiDriverInitFrequency
-                0x08030774      0x1e4 ..\obj\ui_driver.o
+                0x08030504      0x1e4 ..\obj\ui_driver.o
  .text.UiDriverCheckFilter
-                0x08030958       0xf0 ..\obj\ui_driver.o
+                0x080306e8       0xf0 ..\obj\ui_driver.o
  .text.UiDriverCheckBand
-                0x08030a48       0xa4 ..\obj\ui_driver.o
-                0x08030a48                UiDriverCheckBand
+                0x080307d8       0xa4 ..\obj\ui_driver.o
+                0x080307d8                UiDriverCheckBand
  .text.UiDriverUpdateFrequency
-                0x08030aec      0x3cc ..\obj\ui_driver.o
-                0x08030aec                UiDriverUpdateFrequency
+                0x0803087c      0x3a0 ..\obj\ui_driver.o
+                0x0803087c                UiDriverUpdateFrequency
  .text.UiDriverUpdateFrequencyFast
-                0x08030eb8      0x238 ..\obj\ui_driver.o
-                0x08030eb8                UiDriverUpdateFrequencyFast
+                0x08030c1c      0x238 ..\obj\ui_driver.o
+                0x08030c1c                UiDriverUpdateFrequencyFast
  .text.UiDriverUpdateLcdFreq
-                0x080310f0      0x608 ..\obj\ui_driver.o
+                0x08030e54      0x608 ..\obj\ui_driver.o
  .text.UiDriverUpdateSecondLcdFreq
-                0x080316f8      0x588 ..\obj\ui_driver.o
+                0x0803145c      0x588 ..\obj\ui_driver.o
  .text.UiDriverChangeTuningStep
-                0x08031c80       0x7c ..\obj\ui_driver.o
+                0x080319e4       0x7c ..\obj\ui_driver.o
  .text.UiDriverButtonCheck
-                0x08031cfc       0x58 ..\obj\ui_driver.o
- *fill*         0x08031d54        0x4 00
+                0x08031a60       0x58 ..\obj\ui_driver.o
  .text.UiDriverTimeScheduler
-                0x08031d58      0xa50 ..\obj\ui_driver.o
+                0x08031ab8      0xa10 ..\obj\ui_driver.o
  .text.UiDriverChangeDemodMode
-                0x080327a8      0x1cc ..\obj\ui_driver.o
+                0x080324c8      0x1cc ..\obj\ui_driver.o
  .text.UiDriverChangeBand
-                0x08032974      0x24c ..\obj\ui_driver.o
+                0x08032694      0x24c ..\obj\ui_driver.o
  .text.UiDriverCheckFrequencyEncoder
-                0x08032bc0      0x1a0 ..\obj\ui_driver.o
+                0x080328e0      0x1a0 ..\obj\ui_driver.o
  .text.UiDriverCheckEncoderOne
-                0x08032d60      0x2e0 ..\obj\ui_driver.o
+                0x08032a80      0x2e0 ..\obj\ui_driver.o
  .text.UiDriverCheckEncoderTwo
-                0x08033040      0x3cc ..\obj\ui_driver.o
+                0x08032d60      0x3cc ..\obj\ui_driver.o
  .text.UiDriverCheckEncoderThree
-                0x0803340c      0x518 ..\obj\ui_driver.o
+                0x0803312c      0x518 ..\obj\ui_driver.o
  .text.UiDriverChangeEncoderOneMode
-                0x08033924      0x12c ..\obj\ui_driver.o
+                0x08033644      0x12c ..\obj\ui_driver.o
  .text.UiDriverChangeEncoderTwoMode
-                0x08033a50       0xd8 ..\obj\ui_driver.o
+                0x08033770       0xd8 ..\obj\ui_driver.o
  .text.UiDriverChangeEncoderThreeMode
-                0x08033b28      0x12c ..\obj\ui_driver.o
+                0x08033848      0x12c ..\obj\ui_driver.o
  .text.UiDriverChangeAfGain
-                0x08033c54       0xd4 ..\obj\ui_driver.o
+                0x08033974       0xd4 ..\obj\ui_driver.o
  .text.UiDriverChangeStGain
-                0x08033d28       0xd4 ..\obj\ui_driver.o
-                0x08033d28                UiDriverChangeStGain
+                0x08033a48       0xd4 ..\obj\ui_driver.o
+                0x08033a48                UiDriverChangeStGain
  .text.UiDriverChangeCmpLevel
-                0x08033dfc      0x10c ..\obj\ui_driver.o
-                0x08033dfc                UiDriverChangeCmpLevel
+                0x08033b1c      0x10c ..\obj\ui_driver.o
+                0x08033b1c                UiDriverChangeCmpLevel
  .text.UiDriverChangeDSPMode
-                0x08033f08      0x1f8 ..\obj\ui_driver.o
+                0x08033c28      0x1f8 ..\obj\ui_driver.o
  .text.UiDriverChangePowerLevel
-                0x08034100      0x124 ..\obj\ui_driver.o
+                0x08033e20      0x124 ..\obj\ui_driver.o
  .text.UiDriverChangeKeyerSpeed
-                0x08034224       0xf0 ..\obj\ui_driver.o
-                0x08034224                UiDriverChangeKeyerSpeed
+                0x08033f44       0xf0 ..\obj\ui_driver.o
+                0x08033f44                UiDriverChangeKeyerSpeed
  .text.UIDriverChangeAudioGain
-                0x08034314      0x148 ..\obj\ui_driver.o
-                0x08034314                UIDriverChangeAudioGain
+                0x08034034      0x148 ..\obj\ui_driver.o
+                0x08034034                UIDriverChangeAudioGain
  .text.UiDriverChangeRfGain
-                0x0803445c      0x118 ..\obj\ui_driver.o
-                0x0803445c                UiDriverChangeRfGain
+                0x0803417c      0x118 ..\obj\ui_driver.o
+                0x0803417c                UiDriverChangeRfGain
  .text.UiDriverChangeSigProc
-                0x08034574      0x244 ..\obj\ui_driver.o
+                0x08034294      0x244 ..\obj\ui_driver.o
  .text.UiDriverChangeRit
-                0x080347b8      0x130 ..\obj\ui_driver.o
+                0x080344d8      0x130 ..\obj\ui_driver.o
  .text.UiDriverChangeFilter
-                0x080348e8      0x198 ..\obj\ui_driver.o
-                0x080348e8                UiDriverChangeFilter
+                0x08034608      0x198 ..\obj\ui_driver.o
+                0x08034608                UiDriverChangeFilter
  .text.UiDriverInitSpectrumDisplay
-                0x08034a80      0x17c ..\obj\ui_driver.o
- *fill*         0x08034bfc        0x4 00
+                0x080347a0      0x17c ..\obj\ui_driver.o
+ *fill*         0x0803491c        0x4 00
  .text.UiDriverReDrawSpectrumDisplay
-                0x08034c00      0xc18 ..\obj\ui_driver.o
+                0x08034920      0xbf8 ..\obj\ui_driver.o
  .text.UiDriverGetScopeTraceColour
-                0x08035818       0xd0 ..\obj\ui_driver.o
+                0x08035518       0xd0 ..\obj\ui_driver.o
  .text.UiDriverHandleSmeter
-                0x080358e8      0x450 ..\obj\ui_driver.o
+                0x080355e8      0x450 ..\obj\ui_driver.o
  .text.UiDriverHandleSWRMeter
-                0x08035d38      0x4b8 ..\obj\ui_driver.o
+                0x08035a38      0x4b8 ..\obj\ui_driver.o
  .text.UiDriverHandlePowerSupply
-                0x080361f0      0x378 ..\obj\ui_driver.o
+                0x08035ef0      0x378 ..\obj\ui_driver.o
  .text.UiDriverUpdateLoMeter
-                0x08036568       0xfc ..\obj\ui_driver.o
+                0x08036268       0xfc ..\obj\ui_driver.o
  .text.UiDriverCreateTemperatureDisplay
-                0x08036664      0x1b4 ..\obj\ui_driver.o
-                0x08036664                UiDriverCreateTemperatureDisplay
+                0x08036364      0x1b4 ..\obj\ui_driver.o
+                0x08036364                UiDriverCreateTemperatureDisplay
  .text.UiDriverRefreshTemperatureDisplay
-                0x08036818      0x30c ..\obj\ui_driver.o
+                0x08036518      0x30c ..\obj\ui_driver.o
  .text.UiDriverHandleLoTemperature
-                0x08036b24      0x2f8 ..\obj\ui_driver.o
+                0x08036824      0x2f8 ..\obj\ui_driver.o
  .text.UiDriverSwitchOffPtt
-                0x08036e1c      0x140 ..\obj\ui_driver.o
+                0x08036b1c      0x140 ..\obj\ui_driver.o
  .text.UiDriverSetBandPowerFactor
-                0x08036f5c      0x324 ..\obj\ui_driver.o
-                0x08036f5c                UiDriverSetBandPowerFactor
+                0x08036c5c      0x324 ..\obj\ui_driver.o
+                0x08036c5c                UiDriverSetBandPowerFactor
  .text.UiCalcAGCDecay
-                0x08037280       0xf4 ..\obj\ui_driver.o
-                0x08037280                UiCalcAGCDecay
+                0x08036f80       0xf4 ..\obj\ui_driver.o
+                0x08036f80                UiCalcAGCDecay
  .text.UiCalcALCDecay
-                0x08037374       0x78 ..\obj\ui_driver.o
-                0x08037374                UiCalcALCDecay
- *fill*         0x080373ec        0x4 00
+                0x08037074       0x78 ..\obj\ui_driver.o
+                0x08037074                UiCalcALCDecay
+ *fill*         0x080370ec        0x4 00
  .text.UiCalcRFGain
-                0x080373f0       0x98 ..\obj\ui_driver.o
-                0x080373f0                UiCalcRFGain
+                0x080370f0       0x98 ..\obj\ui_driver.o
+                0x080370f0                UiCalcRFGain
  .text.UiCalcAGCVals
-                0x08037488      0x158 ..\obj\ui_driver.o
-                0x08037488                UiCalcAGCVals
+                0x08037188      0x158 ..\obj\ui_driver.o
+                0x08037188                UiCalcAGCVals
  .text.UiCWSidebandMode
-                0x080375e0       0xac ..\obj\ui_driver.o
-                0x080375e0                UiCWSidebandMode
- *fill*         0x0803768c        0x4 00
+                0x080372e0       0xac ..\obj\ui_driver.o
+                0x080372e0                UiCWSidebandMode
+ *fill*         0x0803738c        0x4 00
  .text.UiCalcNB_AGC
-                0x08037690       0xf8 ..\obj\ui_driver.o
-                0x08037690                UiCalcNB_AGC
+                0x08037390       0xf8 ..\obj\ui_driver.o
+                0x08037390                UiCalcNB_AGC
  .text.UiCalcRxIqGainAdj
-                0x08037788      0x108 ..\obj\ui_driver.o
-                0x08037788                UiCalcRxIqGainAdj
+                0x08037488      0x108 ..\obj\ui_driver.o
+                0x08037488                UiCalcRxIqGainAdj
  .text.UiCalcTxIqGainAdj
-                0x08037890       0xd8 ..\obj\ui_driver.o
-                0x08037890                UiCalcTxIqGainAdj
+                0x08037590       0xd8 ..\obj\ui_driver.o
+                0x08037590                UiCalcTxIqGainAdj
  .text.UiCalcRxPhaseAdj
-                0x08037968      0x5d0 ..\obj\ui_driver.o
-                0x08037968                UiCalcRxPhaseAdj
+                0x08037668      0x5d0 ..\obj\ui_driver.o
+                0x08037668                UiCalcRxPhaseAdj
  .text.UiCalcTxCompLevel
-                0x08037f38      0x30c ..\obj\ui_driver.o
-                0x08037f38                UiCalcTxCompLevel
+                0x08037c38      0x30c ..\obj\ui_driver.o
+                0x08037c38                UiCalcTxCompLevel
  .text.UiCalcTxPhaseAdj
-                0x08038244      0x2c0 ..\obj\ui_driver.o
-                0x08038244                UiCalcTxPhaseAdj
+                0x08037f44      0x2c0 ..\obj\ui_driver.o
+                0x08037f44                UiCalcTxPhaseAdj
  .text.UiDriverLoadFilterValue
-                0x08038504       0x70 ..\obj\ui_driver.o
-                0x08038504                UiDriverLoadFilterValue
+                0x08038204       0x70 ..\obj\ui_driver.o
+                0x08038204                UiDriverLoadFilterValue
  .text.UiDriverLoadEepromValues
-                0x08038574     0x1650 ..\obj\ui_driver.o
+                0x08038274     0x1624 ..\obj\ui_driver.o
  .text.UiDriverSaveEepromValuesPowerDown
-                0x08039bc4     0x1770 ..\obj\ui_driver.o
-                0x08039bc4                UiDriverSaveEepromValuesPowerDown
+                0x08039898     0x1734 ..\obj\ui_driver.o
+                0x08039898                UiDriverSaveEepromValuesPowerDown
  .text.EE_InitA
-                0x0803b334      0x340 ..\obj\eeprom.o
-                0x0803b334                EE_InitA
- .text.EE_Init  0x0803b674       0x24 ..\obj\eeprom.o
-                0x0803b674                EE_Init
+                0x0803afcc      0x340 ..\obj\eeprom.o
+                0x0803afcc                EE_InitA
+ .text.EE_Init  0x0803b30c       0x24 ..\obj\eeprom.o
+                0x0803b30c                EE_Init
  .text.EE_ReadVariable
-                0x0803b698       0xb8 ..\obj\eeprom.o
-                0x0803b698                EE_ReadVariable
+                0x0803b330       0xb8 ..\obj\eeprom.o
+                0x0803b330                EE_ReadVariable
  .text.EE_WriteVariable
-                0x0803b750       0x50 ..\obj\eeprom.o
-                0x0803b750                EE_WriteVariable
+                0x0803b3e8       0x50 ..\obj\eeprom.o
+                0x0803b3e8                EE_WriteVariable
  .text.EE_Format
-                0x0803b7a0       0x60 ..\obj\eeprom.o
+                0x0803b438       0x60 ..\obj\eeprom.o
  .text.EE_FindValidPage
-                0x0803b800       0xa4 ..\obj\eeprom.o
+                0x0803b498       0xa4 ..\obj\eeprom.o
  .text.EE_VerifyPageFullWriteVariable
-                0x0803b8a4       0xcc ..\obj\eeprom.o
+                0x0803b53c       0xcc ..\obj\eeprom.o
  .text.EE_PageTransfer
-                0x0803b970      0x174 ..\obj\eeprom.o
+                0x0803b608      0x174 ..\obj\eeprom.o
  .text.arm_fill_q15
-                0x0803bae4       0xe4 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_fill_q15.o)
-                0x0803bae4                arm_fill_q15
+                0x0803b77c       0xe4 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_fill_q15.o)
+                0x0803b77c                arm_fill_q15
  .text.arm_copy_f32
-                0x0803bbc8      0x158 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_copy_f32.o)
-                0x0803bbc8                arm_copy_f32
+                0x0803b860      0x158 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_copy_f32.o)
+                0x0803b860                arm_copy_f32
  .text.arm_min_f32
-                0x0803bd20      0x15c ..\..\..\libs\libarm_cortexM4lf_math.a(arm_min_f32.o)
-                0x0803bd20                arm_min_f32
+                0x0803b9b8      0x15c ..\..\..\libs\libarm_cortexM4lf_math.a(arm_min_f32.o)
+                0x0803b9b8                arm_min_f32
  .text.arm_mean_f32
-                0x0803be7c      0x1c8 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_mean_f32.o)
-                0x0803be7c                arm_mean_f32
+                0x0803bb14      0x1c8 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_mean_f32.o)
+                0x0803bb14                arm_mean_f32
  .text.arm_max_q15
-                0x0803c044       0xe4 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_max_q15.o)
-                0x0803c044                arm_max_q15
+                0x0803bcdc       0xe4 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_max_q15.o)
+                0x0803bcdc                arm_max_q15
  .text.arm_max_f32
-                0x0803c128      0x15c ..\..\..\libs\libarm_cortexM4lf_math.a(arm_max_f32.o)
-                0x0803c128                arm_max_f32
+                0x0803bdc0      0x15c ..\..\..\libs\libarm_cortexM4lf_math.a(arm_max_f32.o)
+                0x0803bdc0                arm_max_f32
  .text.arm_split_rfft_q15
-                0x0803c284      0x1b4 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_rfft_q15.o)
-                0x0803c284                arm_split_rfft_q15
+                0x0803bf1c      0x1b4 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_rfft_q15.o)
+                0x0803bf1c                arm_split_rfft_q15
  .text.arm_rfft_q15
-                0x0803c438      0x2cc ..\..\..\libs\libarm_cortexM4lf_math.a(arm_rfft_q15.o)
-                0x0803c438                arm_rfft_q15
+                0x0803c0d0      0x2cc ..\..\..\libs\libarm_cortexM4lf_math.a(arm_rfft_q15.o)
+                0x0803c0d0                arm_rfft_q15
  .text.arm_rfft_init_q15
-                0x0803c704       0x78 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_rfft_init_q15.o)
-                0x0803c704                arm_rfft_init_q15
+                0x0803c39c       0x78 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_rfft_init_q15.o)
+                0x0803c39c                arm_rfft_init_q15
  .text.arm_radix4_butterfly_q15
-                0x0803c77c      0x2fc ..\..\..\libs\libarm_cortexM4lf_math.a(arm_cfft_radix4_q15.o)
-                0x0803c77c                arm_radix4_butterfly_q15
+                0x0803c414      0x2fc ..\..\..\libs\libarm_cortexM4lf_math.a(arm_cfft_radix4_q15.o)
+                0x0803c414                arm_radix4_butterfly_q15
  .text.arm_radix4_butterfly_inverse_q15
-                0x0803ca78      0x2fc ..\..\..\libs\libarm_cortexM4lf_math.a(arm_cfft_radix4_q15.o)
-                0x0803ca78                arm_radix4_butterfly_inverse_q15
+                0x0803c710      0x2fc ..\..\..\libs\libarm_cortexM4lf_math.a(arm_cfft_radix4_q15.o)
+                0x0803c710                arm_radix4_butterfly_inverse_q15
  .text.arm_bitreversal_q15
-                0x0803cd74      0x118 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_cfft_radix4_q15.o)
-                0x0803cd74                arm_bitreversal_q15
+                0x0803ca0c      0x118 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_cfft_radix4_q15.o)
+                0x0803ca0c                arm_bitreversal_q15
  .text.arm_cfft_radix4_init_q15
-                0x0803ce8c       0x7c ..\..\..\libs\libarm_cortexM4lf_math.a(arm_cfft_radix4_init_q15.o)
-                0x0803ce8c                arm_cfft_radix4_init_q15
+                0x0803cb24       0x7c ..\..\..\libs\libarm_cortexM4lf_math.a(arm_cfft_radix4_init_q15.o)
+                0x0803cb24                arm_cfft_radix4_init_q15
  .text.arm_lms_norm_init_f32
-                0x0803cf08       0x38 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_lms_norm_init_f32.o)
-                0x0803cf08                arm_lms_norm_init_f32
+                0x0803cba0       0x38 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_lms_norm_init_f32.o)
+                0x0803cba0                arm_lms_norm_init_f32
  .text.arm_lms_norm_f32
-                0x0803cf40      0x620 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_lms_norm_f32.o)
-                0x0803cf40                arm_lms_norm_f32
+                0x0803cbd8      0x620 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_lms_norm_f32.o)
+                0x0803cbd8                arm_lms_norm_f32
  .text.arm_iir_lattice_f32
-                0x0803d560      0x3e0 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_iir_lattice_f32.o)
-                0x0803d560                arm_iir_lattice_f32
+                0x0803d1f8      0x3e0 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_iir_lattice_f32.o)
+                0x0803d1f8                arm_iir_lattice_f32
  .text.arm_fir_interpolate_f32
-                0x0803d940      0x44c ..\..\..\libs\libarm_cortexM4lf_math.a(arm_fir_interpolate_f32.o)
-                0x0803d940                arm_fir_interpolate_f32
+                0x0803d5d8      0x44c ..\..\..\libs\libarm_cortexM4lf_math.a(arm_fir_interpolate_f32.o)
+                0x0803d5d8                arm_fir_interpolate_f32
  .text.arm_fir_init_f32
-                0x0803dd8c       0x24 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_fir_init_f32.o)
-                0x0803dd8c                arm_fir_init_f32
+                0x0803da24       0x24 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_fir_init_f32.o)
+                0x0803da24                arm_fir_init_f32
  .text.arm_fir_f32
-                0x0803ddb0      0x498 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_fir_f32.o)
-                0x0803ddb0                arm_fir_f32
+                0x0803da48      0x498 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_fir_f32.o)
+                0x0803da48                arm_fir_f32
  .text.arm_fir_decimate_f32
-                0x0803e248      0x3e0 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_fir_decimate_f32.o)
-                0x0803e248                arm_fir_decimate_f32
+                0x0803dee0      0x3e0 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_fir_decimate_f32.o)
+                0x0803dee0                arm_fir_decimate_f32
  .text.arm_cmplx_mag_q15
-                0x0803e628      0x178 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_cmplx_mag_q15.o)
-                0x0803e628                arm_cmplx_mag_q15
+                0x0803e2c0      0x178 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_cmplx_mag_q15.o)
+                0x0803e2c0                arm_cmplx_mag_q15
  .text.arm_sqrt_q15
-                0x0803e7a0      0x3e4 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_sqrt_q15.o)
-                0x0803e7a0                arm_sqrt_q15
+                0x0803e438      0x3e4 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_sqrt_q15.o)
+                0x0803e438                arm_sqrt_q15
  .text.arm_sin_f32
-                0x0803eb84       0xd0 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_sin_f32.o)
-                0x0803eb84                arm_sin_f32
+                0x0803e81c       0xd0 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_sin_f32.o)
+                0x0803e81c                arm_sin_f32
  .text.arm_cos_f32
-                0x0803ec54       0xd0 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_cos_f32.o)
-                0x0803ec54                arm_cos_f32
+                0x0803e8ec       0xd0 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_cos_f32.o)
+                0x0803e8ec                arm_cos_f32
  .text.arm_sub_f32
-                0x0803ed24      0x214 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_sub_f32.o)
-                0x0803ed24                arm_sub_f32
+                0x0803e9bc      0x214 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_sub_f32.o)
+                0x0803e9bc                arm_sub_f32
  .text.arm_shift_q15
-                0x0803ef38      0x434 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_shift_q15.o)
-                0x0803ef38                arm_shift_q15
+                0x0803ebd0      0x434 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_shift_q15.o)
+                0x0803ebd0                arm_shift_q15
  .text.arm_scale_f32
-                0x0803f36c      0x274 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_scale_f32.o)
-                0x0803f36c                arm_scale_f32
+                0x0803f004      0x274 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_scale_f32.o)
+                0x0803f004                arm_scale_f32
  .text.arm_mult_f32
-                0x0803f5e0      0x214 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_mult_f32.o)
-                0x0803f5e0                arm_mult_f32
+                0x0803f278      0x214 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_mult_f32.o)
+                0x0803f278                arm_mult_f32
  .text.arm_add_f32
-                0x0803f7f4      0x214 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_add_f32.o)
-                0x0803f7f4                arm_add_f32
- .text.pow10    0x0803fa08       0x18 ..\..\..\libs\libm.a(lib_a-s_pow10.o)
-                0x0803fa08                pow10
- .text.ceilf    0x0803fa20       0x94 ..\..\..\libs\libm.a(lib_a-sf_ceil.o)
-                0x0803fa20                ceilf
- .text.floorf   0x0803fab4       0x9c ..\..\..\libs\libm.a(lib_a-sf_floor.o)
-                0x0803fab4                floorf
- .text.truncf   0x0803fb50       0x34 ..\..\..\libs\libm.a(lib_a-sf_trunc.o)
-                0x0803fb50                truncf
- .text.pow      0x0803fb84      0x370 ..\..\..\libs\libm.a(lib_a-w_pow.o)
-                0x0803fb84                pow
- .text.sqrt     0x0803fef4       0xbc ..\..\..\libs\libm.a(lib_a-w_sqrt.o)
-                0x0803fef4                sqrt
- .text.log10f   0x0803ffb0       0xf8 ..\..\..\libs\libm.a(lib_a-wf_log10.o)
-                0x0803ffb0                log10f
- .text.powf     0x080400a8      0x39c ..\..\..\libs\libm.a(lib_a-wf_pow.o)
-                0x080400a8                powf
- .text.sqrtf    0x08040444       0xb4 ..\..\..\libs\libm.a(lib_a-wf_sqrt.o)
-                0x08040444                sqrtf
+                0x0803f48c      0x214 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_add_f32.o)
+                0x0803f48c                arm_add_f32
+ .text.pow10    0x0803f6a0       0x18 ..\..\..\libs\libm.a(lib_a-s_pow10.o)
+                0x0803f6a0                pow10
+ .text.ceilf    0x0803f6b8       0x94 ..\..\..\libs\libm.a(lib_a-sf_ceil.o)
+                0x0803f6b8                ceilf
+ .text.floorf   0x0803f74c       0x9c ..\..\..\libs\libm.a(lib_a-sf_floor.o)
+                0x0803f74c                floorf
+ .text.truncf   0x0803f7e8       0x34 ..\..\..\libs\libm.a(lib_a-sf_trunc.o)
+                0x0803f7e8                truncf
+ .text.pow      0x0803f81c      0x370 ..\..\..\libs\libm.a(lib_a-w_pow.o)
+                0x0803f81c                pow
+ .text.sqrt     0x0803fb8c       0xbc ..\..\..\libs\libm.a(lib_a-w_sqrt.o)
+                0x0803fb8c                sqrt
+ .text.log10f   0x0803fc48       0xf8 ..\..\..\libs\libm.a(lib_a-wf_log10.o)
+                0x0803fc48                log10f
+ .text.powf     0x0803fd40      0x39c ..\..\..\libs\libm.a(lib_a-wf_pow.o)
+                0x0803fd40                powf
+ .text.sqrtf    0x080400dc       0xb4 ..\..\..\libs\libm.a(lib_a-wf_sqrt.o)
+                0x080400dc                sqrtf
  .text.__ieee754_pow
-                0x080404f8      0xb90 ..\..\..\libs\libm.a(lib_a-e_pow.o)
-                0x080404f8                __ieee754_pow
+                0x08040190      0xb90 ..\..\..\libs\libm.a(lib_a-e_pow.o)
+                0x08040190                __ieee754_pow
  .text.__ieee754_sqrt
-                0x08041088      0x1c4 ..\..\..\libs\libm.a(lib_a-e_sqrt.o)
-                0x08041088                __ieee754_sqrt
+                0x08040d20      0x1c4 ..\..\..\libs\libm.a(lib_a-e_sqrt.o)
+                0x08040d20                __ieee754_sqrt
  .text.__ieee754_log10f
-                0x0804124c       0xbc ..\..\..\libs\libm.a(lib_a-ef_log10.o)
-                0x0804124c                __ieee754_log10f
+                0x08040ee4       0xbc ..\..\..\libs\libm.a(lib_a-ef_log10.o)
+                0x08040ee4                __ieee754_log10f
  .text.__ieee754_powf
-                0x08041308      0x600 ..\..\..\libs\libm.a(lib_a-ef_pow.o)
-                0x08041308                __ieee754_powf
+                0x08040fa0      0x600 ..\..\..\libs\libm.a(lib_a-ef_pow.o)
+                0x08040fa0                __ieee754_powf
  .text.__ieee754_sqrtf
-                0x08041908       0x9c ..\..\..\libs\libm.a(lib_a-ef_sqrt.o)
-                0x08041908                __ieee754_sqrtf
- .text.fabs     0x080419a4       0x14 ..\..\..\libs\libm.a(lib_a-s_fabs.o)
-                0x080419a4                fabs
- .text.finite   0x080419b8       0x14 ..\..\..\libs\libm.a(lib_a-s_finite.o)
-                0x080419b8                finite
+                0x080415a0       0x9c ..\..\..\libs\libm.a(lib_a-ef_sqrt.o)
+                0x080415a0                __ieee754_sqrtf
+ .text.fabs     0x0804163c       0x14 ..\..\..\libs\libm.a(lib_a-s_fabs.o)
+                0x0804163c                fabs
+ .text.finite   0x08041650       0x14 ..\..\..\libs\libm.a(lib_a-s_finite.o)
+                0x08041650                finite
  .text.__fpclassifyd
-                0x080419cc       0x70 ..\..\..\libs\libm.a(lib_a-s_fpclassify.o)
-                0x080419cc                __fpclassifyd
- .text.matherr  0x08041a3c        0x4 ..\..\..\libs\libm.a(lib_a-s_matherr.o)
-                0x08041a3c                matherr
- .text.nan      0x08041a40       0x10 ..\..\..\libs\libm.a(lib_a-s_nan.o)
-                0x08041a40                nan
- .text.rint     0x08041a50      0x124 ..\..\..\libs\libm.a(lib_a-s_rint.o)
-                0x08041a50                rint
- *fill*         0x08041b74        0x4 00
- .text.scalbn   0x08041b78      0x120 ..\..\..\libs\libm.a(lib_a-s_scalbn.o)
-                0x08041b78                scalbn
- .text.fabsf    0x08041c98       0x10 ..\..\..\libs\libm.a(lib_a-sf_fabs.o)
-                0x08041c98                fabsf
- .text.finitef  0x08041ca8       0x14 ..\..\..\libs\libm.a(lib_a-sf_finite.o)
-                0x08041ca8                finitef
+                0x08041664       0x70 ..\..\..\libs\libm.a(lib_a-s_fpclassify.o)
+                0x08041664                __fpclassifyd
+ .text.matherr  0x080416d4        0x4 ..\..\..\libs\libm.a(lib_a-s_matherr.o)
+                0x080416d4                matherr
+ .text.nan      0x080416d8       0x10 ..\..\..\libs\libm.a(lib_a-s_nan.o)
+                0x080416d8                nan
+ .text.rint     0x080416e8      0x124 ..\..\..\libs\libm.a(lib_a-s_rint.o)
+                0x080416e8                rint
+ *fill*         0x0804180c        0x4 00
+ .text.scalbn   0x08041810      0x120 ..\..\..\libs\libm.a(lib_a-s_scalbn.o)
+                0x08041810                scalbn
+ .text.fabsf    0x08041930       0x10 ..\..\..\libs\libm.a(lib_a-sf_fabs.o)
+                0x08041930                fabsf
+ .text.finitef  0x08041940       0x14 ..\..\..\libs\libm.a(lib_a-sf_finite.o)
+                0x08041940                finitef
  .text.__fpclassifyf
-                0x08041cbc       0x5c ..\..\..\libs\libm.a(lib_a-sf_fpclassify.o)
-                0x08041cbc                __fpclassifyf
- .text.nanf     0x08041d18        0xc ..\..\..\libs\libm.a(lib_a-sf_nan.o)
-                0x08041d18                nanf
- .text.scalbnf  0x08041d24       0xcc ..\..\..\libs\libm.a(lib_a-sf_scalbn.o)
-                0x08041d24                scalbnf
+                0x08041954       0x5c ..\..\..\libs\libm.a(lib_a-sf_fpclassify.o)
+                0x08041954                __fpclassifyf
+ .text.nanf     0x080419b0        0xc ..\..\..\libs\libm.a(lib_a-sf_nan.o)
+                0x080419b0                nanf
+ .text.scalbnf  0x080419bc       0xcc ..\..\..\libs\libm.a(lib_a-sf_scalbn.o)
+                0x080419bc                scalbnf
  .text.__ieee754_logf
-                0x08041df0      0x204 ..\..\..\libs\libm.a(lib_a-ef_log.o)
-                0x08041df0                __ieee754_logf
+                0x08041a88      0x204 ..\..\..\libs\libm.a(lib_a-ef_log.o)
+                0x08041a88                __ieee754_logf
  .text.copysign
-                0x08041ff4       0x24 ..\..\..\libs\libm.a(lib_a-s_copysign.o)
-                0x08041ff4                copysign
+                0x08041c8c       0x24 ..\..\..\libs\libm.a(lib_a-s_copysign.o)
+                0x08041c8c                copysign
  .text.copysignf
-                0x08042018       0x18 ..\..\..\libs\libm.a(lib_a-sf_copysign.o)
-                0x08042018                copysignf
- .text          0x08042030      0x370 c:/program files (x86)/gnu tools arm embedded/4.7 2014q2/bin/../lib/gcc/arm-none-eabi/4.7.4/armv7e-m/fpu\libgcc.a(_arm_addsubdf3.o)
-                0x08042030                __aeabi_drsub
-                0x08042038                __aeabi_dsub
-                0x08042038                __subdf3
-                0x0804203c                __aeabi_dadd
-                0x0804203c                __adddf3
-                0x080422b4                __floatunsidf
-                0x080422b4                __aeabi_ui2d
-                0x080422d4                __floatsidf
-                0x080422d4                __aeabi_i2d
-                0x080422f8                __aeabi_f2d
-                0x080422f8                __extendsfdf2
-                0x08042334                __floatundidf
-                0x08042334                __aeabi_ul2d
-                0x08042344                __floatdidf
-                0x08042344                __aeabi_l2d
- .text          0x080423a0      0x424 c:/program files (x86)/gnu tools arm embedded/4.7 2014q2/bin/../lib/gcc/arm-none-eabi/4.7.4/armv7e-m/fpu\libgcc.a(_arm_muldivdf3.o)
-                0x080423a0                __aeabi_dmul
-                0x080423a0                __muldf3
-                0x080425f4                __divdf3
-                0x080425f4                __aeabi_ddiv
- .text          0x080427c4      0x110 c:/program files (x86)/gnu tools arm embedded/4.7 2014q2/bin/../lib/gcc/arm-none-eabi/4.7.4/armv7e-m/fpu\libgcc.a(_arm_cmpdf2.o)
-                0x080427c4                __gtdf2
-                0x080427c4                __gedf2
-                0x080427cc                __ltdf2
-                0x080427cc                __ledf2
-                0x080427d4                __nedf2
-                0x080427d4                __eqdf2
-                0x080427d4                __cmpdf2
-                0x08042850                __aeabi_cdrcmple
-                0x08042860                __aeabi_cdcmpeq
-                0x08042860                __aeabi_cdcmple
-                0x08042870                __aeabi_dcmpeq
-                0x08042884                __aeabi_dcmplt
-                0x08042898                __aeabi_dcmple
-                0x080428ac                __aeabi_dcmpge
-                0x080428c0                __aeabi_dcmpgt
- .text          0x080428d4       0xa0 c:/program files (x86)/gnu tools arm embedded/4.7 2014q2/bin/../lib/gcc/arm-none-eabi/4.7.4/armv7e-m/fpu\libgcc.a(_arm_truncdfsf2.o)
-                0x080428d4                __truncdfsf2
-                0x080428d4                __aeabi_d2f
+                0x08041cb0       0x18 ..\..\..\libs\libm.a(lib_a-sf_copysign.o)
+                0x08041cb0                copysignf
+ .text          0x08041cc8      0x370 c:/program files (x86)/gnu tools arm embedded/4.7 2014q2/bin/../lib/gcc/arm-none-eabi/4.7.4/armv7e-m/fpu\libgcc.a(_arm_addsubdf3.o)
+                0x08041cc8                __aeabi_drsub
+                0x08041cd0                __aeabi_dsub
+                0x08041cd0                __subdf3
+                0x08041cd4                __aeabi_dadd
+                0x08041cd4                __adddf3
+                0x08041f4c                __floatunsidf
+                0x08041f4c                __aeabi_ui2d
+                0x08041f6c                __floatsidf
+                0x08041f6c                __aeabi_i2d
+                0x08041f90                __aeabi_f2d
+                0x08041f90                __extendsfdf2
+                0x08041fcc                __floatundidf
+                0x08041fcc                __aeabi_ul2d
+                0x08041fdc                __floatdidf
+                0x08041fdc                __aeabi_l2d
+ .text          0x08042038      0x424 c:/program files (x86)/gnu tools arm embedded/4.7 2014q2/bin/../lib/gcc/arm-none-eabi/4.7.4/armv7e-m/fpu\libgcc.a(_arm_muldivdf3.o)
+                0x08042038                __aeabi_dmul
+                0x08042038                __muldf3
+                0x0804228c                __divdf3
+                0x0804228c                __aeabi_ddiv
+ .text          0x0804245c      0x110 c:/program files (x86)/gnu tools arm embedded/4.7 2014q2/bin/../lib/gcc/arm-none-eabi/4.7.4/armv7e-m/fpu\libgcc.a(_arm_cmpdf2.o)
+                0x0804245c                __gtdf2
+                0x0804245c                __gedf2
+                0x08042464                __ltdf2
+                0x08042464                __ledf2
+                0x0804246c                __nedf2
+                0x0804246c                __eqdf2
+                0x0804246c                __cmpdf2
+                0x080424e8                __aeabi_cdrcmple
+                0x080424f8                __aeabi_cdcmpeq
+                0x080424f8                __aeabi_cdcmple
+                0x08042508                __aeabi_dcmpeq
+                0x0804251c                __aeabi_dcmplt
+                0x08042530                __aeabi_dcmple
+                0x08042544                __aeabi_dcmpge
+                0x08042558                __aeabi_dcmpgt
+ .text          0x0804256c       0xa0 c:/program files (x86)/gnu tools arm embedded/4.7 2014q2/bin/../lib/gcc/arm-none-eabi/4.7.4/armv7e-m/fpu\libgcc.a(_arm_truncdfsf2.o)
+                0x0804256c                __truncdfsf2
+                0x0804256c                __aeabi_d2f
  .text.__register_exitproc
-                0x08042974       0xac ..\..\..\libs\libc.a(lib_a-__atexit.o)
-                0x08042974                __register_exitproc
- .text.__errno  0x08042a20        0xc ..\..\..\libs\libc.a(lib_a-errno.o)
-                0x08042a20                __errno
+                0x0804260c       0xac ..\..\..\libs\libc.a(lib_a-__atexit.o)
+                0x0804260c                __register_exitproc
+ .text.__errno  0x080426b8        0xc ..\..\..\libs\libc.a(lib_a-errno.o)
+                0x080426b8                __errno
  .text.__libc_fini_array
-                0x08042a2c       0x2c ..\..\..\libs\libc.a(lib_a-fini.o)
-                0x08042a2c                __libc_fini_array
- .text.memcmp   0x08042a58       0x60 ..\..\..\libs\libc.a(lib_a-memcmp.o)
-                0x08042a58                memcmp
- .text.memset   0x08042ab8       0x90 ..\..\..\libs\libc.a(lib_a-memset.o)
-                0x08042ab8                memset
- .text.strlen   0x08042b48       0x60 ..\..\..\libs\libc.a(lib_a-strlen.o)
-                0x08042b48                strlen
+                0x080426c4       0x2c ..\..\..\libs\libc.a(lib_a-fini.o)
+                0x080426c4                __libc_fini_array
+ .text.memcmp   0x080426f0       0x60 ..\..\..\libs\libc.a(lib_a-memcmp.o)
+                0x080426f0                memcmp
+ .text.memset   0x08042750       0x90 ..\..\..\libs\libc.a(lib_a-memset.o)
+                0x08042750                memset
+ .text.strlen   0x080427e0       0x60 ..\..\..\libs\libc.a(lib_a-strlen.o)
+                0x080427e0                strlen
  .text.startup.register_fini
-                0x08042ba8       0x14 ..\..\..\libs\libc.a(lib_a-__call_atexit.o)
- .text.atexit   0x08042bbc        0xc ..\..\..\libs\libc.a(lib_a-atexit.o)
-                0x08042bbc                atexit
+                0x08042840       0x14 ..\..\..\libs\libc.a(lib_a-__call_atexit.o)
+ .text.atexit   0x08042854        0xc ..\..\..\libs\libc.a(lib_a-atexit.o)
+                0x08042854                atexit
  *(.init)
- .init          0x08042bc8        0x4 c:/program files (x86)/gnu tools arm embedded/4.7 2014q2/bin/../lib/gcc/arm-none-eabi/4.7.4/armv7e-m/fpu/crti.o
-                0x08042bc8                _init
- .init          0x08042bcc        0x8 c:/program files (x86)/gnu tools arm embedded/4.7 2014q2/bin/../lib/gcc/arm-none-eabi/4.7.4/armv7e-m/fpu/crtn.o
+ .init          0x08042860        0x4 c:/program files (x86)/gnu tools arm embedded/4.7 2014q2/bin/../lib/gcc/arm-none-eabi/4.7.4/armv7e-m/fpu/crti.o
+                0x08042860                _init
+ .init          0x08042864        0x8 c:/program files (x86)/gnu tools arm embedded/4.7 2014q2/bin/../lib/gcc/arm-none-eabi/4.7.4/armv7e-m/fpu/crtn.o
  *(.fini)
- .fini          0x08042bd4        0x4 c:/program files (x86)/gnu tools arm embedded/4.7 2014q2/bin/../lib/gcc/arm-none-eabi/4.7.4/armv7e-m/fpu/crti.o
-                0x08042bd4                _fini
- .fini          0x08042bd8        0x8 c:/program files (x86)/gnu tools arm embedded/4.7 2014q2/bin/../lib/gcc/arm-none-eabi/4.7.4/armv7e-m/fpu/crtn.o
+ .fini          0x0804286c        0x4 c:/program files (x86)/gnu tools arm embedded/4.7 2014q2/bin/../lib/gcc/arm-none-eabi/4.7.4/armv7e-m/fpu/crti.o
+                0x0804286c                _fini
+ .fini          0x08042870        0x8 c:/program files (x86)/gnu tools arm embedded/4.7 2014q2/bin/../lib/gcc/arm-none-eabi/4.7.4/armv7e-m/fpu/crtn.o
  *crtbegin.o(.ctors)
  *crtbegin?.o(.ctors)
  *(EXCLUDE_FILE(*crtend.o *crtend?.o) .ctors)
@@ -3489,204 +3489,204 @@ LOAD c:/program files (x86)/gnu tools arm embedded/4.7 2014q2/bin/../lib/gcc/arm
  *(SORT(.dtors.*))
  *(.dtors)
  *(.rodata*)
- .rodata        0x08042be0      0x2bc ..\obj\main.o
-                0x08042be0                VirtAddVarTab
- .rodata        0x08042e9c       0x10 ..\obj\stm32f4xx_rcc.o
-                0x08042e9c                APBAHBPrescTable
- .rodata        0x08042eac      0x16c ..\obj\ui_lcd_hy28.o
- .rodata        0x08043018       0x24 ..\obj\printf.o
- .rodata        0x0804303c       0x98 ..\obj\usbd_desc.o
- .rodata        0x080430d4     0x3ef8 ..\obj\ui_lcd_hy28_fonts.o
-                0x080430d4                GL_ASCII16x24_Table
-                0x080442a4                GL_ASCII12x12_Table
-                0x08044ba4                GL_ASCII8x12_Table
-                0x080454a4                GL_ASCII8x12_bold_Table
-                0x080469a4                GL_ASCII8x8_Table
-                0x08046fa4                GL_Font16x24
-                0x08046fac                GL_Font12x12
-                0x08046fb4                GL_Font8x12
-                0x08046fbc                GL_Font8x12_bold
-                0x08046fc4                GL_Font8x8
- .rodata        0x08046fcc        0xc ..\obj\usbd_cdc_vcp.o
- .rodata        0x08046fd8      0xc88 ..\obj\audio_driver.o
-                0x08046fd8                Fir10k
-                0x08047098                Fir3p6k
-                0x08047158                Fir2p3k
-                0x08047218                Fir1p8k
-                0x080472d8                IIR_300hz_numStages
-                0x080472dc                IIR_300hz_750_pkCoeffs
-                0x08047304                IIR_300hz_750_pvCoeffs
-                0x08047330                IIR_300hz_800_pkCoeffs
-                0x08047358                IIR_300hz_800_pvCoeffs
-                0x08047384                IIR_300hz_850_pkCoeffs
-                0x080473ac                IIR_300hz_850_pvCoeffs
-                0x080473d8                IIR_300hz_900_pkCoeffs
-                0x08047400                IIR_300hz_900_pvCoeffs
-                0x0804742c                IIR_300hz_950_pkCoeffs
-                0x08047454                IIR_300hz_950_pvCoeffs
-                0x08047480                IIR_300hz_700_pkCoeffs
-                0x080474a8                IIR_300hz_700_pvCoeffs
-                0x080474d4                IIR_300hz_650_pkCoeffs
-                0x080474fc                IIR_300hz_650_pvCoeffs
-                0x08047528                IIR_300hz_600_pkCoeffs
-                0x08047550                IIR_300hz_600_pvCoeffs
-                0x0804757c                IIR_300hz_550_pkCoeffs
-                0x080475a4                IIR_300hz_550_pvCoeffs
-                0x080475d0                IIR_300hz_500_pkCoeffs
-                0x080475f8                IIR_300hz_500_pvCoeffs
-                0x08047624                IIR_500hz_numStages
-                0x08047628                IIR_500hz_750_pkCoeffs
-                0x08047650                IIR_500hz_750_pvCoeffs
-                0x0804767c                IIR_500hz_850_pkCoeffs
-                0x080476a4                IIR_500hz_850_pvCoeffs
-                0x080476d0                IIR_500hz_950_pkCoeffs
-                0x080476f8                IIR_500hz_950_pvCoeffs
-                0x08047724                IIR_500hz_650_pkCoeffs
-                0x0804774c                IIR_500hz_650_pvCoeffs
-                0x08047778                IIR_500hz_550_pkCoeffs
-                0x080477a0                IIR_500hz_550_pvCoeffs
-                0x080477cc                IIR_1k8_numStages
-                0x080477d0                IIR_1k8_1k425_pkCoeffs
-                0x080477f8                IIR_1k8_1k425_pvCoeffs
-                0x08047824                IIR_1k8_1k275_pkCoeffs
-                0x0804784c                IIR_1k8_1k275_pvCoeffs
-                0x08047878                IIR_1k8_1k125_pkCoeffs
-                0x080478a0                IIR_1k8_1k125_pvCoeffs
-                0x080478cc                IIR_1k8_1k575_pkCoeffs
-                0x080478f4                IIR_1k8_1k575_pvCoeffs
-                0x08047920                IIR_1k8_1k725_pkCoeffs
-                0x08047948                IIR_1k8_1k725_pvCoeffs
-                0x08047974                IIR_2k3_numStages
-                0x08047978                IIR_2k3_1k412_pkCoeffs
-                0x080479a0                IIR_2k3_1k412_pvCoeffs
-                0x080479cc                IIR_2k3_1k275_pkCoeffs
-                0x080479f4                IIR_2k3_1k275_pvCoeffs
-                0x08047a20                IIR_2k3_1k562_pkCoeffs
-                0x08047a48                IIR_2k3_1k562_pvCoeffs
-                0x08047a74                IIR_2k3_1k712_pkCoeffs
-                0x08047a9c                IIR_2k3_1k712_pvCoeffs
-                0x08047ac8                IIR_3k6_numStages
-                0x08047acc                IIR_3k6_pkCoeffs
-                0x08047af4                IIR_3k6_pvCoeffs
-                0x08047b20                IIR_10k_numStages
-                0x08047b24                IIR_10k_pkCoeffs
-                0x08047b44                IIR_10k_pvCoeffs
-                0x08047b68                IIR_TX_2k7_numStages
-                0x08047b6c                IIR_TX_2k7_pkCoeffs
-                0x08047b94                IIR_TX_2k7_pvCoeffs
-                0x08047bc0                FirRxDecimate
-                0x08047bd0                FirRxDecimateMinLPF
-                0x08047be0                FirRxInterpolate
-                0x08047c20                FirRxInterpolate10KHZ
- .rodata        0x08047c60      0xa6c ..\obj\ui_menu.o
- .rodata        0x080486cc       0x14 ..\obj\ui_si570.o
-                0x080486cc                hs_div
-                0x080486d4                fout0
-                0x080486d8                fdco_max
-                0x080486dc                fdco_min
- .rodata        0x080486e0       0x30 ..\obj\cat_driver.o
- .rodata        0x08048710      0x800 ..\obj\softdds.o
-                0x08048710                DDS_TABLE
- .rodata        0x08048f10       0x80 ..\obj\cw_gen.o
-                0x08048f10                sm_table
- .rodata        0x08048f90       0xa8 ..\obj\mchf_board.o
- .rodata        0x08049038     0x1940 ..\obj\ui_driver.o
-                0x08049038                q_rx_10k_coeffs
-                0x0804919c                q_rx_10k_coeffs_minus
-                0x08049300                q_rx_10k_coeffs_plus
-                0x08049464                i_rx_10k_coeffs
-                0x080495c8                q_rx_3k6_coeffs
-                0x0804972c                q_rx_3k6_coeffs_minus
-                0x08049890                q_rx_3k6_coeffs_plus
-                0x080499f4                i_rx_3k6_coeffs
-                0x08049b58                q_tx_coeffs
-                0x08049cbc                q_tx_coeffs_minus
-                0x08049e20                q_tx_coeffs_plus
-                0x08049f84                i_tx_coeffs
-                0x0804a0e8                iq_rx_am_10k_coeffs
-                0x0804a24c                iq_rx_am_3k6_coeffs
-                0x0804a3b0                iq_rx_am_2k3_coeffs
-                0x0804a514                tune_steps
-                0x0804a52c                tune_bands
-                0x0804a550                size_bands
-                0x0804a574                bm
-                0x0804a5f4                S_Meter_Cal
- .rodata        0x0804a978     0x2000 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_rfft_init_q15.o)
- .rodata        0x0804c978     0x1000 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_cfft_radix4_init_q15.o)
- .rodata        0x0804d978      0x40c ..\..\..\libs\libarm_cortexM4lf_math.a(arm_sin_f32.o)
- .rodata        0x0804dd84      0x40c ..\..\..\libs\libarm_cortexM4lf_math.a(arm_cos_f32.o)
- .rodata        0x0804e190      0x380 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_common_tables.o)
-                0x0804e190                armRecipTableQ31
-                0x0804e290                armRecipTableQ15
-                0x0804e310                armBitRevTable
+ .rodata        0x08042878      0x2bc ..\obj\main.o
+                0x08042878                VirtAddVarTab
+ .rodata        0x08042b34       0x10 ..\obj\stm32f4xx_rcc.o
+                0x08042b34                APBAHBPrescTable
+ .rodata        0x08042b44      0x16c ..\obj\ui_lcd_hy28.o
+ .rodata        0x08042cb0       0x24 ..\obj\printf.o
+ .rodata        0x08042cd4       0x98 ..\obj\usbd_desc.o
+ .rodata        0x08042d6c     0x3ef8 ..\obj\ui_lcd_hy28_fonts.o
+                0x08042d6c                GL_ASCII16x24_Table
+                0x08043f3c                GL_ASCII12x12_Table
+                0x0804483c                GL_ASCII8x12_Table
+                0x0804513c                GL_ASCII8x12_bold_Table
+                0x0804663c                GL_ASCII8x8_Table
+                0x08046c3c                GL_Font16x24
+                0x08046c44                GL_Font12x12
+                0x08046c4c                GL_Font8x12
+                0x08046c54                GL_Font8x12_bold
+                0x08046c5c                GL_Font8x8
+ .rodata        0x08046c64        0xc ..\obj\usbd_cdc_vcp.o
+ .rodata        0x08046c70      0xc88 ..\obj\audio_driver.o
+                0x08046c70                Fir10k
+                0x08046d30                Fir3p6k
+                0x08046df0                Fir2p3k
+                0x08046eb0                Fir1p8k
+                0x08046f70                IIR_300hz_numStages
+                0x08046f74                IIR_300hz_750_pkCoeffs
+                0x08046f9c                IIR_300hz_750_pvCoeffs
+                0x08046fc8                IIR_300hz_800_pkCoeffs
+                0x08046ff0                IIR_300hz_800_pvCoeffs
+                0x0804701c                IIR_300hz_850_pkCoeffs
+                0x08047044                IIR_300hz_850_pvCoeffs
+                0x08047070                IIR_300hz_900_pkCoeffs
+                0x08047098                IIR_300hz_900_pvCoeffs
+                0x080470c4                IIR_300hz_950_pkCoeffs
+                0x080470ec                IIR_300hz_950_pvCoeffs
+                0x08047118                IIR_300hz_700_pkCoeffs
+                0x08047140                IIR_300hz_700_pvCoeffs
+                0x0804716c                IIR_300hz_650_pkCoeffs
+                0x08047194                IIR_300hz_650_pvCoeffs
+                0x080471c0                IIR_300hz_600_pkCoeffs
+                0x080471e8                IIR_300hz_600_pvCoeffs
+                0x08047214                IIR_300hz_550_pkCoeffs
+                0x0804723c                IIR_300hz_550_pvCoeffs
+                0x08047268                IIR_300hz_500_pkCoeffs
+                0x08047290                IIR_300hz_500_pvCoeffs
+                0x080472bc                IIR_500hz_numStages
+                0x080472c0                IIR_500hz_750_pkCoeffs
+                0x080472e8                IIR_500hz_750_pvCoeffs
+                0x08047314                IIR_500hz_850_pkCoeffs
+                0x0804733c                IIR_500hz_850_pvCoeffs
+                0x08047368                IIR_500hz_950_pkCoeffs
+                0x08047390                IIR_500hz_950_pvCoeffs
+                0x080473bc                IIR_500hz_650_pkCoeffs
+                0x080473e4                IIR_500hz_650_pvCoeffs
+                0x08047410                IIR_500hz_550_pkCoeffs
+                0x08047438                IIR_500hz_550_pvCoeffs
+                0x08047464                IIR_1k8_numStages
+                0x08047468                IIR_1k8_1k425_pkCoeffs
+                0x08047490                IIR_1k8_1k425_pvCoeffs
+                0x080474bc                IIR_1k8_1k275_pkCoeffs
+                0x080474e4                IIR_1k8_1k275_pvCoeffs
+                0x08047510                IIR_1k8_1k125_pkCoeffs
+                0x08047538                IIR_1k8_1k125_pvCoeffs
+                0x08047564                IIR_1k8_1k575_pkCoeffs
+                0x0804758c                IIR_1k8_1k575_pvCoeffs
+                0x080475b8                IIR_1k8_1k725_pkCoeffs
+                0x080475e0                IIR_1k8_1k725_pvCoeffs
+                0x0804760c                IIR_2k3_numStages
+                0x08047610                IIR_2k3_1k412_pkCoeffs
+                0x08047638                IIR_2k3_1k412_pvCoeffs
+                0x08047664                IIR_2k3_1k275_pkCoeffs
+                0x0804768c                IIR_2k3_1k275_pvCoeffs
+                0x080476b8                IIR_2k3_1k562_pkCoeffs
+                0x080476e0                IIR_2k3_1k562_pvCoeffs
+                0x0804770c                IIR_2k3_1k712_pkCoeffs
+                0x08047734                IIR_2k3_1k712_pvCoeffs
+                0x08047760                IIR_3k6_numStages
+                0x08047764                IIR_3k6_pkCoeffs
+                0x0804778c                IIR_3k6_pvCoeffs
+                0x080477b8                IIR_10k_numStages
+                0x080477bc                IIR_10k_pkCoeffs
+                0x080477dc                IIR_10k_pvCoeffs
+                0x08047800                IIR_TX_2k7_numStages
+                0x08047804                IIR_TX_2k7_pkCoeffs
+                0x0804782c                IIR_TX_2k7_pvCoeffs
+                0x08047858                FirRxDecimate
+                0x08047868                FirRxDecimateMinLPF
+                0x08047878                FirRxInterpolate
+                0x080478b8                FirRxInterpolate10KHZ
+ .rodata        0x080478f8      0xa6c ..\obj\ui_menu.o
+ .rodata        0x08048364       0x14 ..\obj\ui_si570.o
+                0x08048364                hs_div
+                0x0804836c                fout0
+                0x08048370                fdco_max
+                0x08048374                fdco_min
+ .rodata        0x08048378       0x30 ..\obj\cat_driver.o
+ .rodata        0x080483a8      0x800 ..\obj\softdds.o
+                0x080483a8                DDS_TABLE
+ .rodata        0x08048ba8       0x80 ..\obj\cw_gen.o
+                0x08048ba8                sm_table
+ .rodata        0x08048c28       0xa8 ..\obj\mchf_board.o
+ .rodata        0x08048cd0     0x1940 ..\obj\ui_driver.o
+                0x08048cd0                q_rx_10k_coeffs
+                0x08048e34                q_rx_10k_coeffs_minus
+                0x08048f98                q_rx_10k_coeffs_plus
+                0x080490fc                i_rx_10k_coeffs
+                0x08049260                q_rx_3k6_coeffs
+                0x080493c4                q_rx_3k6_coeffs_minus
+                0x08049528                q_rx_3k6_coeffs_plus
+                0x0804968c                i_rx_3k6_coeffs
+                0x080497f0                q_tx_coeffs
+                0x08049954                q_tx_coeffs_minus
+                0x08049ab8                q_tx_coeffs_plus
+                0x08049c1c                i_tx_coeffs
+                0x08049d80                iq_rx_am_10k_coeffs
+                0x08049ee4                iq_rx_am_3k6_coeffs
+                0x0804a048                iq_rx_am_2k3_coeffs
+                0x0804a1ac                tune_steps
+                0x0804a1c4                tune_bands
+                0x0804a1e8                size_bands
+                0x0804a20c                bm
+                0x0804a28c                S_Meter_Cal
+ .rodata        0x0804a610     0x2000 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_rfft_init_q15.o)
+ .rodata        0x0804c610     0x1000 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_cfft_radix4_init_q15.o)
+ .rodata        0x0804d610      0x40c ..\..\..\libs\libarm_cortexM4lf_math.a(arm_sin_f32.o)
+ .rodata        0x0804da1c      0x40c ..\..\..\libs\libarm_cortexM4lf_math.a(arm_cos_f32.o)
+ .rodata        0x0804de28      0x380 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_common_tables.o)
+                0x0804de28                armRecipTableQ31
+                0x0804df28                armRecipTableQ15
+                0x0804dfa8                armBitRevTable
  .rodata.str1.4
-                0x0804e510        0x4 ..\..\..\libs\libm.a(lib_a-w_pow.o)
+                0x0804e1a8        0x4 ..\..\..\libs\libm.a(lib_a-w_pow.o)
  .rodata.str1.4
-                0x0804e514        0x5 ..\..\..\libs\libm.a(lib_a-w_sqrt.o)
+                0x0804e1ac        0x5 ..\..\..\libs\libm.a(lib_a-w_sqrt.o)
                                   0x8 (size before relaxing)
- *fill*         0x0804e519        0x3 00
+ *fill*         0x0804e1b1        0x3 00
  .rodata.str1.4
-                0x0804e51c        0x7 ..\..\..\libs\libm.a(lib_a-wf_log10.o)
+                0x0804e1b4        0x7 ..\..\..\libs\libm.a(lib_a-wf_log10.o)
                                   0xc (size before relaxing)
- *fill*         0x0804e523        0x1 00
+ *fill*         0x0804e1bb        0x1 00
  .rodata.str1.4
-                0x0804e524        0x5 ..\..\..\libs\libm.a(lib_a-wf_pow.o)
+                0x0804e1bc        0x5 ..\..\..\libs\libm.a(lib_a-wf_pow.o)
                                   0x8 (size before relaxing)
- *fill*         0x0804e529        0x3 00
+ *fill*         0x0804e1c1        0x3 00
  .rodata.str1.4
-                0x0804e52c        0x6 ..\..\..\libs\libm.a(lib_a-wf_sqrt.o)
+                0x0804e1c4        0x6 ..\..\..\libs\libm.a(lib_a-wf_sqrt.o)
                                   0x8 (size before relaxing)
- *fill*         0x0804e532        0x6 00
- .rodata.dp_h   0x0804e538       0x10 ..\..\..\libs\libm.a(lib_a-e_pow.o)
- .rodata.dp_l   0x0804e548       0x10 ..\..\..\libs\libm.a(lib_a-e_pow.o)
- .rodata.bp     0x0804e558       0x10 ..\..\..\libs\libm.a(lib_a-e_pow.o)
+ *fill*         0x0804e1ca        0x6 00
+ .rodata.dp_h   0x0804e1d0       0x10 ..\..\..\libs\libm.a(lib_a-e_pow.o)
+ .rodata.dp_l   0x0804e1e0       0x10 ..\..\..\libs\libm.a(lib_a-e_pow.o)
+ .rodata.bp     0x0804e1f0       0x10 ..\..\..\libs\libm.a(lib_a-e_pow.o)
  .rodata.str1.4
                 0x00000000        0x4 ..\..\..\libs\libm.a(lib_a-e_pow.o)
- .rodata.dp_h   0x0804e568        0x8 ..\..\..\libs\libm.a(lib_a-ef_pow.o)
- .rodata.dp_l   0x0804e570        0x8 ..\..\..\libs\libm.a(lib_a-ef_pow.o)
- .rodata.bp     0x0804e578        0x8 ..\..\..\libs\libm.a(lib_a-ef_pow.o)
+ .rodata.dp_h   0x0804e200        0x8 ..\..\..\libs\libm.a(lib_a-ef_pow.o)
+ .rodata.dp_l   0x0804e208        0x8 ..\..\..\libs\libm.a(lib_a-ef_pow.o)
+ .rodata.bp     0x0804e210        0x8 ..\..\..\libs\libm.a(lib_a-ef_pow.o)
  .rodata.str1.4
                 0x00000000        0x4 ..\..\..\libs\libm.a(lib_a-ef_pow.o)
- .rodata.TWO52  0x0804e580       0x10 ..\..\..\libs\libm.a(lib_a-s_rint.o)
+ .rodata.TWO52  0x0804e218       0x10 ..\..\..\libs\libm.a(lib_a-s_rint.o)
  .rodata.str1.4
-                0x0804e590        0x4 ..\..\..\libs\libc.a(lib_a-impure.o)
+                0x0804e228        0x4 ..\..\..\libs\libc.a(lib_a-impure.o)
  .rodata._global_impure_ptr
-                0x0804e594        0x4 ..\..\..\libs\libc.a(lib_a-impure.o)
-                0x0804e594                _global_impure_ptr
+                0x0804e22c        0x4 ..\..\..\libs\libc.a(lib_a-impure.o)
+                0x0804e22c                _global_impure_ptr
  *(.eh_fram e*)
 
-.eh_frame       0x0804e598        0x0
- .eh_frame      0x0804e598        0x0 c:/program files (x86)/gnu tools arm embedded/4.7 2014q2/bin/../lib/gcc/arm-none-eabi/4.7.4/armv7e-m/fpu/crtbegin.o
+.eh_frame       0x0804e230        0x0
+ .eh_frame      0x0804e230        0x0 c:/program files (x86)/gnu tools arm embedded/4.7 2014q2/bin/../lib/gcc/arm-none-eabi/4.7.4/armv7e-m/fpu/crtbegin.o
 
-.glue_7         0x0804e598        0x0
+.glue_7         0x0804e230        0x0
  .glue_7        0x00000000        0x0 linker stubs
 
-.glue_7t        0x0804e598        0x0
+.glue_7t        0x0804e230        0x0
  .glue_7t       0x00000000        0x0 linker stubs
 
-.vfp11_veneer   0x0804e598        0x0
+.vfp11_veneer   0x0804e230        0x0
  .vfp11_veneer  0x00000000        0x0 linker stubs
 
-.v4_bx          0x0804e598        0x0
+.v4_bx          0x0804e230        0x0
  .v4_bx         0x00000000        0x0 linker stubs
 
-.iplt           0x0804e598        0x0
+.iplt           0x0804e230        0x0
  .iplt          0x00000000        0x0 c:/program files (x86)/gnu tools arm embedded/4.7 2014q2/bin/../lib/gcc/arm-none-eabi/4.7.4/armv7e-m/fpu/crtbegin.o
 
-.rel.dyn        0x0804e598        0x0
+.rel.dyn        0x0804e230        0x0
  .rel.iplt      0x00000000        0x0 c:/program files (x86)/gnu tools arm embedded/4.7 2014q2/bin/../lib/gcc/arm-none-eabi/4.7.4/armv7e-m/fpu/crtbegin.o
 
 .ARM.extab
  *(.ARM.extab* .gnu.linkonce.armextab.*)
-                0x0804e598                __exidx_start = .
+                0x0804e230                __exidx_start = .
 
 .ARM.exidx
  *(.ARM.exidx* .gnu.linkonce.armexidx.*)
-                0x0804e598                __exidx_end = .
-                0x0804e598                __etext = .
-                0x0804e598                _sidata = __etext
+                0x0804e230                __exidx_end = .
+                0x0804e230                __etext = .
+                0x0804e230                _sidata = __etext
 
-.data           0x20000000      0x654 load address 0x0804e598
+.data           0x20000000      0x64c load address 0x0804e230
                 0x20000000                __data_start__ = .
                 0x20000000                _sdata = __data_start__
  *(vtable)
@@ -3708,166 +3708,166 @@ LOAD c:/program files (x86)/gnu tools arm embedded/4.7 2014q2/bin/../lib/gcc/arm
                 0x20000098                VCP_fops
  .data          0x200000ac        0x1 ..\obj\audio_driver.o
  *fill*         0x200000ad        0x3 00
- .data          0x200000b0       0x14 ..\obj\ui_menu.o
- .data          0x200000c4       0x74 ..\obj\usbd_cdc_core.o
-                0x200000c4                usbd_cdc_CfgDesc
-                0x2000010c                USBD_CDC_cb
- .data          0x20000138        0x4 ..\obj\mchf_hw_i2c2.o
-                0x20000138                I2C2_Timeout
- .data          0x2000013c       0xd8 ..\obj\ui_driver.o
-                0x2000013c                tcxo_table_20m
+ .data          0x200000b0        0xc ..\obj\ui_menu.o
+ .data          0x200000bc       0x74 ..\obj\usbd_cdc_core.o
+                0x200000bc                usbd_cdc_CfgDesc
+                0x20000104                USBD_CDC_cb
+ .data          0x20000130        0x4 ..\obj\mchf_hw_i2c2.o
+                0x20000130                I2C2_Timeout
+ .data          0x20000134       0xd8 ..\obj\ui_driver.o
+                0x20000134                tcxo_table_20m
  .data.__fdlib_version
-                0x20000214        0x1 ..\..\..\libs\libm.a(lib_a-s_lib_ver.o)
-                0x20000214                __fdlib_version
- *fill*         0x20000215        0x3 00
+                0x2000020c        0x1 ..\..\..\libs\libm.a(lib_a-s_lib_ver.o)
+                0x2000020c                __fdlib_version
+ *fill*         0x2000020d        0x3 00
  .data.impure_data
-                0x20000218      0x428 ..\..\..\libs\libc.a(lib_a-impure.o)
+                0x20000210      0x428 ..\..\..\libs\libc.a(lib_a-impure.o)
  .data._impure_ptr
-                0x20000640        0x4 ..\..\..\libs\libc.a(lib_a-impure.o)
-                0x20000640                _impure_ptr
-                0x20000644                . = ALIGN (0x4)
-                0x20000644                PROVIDE (__preinit_array_start, .)
+                0x20000638        0x4 ..\..\..\libs\libc.a(lib_a-impure.o)
+                0x20000638                _impure_ptr
+                0x2000063c                . = ALIGN (0x4)
+                0x2000063c                PROVIDE (__preinit_array_start, .)
  *(.preinit_array)
-                0x20000644                PROVIDE (__preinit_array_end, .)
-                0x20000644                . = ALIGN (0x4)
-                0x20000644                PROVIDE (__init_array_start, .)
+                0x2000063c                PROVIDE (__preinit_array_end, .)
+                0x2000063c                . = ALIGN (0x4)
+                0x2000063c                PROVIDE (__init_array_start, .)
  *(SORT(.init_array.*))
  .init_array.00000
-                0x20000644        0x4 ..\..\..\libs\libc.a(lib_a-__call_atexit.o)
+                0x2000063c        0x4 ..\..\..\libs\libc.a(lib_a-__call_atexit.o)
  *(.init_array)
- .init_array    0x20000648        0x4 c:/program files (x86)/gnu tools arm embedded/4.7 2014q2/bin/../lib/gcc/arm-none-eabi/4.7.4/armv7e-m/fpu/crtbegin.o
-                0x2000064c                PROVIDE (__init_array_end, .)
-                0x2000064c                . = ALIGN (0x4)
-                0x2000064c                PROVIDE (__fini_array_start, .)
+ .init_array    0x20000640        0x4 c:/program files (x86)/gnu tools arm embedded/4.7 2014q2/bin/../lib/gcc/arm-none-eabi/4.7.4/armv7e-m/fpu/crtbegin.o
+                0x20000644                PROVIDE (__init_array_end, .)
+                0x20000644                . = ALIGN (0x4)
+                0x20000644                PROVIDE (__fini_array_start, .)
  *(SORT(.fini_array.*))
  *(.fini_array)
- .fini_array    0x2000064c        0x4 c:/program files (x86)/gnu tools arm embedded/4.7 2014q2/bin/../lib/gcc/arm-none-eabi/4.7.4/armv7e-m/fpu/crtbegin.o
-                0x20000650                PROVIDE (__fini_array_end, .)
+ .fini_array    0x20000644        0x4 c:/program files (x86)/gnu tools arm embedded/4.7 2014q2/bin/../lib/gcc/arm-none-eabi/4.7.4/armv7e-m/fpu/crtbegin.o
+                0x20000648                PROVIDE (__fini_array_end, .)
  *(.jcr*)
- .jcr           0x20000650        0x0 c:/program files (x86)/gnu tools arm embedded/4.7 2014q2/bin/../lib/gcc/arm-none-eabi/4.7.4/armv7e-m/fpu/crtbegin.o
- .jcr           0x20000650        0x4 c:/program files (x86)/gnu tools arm embedded/4.7 2014q2/bin/../lib/gcc/arm-none-eabi/4.7.4/armv7e-m/fpu/crtend.o
-                0x20000654                . = ALIGN (0x4)
-                0x20000654                __data_end__ = .
-                0x20000654                _edata = __data_end__
+ .jcr           0x20000648        0x0 c:/program files (x86)/gnu tools arm embedded/4.7 2014q2/bin/../lib/gcc/arm-none-eabi/4.7.4/armv7e-m/fpu/crtbegin.o
+ .jcr           0x20000648        0x4 c:/program files (x86)/gnu tools arm embedded/4.7 2014q2/bin/../lib/gcc/arm-none-eabi/4.7.4/armv7e-m/fpu/crtend.o
+                0x2000064c                . = ALIGN (0x4)
+                0x2000064c                __data_end__ = .
+                0x2000064c                _edata = __data_end__
 
-.igot.plt       0x20000654        0x0 load address 0x0804ebec
+.igot.plt       0x2000064c        0x0 load address 0x0804e87c
  .igot.plt      0x00000000        0x0 c:/program files (x86)/gnu tools arm embedded/4.7 2014q2/bin/../lib/gcc/arm-none-eabi/4.7.4/armv7e-m/fpu/crtbegin.o
 
-.bss            0x20000658     0xdbe0 load address 0x0804ebf0
-                0x20000658                . = ALIGN (0x4)
-                0x20000658                __bss_start__ = .
-                0x20000658                _sbss = __bss_start__
+.bss            0x20000650     0xdbd8 load address 0x0804e880
+                0x20000650                . = ALIGN (0x4)
+                0x20000650                __bss_start__ = .
+                0x20000650                _sbss = __bss_start__
  *(.bss*)
- .bss           0x20000658       0x1c c:/program files (x86)/gnu tools arm embedded/4.7 2014q2/bin/../lib/gcc/arm-none-eabi/4.7.4/armv7e-m/fpu/crtbegin.o
- .bss           0x20000674        0x4 ..\obj\usbh_bsp.o
-                0x20000674                BSP_delay
- .bss           0x20000678       0x90 ..\obj\i2s.o
- .bss           0x20000708      0x188 ..\obj\audio_driver.o
- .bss           0x20000890       0x10 ..\obj\usbd_req.o
-                0x20000890                USBD_ep_status
-                0x20000894                USBD_default_cfg
-                0x20000898                USBD_cfg_status
- .bss           0x200008a0       0x1c ..\obj\usbd_cdc_core.o
-                0x200008a4                APP_Rx_ptr_in
-                0x200008a8                APP_Rx_ptr_out
-                0x200008ac                APP_Rx_length
-                0x200008b0                USB_Tx_State
- .bss           0x200008bc      0x844 ..\obj\ui_driver.o
-                0x200008bc                unmute_delay
-                0x200008c0                drv_state
-                0x200008c1                drv_init
-                0x200010c4                ptt_break
- .bss           0x20001100        0x2 ..\obj\eeprom.o
-                0x20001100                DataVar
+ .bss           0x20000650       0x1c c:/program files (x86)/gnu tools arm embedded/4.7 2014q2/bin/../lib/gcc/arm-none-eabi/4.7.4/armv7e-m/fpu/crtbegin.o
+ .bss           0x2000066c        0x4 ..\obj\usbh_bsp.o
+                0x2000066c                BSP_delay
+ .bss           0x20000670       0x90 ..\obj\i2s.o
+ .bss           0x20000700      0x188 ..\obj\audio_driver.o
+ .bss           0x20000888       0x10 ..\obj\usbd_req.o
+                0x20000888                USBD_ep_status
+                0x2000088c                USBD_default_cfg
+                0x20000890                USBD_cfg_status
+ .bss           0x20000898       0x1c ..\obj\usbd_cdc_core.o
+                0x2000089c                APP_Rx_ptr_in
+                0x200008a0                APP_Rx_ptr_out
+                0x200008a4                APP_Rx_length
+                0x200008a8                USB_Tx_State
+ .bss           0x200008b4      0x844 ..\obj\ui_driver.o
+                0x200008b4                unmute_delay
+                0x200008b8                drv_state
+                0x200008b9                drv_init
+                0x200010bc                ptt_break
+ .bss           0x200010f8        0x2 ..\obj\eeprom.o
+                0x200010f8                DataVar
  *(COMMON)
- *fill*         0x20001102        0x2 00
- COMMON         0x20001104        0x4 ..\obj\usbd_core.o
-                0x20001104                SET_TEST_MODE
- COMMON         0x20001108      0x138 ..\obj\main.o
-                0x20001108                ts
- COMMON         0x20001240     0xb248 ..\obj\audio_driver.o
-                0x20001240                test_a
-                0x20003950                test_d
-                0x20004120                lms1StateF32
-                0x20004420                lms2StateF32
-                0x20004720                lms1_instance
-                0x20004730                errsig2
-                0x20004834                lms2_nr_delay
-                0x20005874                rx_buffer
-                0x20005978                interpState
-                0x20005a38                tx_buffer
-                0x20005b3c                errsig1
-                0x20005c40                FIR_Q
-                0x20005c4c                iir_tx_state
-                0x20005d0c                lms1NormCoeff_f32
-                0x2000600c                lms2NormCoeff_f32
-                0x2000630c                test_b
-                0x20008a1c                FIR_Q_TX
-                0x20008a28                sd
-                0x20009888                result
-                0x2000998c                agc_delay
-                0x20009ecc                lms1Norm_instance
-                0x20009ee4                FIR_I_TX
-                0x20009ef0                FIR_I
-                0x20009efc                decimState
-                0x20009fbc                sm
-                0x20009fd0                IIR_TXFilter
-                0x20009fe0                lms1_nr_delay
-                0x2000a820                test_e
-                0x2000aff0                lms2Norm_instance
-                0x2000b008                ads
-                0x2000bca8                lms2_instance
-                0x2000bcb8                test_c
- COMMON         0x2000c488       0xff ..\obj\usbd_req.o
-                0x2000c488                USBD_StrDesc
- *fill*         0x2000c587        0x1 00
- COMMON         0x2000c588       0xb0 ..\obj\ui_menu.o
-                0x2000c588                ks
-                0x2000c5ac                pwmt
-                0x2000c5bc                df
-                0x2000c5f8                lo
-                0x2000c608                ets
-                0x2000c614                swrm
-                0x2000c620                ews
-                0x2000c62c                eos
- COMMON         0x2000c638      0x88c ..\obj\usbd_cdc_core.o
-                0x2000c638                usbd_cdc_OtherCfgDesc
-                0x2000c67c                USB_Rx_Buffer
-                0x2000c6bc                CmdBuff
-                0x2000c6c4                APP_Rx_Buffer
- *fill*         0x2000cec4        0x4 00
- COMMON         0x2000cec8       0x20 ..\obj\ui_si570.o
-                0x2000cec8                os
- COMMON         0x2000cee8      0xa94 ..\obj\cat_driver.o
-                0x2000cee8                USB_OTG_dev
- COMMON         0x2000d97c        0x4 ..\obj\softdds.o
-                0x2000d97c                step
- COMMON         0x2000d980       0x18 ..\obj\cw_gen.o
-                0x2000d980                ps
- COMMON         0x2000d998      0x820 ..\obj\mchf_board.o
-                0x2000d998                fc
- COMMON         0x2000e1b8       0x80 ..\obj\ui_driver.o
-                0x2000e1b8                band_decod_mode
-                0x2000e1e0                kd
-                0x2000e1e4                band_filter_mode
-                0x2000e20c                band_dial_value
-                0x2000e234                es
-                0x2000e238                . = ALIGN (0x4)
-                0x2000e238                __bss_end__ = .
-                0x2000e238                _ebss = __bss_end__
+ *fill*         0x200010fa        0x2 00
+ COMMON         0x200010fc        0x4 ..\obj\usbd_core.o
+                0x200010fc                SET_TEST_MODE
+ COMMON         0x20001100      0x130 ..\obj\main.o
+                0x20001100                ts
+ COMMON         0x20001230     0xb248 ..\obj\audio_driver.o
+                0x20001230                test_a
+                0x20003940                test_d
+                0x20004110                lms1StateF32
+                0x20004410                lms2StateF32
+                0x20004710                lms1_instance
+                0x20004720                errsig2
+                0x20004824                lms2_nr_delay
+                0x20005864                rx_buffer
+                0x20005968                interpState
+                0x20005a28                tx_buffer
+                0x20005b2c                errsig1
+                0x20005c30                FIR_Q
+                0x20005c3c                iir_tx_state
+                0x20005cfc                lms1NormCoeff_f32
+                0x20005ffc                lms2NormCoeff_f32
+                0x200062fc                test_b
+                0x20008a0c                FIR_Q_TX
+                0x20008a18                sd
+                0x20009878                result
+                0x2000997c                agc_delay
+                0x20009ebc                lms1Norm_instance
+                0x20009ed4                FIR_I_TX
+                0x20009ee0                FIR_I
+                0x20009eec                decimState
+                0x20009fac                sm
+                0x20009fc0                IIR_TXFilter
+                0x20009fd0                lms1_nr_delay
+                0x2000a810                test_e
+                0x2000afe0                lms2Norm_instance
+                0x2000aff8                ads
+                0x2000bc98                lms2_instance
+                0x2000bca8                test_c
+ COMMON         0x2000c478       0xff ..\obj\usbd_req.o
+                0x2000c478                USBD_StrDesc
+ *fill*         0x2000c577        0x1 00
+ COMMON         0x2000c578       0xb0 ..\obj\ui_menu.o
+                0x2000c578                ks
+                0x2000c59c                pwmt
+                0x2000c5ac                df
+                0x2000c5e8                lo
+                0x2000c5f8                ets
+                0x2000c604                swrm
+                0x2000c610                ews
+                0x2000c61c                eos
+ COMMON         0x2000c628      0x88c ..\obj\usbd_cdc_core.o
+                0x2000c628                usbd_cdc_OtherCfgDesc
+                0x2000c66c                USB_Rx_Buffer
+                0x2000c6ac                CmdBuff
+                0x2000c6b4                APP_Rx_Buffer
+ *fill*         0x2000ceb4        0x4 00
+ COMMON         0x2000ceb8       0x20 ..\obj\ui_si570.o
+                0x2000ceb8                os
+ COMMON         0x2000ced8      0xa94 ..\obj\cat_driver.o
+                0x2000ced8                USB_OTG_dev
+ COMMON         0x2000d96c        0x4 ..\obj\softdds.o
+                0x2000d96c                step
+ COMMON         0x2000d970       0x18 ..\obj\cw_gen.o
+                0x2000d970                ps
+ COMMON         0x2000d988      0x820 ..\obj\mchf_board.o
+                0x2000d988                fc
+ COMMON         0x2000e1a8       0x80 ..\obj\ui_driver.o
+                0x2000e1a8                band_decod_mode
+                0x2000e1d0                kd
+                0x2000e1d4                band_filter_mode
+                0x2000e1fc                band_dial_value
+                0x2000e224                es
+                0x2000e228                . = ALIGN (0x4)
+                0x2000e228                __bss_end__ = .
+                0x2000e228                _ebss = __bss_end__
 
-.heap           0x2000e238        0x0
-                0x2000e238                __end__ = .
-                0x2000e238                _end = __end__
-                0x2000e238                end = __end__
+.heap           0x2000e228        0x0
+                0x2000e228                __end__ = .
+                0x2000e228                _end = __end__
+                0x2000e228                end = __end__
  *(.heap*)
-                0x2000e238                __HeapLimit = .
+                0x2000e228                __HeapLimit = .
 
-.co_stack       0x2000e238     0x1000 load address 0x0805c7d0
-                0x2000e238                . = ALIGN (0x8)
+.co_stack       0x2000e228     0x1000 load address 0x0805c458
+                0x2000e228                . = ALIGN (0x8)
  *(.co_stack .co_stack.*)
- .co_stack      0x2000e238     0x1000 ..\obj\startup_stm32f4xx.o
-                0x2000e238                pulStack
+ .co_stack      0x2000e228     0x1000 ..\obj\startup_stm32f4xx.o
+                0x2000e228                pulStack
                 0x20020000                __StackTop = (ORIGIN (ram) + 0x20000)
                 0x2001f000                __StackLimit = (__StackTop - SIZEOF (.co_stack))
                 0x20020000                PROVIDE (__stack, __StackTop)
@@ -4271,7 +4271,7 @@ OUTPUT(firmware_Target_Flash.elf elf32-littlearm)
  .comment       0x00000000       0x31 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_add_f32.o)
  .comment       0x00000000       0x31 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_common_tables.o)
 
-.debug_info     0x00000000    0x31449
+.debug_info     0x00000000    0x312dc
  .debug_info    0x00000000      0x279 ..\obj\stm32f4xx_syscfg.o
  .debug_info    0x00000279     0x35da ..\obj\usb_core.o
  .debug_info    0x00003853      0x5f8 ..\obj\ui_rotary.o
@@ -4281,70 +4281,70 @@ OUTPUT(firmware_Target_Flash.elf elf32-littlearm)
  .debug_info    0x00005fac      0x68d ..\obj\stm32f4xx_dac.o
  .debug_info    0x00006639      0x103 ..\obj\startup_stm32f4xx.o
  .debug_info    0x0000673c     0x1422 ..\obj\usbd_core.o
- .debug_info    0x00007b5e      0xe78 ..\obj\main.o
- .debug_info    0x000089d6      0xd45 ..\obj\stm32f4xx_rcc.o
- .debug_info    0x0000971b     0x1235 ..\obj\codec.o
- .debug_info    0x0000a950      0xd14 ..\obj\stm32f4xx_adc.o
- .debug_info    0x0000b664     0x1c8a ..\obj\ui_lcd_hy28.o
- .debug_info    0x0000d2ee      0xf86 ..\obj\printf.o
- .debug_info    0x0000e274     0x17cc ..\obj\usbh_bsp.o
- .debug_info    0x0000fa40      0x387 ..\obj\usbd_desc.o
- .debug_info    0x0000fdc7      0x9b1 ..\obj\stm32f4xx_fsmc.o
- .debug_info    0x00010778      0x640 ..\obj\stm32f4xx_gpio.o
- .debug_info    0x00010db8      0x1f8 ..\obj\ui_lcd_hy28_fonts.o
- .debug_info    0x00010fb0      0x78c ..\obj\stm32f4xx_flash.o
- .debug_info    0x0001173c      0xc8c ..\obj\usbd_cdc_vcp.o
- .debug_info    0x000123c8      0x5c6 ..\obj\system_stm32f4xx.o
- .debug_info    0x0001298e      0x7af ..\obj\stm32f4xx_dma.o
- .debug_info    0x0001313d      0x88c ..\obj\i2s.o
- .debug_info    0x000139c9     0x22d4 ..\obj\audio_driver.o
- .debug_info    0x00015c9d     0x1408 ..\obj\usbd_req.o
- .debug_info    0x000170a5     0x2304 ..\obj\usb_dcd_int.o
- .debug_info    0x000193a9     0x191b ..\obj\ui_menu.o
- .debug_info    0x0001acc4     0x1324 ..\obj\usbd_cdc_core.o
- .debug_info    0x0001bfe8      0x606 ..\obj\ui_si570.o
- .debug_info    0x0001c5ee      0xf87 ..\obj\cat_driver.o
- .debug_info    0x0001d575      0xbde ..\obj\stm32f4xx_spi.o
- .debug_info    0x0001e153      0x206 ..\obj\softdds.o
- .debug_info    0x0001e359      0xbab ..\obj\stm32f4xx_i2c.o
- .debug_info    0x0001ef04      0x373 ..\obj\stm32f4xx_exti.o
- .debug_info    0x0001f277      0x592 ..\obj\misc.o
- .debug_info    0x0001f809     0x149e ..\obj\usb_dcd.o
- .debug_info    0x00020ca7      0x4ba ..\obj\mchf_hw_i2c2.o
- .debug_info    0x00021161      0xd0b ..\obj\cw_gen.o
- .debug_info    0x00021e6c     0x1ddc ..\obj\mchf_board.o
- .debug_info    0x00023c48     0x10cd ..\obj\usbd_ioreq.o
- .debug_info    0x00024d15     0x1477 ..\obj\usbd_bsp.o
- .debug_info    0x0002618c     0x1e7d ..\obj\stm32f4xx_tim.o
- .debug_info    0x00028009     0x3b55 ..\obj\ui_driver.o
- .debug_info    0x0002bb5e      0x45a ..\obj\eeprom.o
- .debug_info    0x0002bfb8      0x15d ..\..\..\libs\libarm_cortexM4lf_math.a(arm_fill_q15.o)
- .debug_info    0x0002c115       0xfb ..\..\..\libs\libarm_cortexM4lf_math.a(arm_copy_f32.o)
- .debug_info    0x0002c210      0x13a ..\..\..\libs\libarm_cortexM4lf_math.a(arm_min_f32.o)
- .debug_info    0x0002c34a      0x106 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_mean_f32.o)
- .debug_info    0x0002c450      0x146 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_max_q15.o)
- .debug_info    0x0002c596      0x13a ..\..\..\libs\libarm_cortexM4lf_math.a(arm_max_f32.o)
- .debug_info    0x0002c6d0      0x9a5 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_rfft_q15.o)
- .debug_info    0x0002d075      0x2e3 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_rfft_init_q15.o)
- .debug_info    0x0002d358     0x1810 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_cfft_radix4_q15.o)
- .debug_info    0x0002eb68      0x248 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_cfft_radix4_init_q15.o)
- .debug_info    0x0002edb0      0x198 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_lms_norm_init_f32.o)
- .debug_info    0x0002ef48      0x27e ..\..\..\libs\libarm_cortexM4lf_math.a(arm_lms_norm_f32.o)
- .debug_info    0x0002f1c6      0x235 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_iir_lattice_f32.o)
- .debug_info    0x0002f3fb      0x22b ..\..\..\libs\libarm_cortexM4lf_math.a(arm_fir_interpolate_f32.o)
- .debug_info    0x0002f626      0x15f ..\..\..\libs\libarm_cortexM4lf_math.a(arm_fir_init_f32.o)
- .debug_info    0x0002f785      0x25a ..\..\..\libs\libarm_cortexM4lf_math.a(arm_fir_f32.o)
- .debug_info    0x0002f9df      0x22a ..\..\..\libs\libarm_cortexM4lf_math.a(arm_fir_decimate_f32.o)
- .debug_info    0x0002fc09      0x3d1 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_cmplx_mag_q15.o)
- .debug_info    0x0002ffda      0x8b7 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_sqrt_q15.o)
- .debug_info    0x00030891      0x1c8 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_sin_f32.o)
- .debug_info    0x00030a59      0x1c0 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_cos_f32.o)
- .debug_info    0x00030c19      0x10a ..\..\..\libs\libarm_cortexM4lf_math.a(arm_sub_f32.o)
- .debug_info    0x00030d23      0x2d3 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_shift_q15.o)
- .debug_info    0x00030ff6      0x109 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_scale_f32.o)
- .debug_info    0x000310ff      0x10a ..\..\..\libs\libarm_cortexM4lf_math.a(arm_mult_f32.o)
- .debug_info    0x00031209      0x10a ..\..\..\libs\libarm_cortexM4lf_math.a(arm_add_f32.o)
- .debug_info    0x00031313      0x136 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_common_tables.o)
+ .debug_info    0x00007b5e      0xe58 ..\obj\main.o
+ .debug_info    0x000089b6      0xd45 ..\obj\stm32f4xx_rcc.o
+ .debug_info    0x000096fb     0x1215 ..\obj\codec.o
+ .debug_info    0x0000a910      0xd14 ..\obj\stm32f4xx_adc.o
+ .debug_info    0x0000b624     0x1c50 ..\obj\ui_lcd_hy28.o
+ .debug_info    0x0000d274      0xf86 ..\obj\printf.o
+ .debug_info    0x0000e1fa     0x17cc ..\obj\usbh_bsp.o
+ .debug_info    0x0000f9c6      0x387 ..\obj\usbd_desc.o
+ .debug_info    0x0000fd4d      0x9b1 ..\obj\stm32f4xx_fsmc.o
+ .debug_info    0x000106fe      0x640 ..\obj\stm32f4xx_gpio.o
+ .debug_info    0x00010d3e      0x1f8 ..\obj\ui_lcd_hy28_fonts.o
+ .debug_info    0x00010f36      0x78c ..\obj\stm32f4xx_flash.o
+ .debug_info    0x000116c2      0xc6c ..\obj\usbd_cdc_vcp.o
+ .debug_info    0x0001232e      0x5c6 ..\obj\system_stm32f4xx.o
+ .debug_info    0x000128f4      0x7af ..\obj\stm32f4xx_dma.o
+ .debug_info    0x000130a3      0x88c ..\obj\i2s.o
+ .debug_info    0x0001392f     0x22b4 ..\obj\audio_driver.o
+ .debug_info    0x00015be3     0x1408 ..\obj\usbd_req.o
+ .debug_info    0x00016feb     0x2304 ..\obj\usb_dcd_int.o
+ .debug_info    0x000192ef     0x18c8 ..\obj\ui_menu.o
+ .debug_info    0x0001abb7     0x1324 ..\obj\usbd_cdc_core.o
+ .debug_info    0x0001bedb      0x606 ..\obj\ui_si570.o
+ .debug_info    0x0001c4e1      0xf87 ..\obj\cat_driver.o
+ .debug_info    0x0001d468      0xbde ..\obj\stm32f4xx_spi.o
+ .debug_info    0x0001e046      0x206 ..\obj\softdds.o
+ .debug_info    0x0001e24c      0xbab ..\obj\stm32f4xx_i2c.o
+ .debug_info    0x0001edf7      0x373 ..\obj\stm32f4xx_exti.o
+ .debug_info    0x0001f16a      0x592 ..\obj\misc.o
+ .debug_info    0x0001f6fc     0x149e ..\obj\usb_dcd.o
+ .debug_info    0x00020b9a      0x4ba ..\obj\mchf_hw_i2c2.o
+ .debug_info    0x00021054      0xceb ..\obj\cw_gen.o
+ .debug_info    0x00021d3f     0x1dbc ..\obj\mchf_board.o
+ .debug_info    0x00023afb     0x10cd ..\obj\usbd_ioreq.o
+ .debug_info    0x00024bc8     0x1477 ..\obj\usbd_bsp.o
+ .debug_info    0x0002603f     0x1e7d ..\obj\stm32f4xx_tim.o
+ .debug_info    0x00027ebc     0x3b35 ..\obj\ui_driver.o
+ .debug_info    0x0002b9f1      0x45a ..\obj\eeprom.o
+ .debug_info    0x0002be4b      0x15d ..\..\..\libs\libarm_cortexM4lf_math.a(arm_fill_q15.o)
+ .debug_info    0x0002bfa8       0xfb ..\..\..\libs\libarm_cortexM4lf_math.a(arm_copy_f32.o)
+ .debug_info    0x0002c0a3      0x13a ..\..\..\libs\libarm_cortexM4lf_math.a(arm_min_f32.o)
+ .debug_info    0x0002c1dd      0x106 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_mean_f32.o)
+ .debug_info    0x0002c2e3      0x146 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_max_q15.o)
+ .debug_info    0x0002c429      0x13a ..\..\..\libs\libarm_cortexM4lf_math.a(arm_max_f32.o)
+ .debug_info    0x0002c563      0x9a5 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_rfft_q15.o)
+ .debug_info    0x0002cf08      0x2e3 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_rfft_init_q15.o)
+ .debug_info    0x0002d1eb     0x1810 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_cfft_radix4_q15.o)
+ .debug_info    0x0002e9fb      0x248 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_cfft_radix4_init_q15.o)
+ .debug_info    0x0002ec43      0x198 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_lms_norm_init_f32.o)
+ .debug_info    0x0002eddb      0x27e ..\..\..\libs\libarm_cortexM4lf_math.a(arm_lms_norm_f32.o)
+ .debug_info    0x0002f059      0x235 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_iir_lattice_f32.o)
+ .debug_info    0x0002f28e      0x22b ..\..\..\libs\libarm_cortexM4lf_math.a(arm_fir_interpolate_f32.o)
+ .debug_info    0x0002f4b9      0x15f ..\..\..\libs\libarm_cortexM4lf_math.a(arm_fir_init_f32.o)
+ .debug_info    0x0002f618      0x25a ..\..\..\libs\libarm_cortexM4lf_math.a(arm_fir_f32.o)
+ .debug_info    0x0002f872      0x22a ..\..\..\libs\libarm_cortexM4lf_math.a(arm_fir_decimate_f32.o)
+ .debug_info    0x0002fa9c      0x3d1 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_cmplx_mag_q15.o)
+ .debug_info    0x0002fe6d      0x8b7 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_sqrt_q15.o)
+ .debug_info    0x00030724      0x1c8 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_sin_f32.o)
+ .debug_info    0x000308ec      0x1c0 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_cos_f32.o)
+ .debug_info    0x00030aac      0x10a ..\..\..\libs\libarm_cortexM4lf_math.a(arm_sub_f32.o)
+ .debug_info    0x00030bb6      0x2d3 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_shift_q15.o)
+ .debug_info    0x00030e89      0x109 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_scale_f32.o)
+ .debug_info    0x00030f92      0x10a ..\..\..\libs\libarm_cortexM4lf_math.a(arm_mult_f32.o)
+ .debug_info    0x0003109c      0x10a ..\..\..\libs\libarm_cortexM4lf_math.a(arm_add_f32.o)
+ .debug_info    0x000311a6      0x136 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_common_tables.o)
 
 .debug_abbrev   0x00000000     0x6779
  .debug_abbrev  0x00000000      0x133 ..\obj\stm32f4xx_syscfg.o
@@ -4713,7 +4713,7 @@ OUTPUT(firmware_Target_Flash.elf elf32-littlearm)
  .debug_ranges  0x000027f0       0x10 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_mult_f32.o)
  .debug_ranges  0x00002800       0x10 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_add_f32.o)
 
-.debug_line     0x00000000    0x10415
+.debug_line     0x00000000    0x103ad
  .debug_line    0x00000000      0x1af ..\obj\stm32f4xx_syscfg.o
  .debug_line    0x000001af      0x884 ..\obj\usb_core.o
  .debug_line    0x00000a33      0x207 ..\obj\ui_rotary.o
@@ -4723,72 +4723,72 @@ OUTPUT(firmware_Target_Flash.elf elf32-littlearm)
  .debug_line    0x000013e8      0x2e3 ..\obj\stm32f4xx_dac.o
  .debug_line    0x000016cb       0x8f ..\obj\startup_stm32f4xx.o
  .debug_line    0x0000175a      0x310 ..\obj\usbd_core.o
- .debug_line    0x00001a6a      0x389 ..\obj\main.o
- .debug_line    0x00001df3      0x51e ..\obj\stm32f4xx_rcc.o
- .debug_line    0x00002311      0x379 ..\obj\codec.o
- .debug_line    0x0000268a      0x4d7 ..\obj\stm32f4xx_adc.o
- .debug_line    0x00002b61      0x8b5 ..\obj\ui_lcd_hy28.o
- .debug_line    0x00003416      0x41c ..\obj\printf.o
- .debug_line    0x00003832      0x2b3 ..\obj\usbh_bsp.o
- .debug_line    0x00003ae5      0x1cc ..\obj\usbd_desc.o
- .debug_line    0x00003cb1      0x3d9 ..\obj\stm32f4xx_fsmc.o
- .debug_line    0x0000408a      0x2c2 ..\obj\stm32f4xx_gpio.o
- .debug_line    0x0000434c      0x120 ..\obj\ui_lcd_hy28_fonts.o
- .debug_line    0x0000446c      0x40f ..\obj\stm32f4xx_flash.o
- .debug_line    0x0000487b      0x2df ..\obj\usbd_cdc_vcp.o
- .debug_line    0x00004b5a      0x1a3 ..\obj\system_stm32f4xx.o
- .debug_line    0x00004cfd      0x35f ..\obj\stm32f4xx_dma.o
- .debug_line    0x0000505c      0x229 ..\obj\i2s.o
- .debug_line    0x00005285      0xa4c ..\obj\audio_driver.o
- .debug_line    0x00005cd1      0x3bf ..\obj\usbd_req.o
- .debug_line    0x00006090      0x380 ..\obj\usb_dcd_int.o
- .debug_line    0x00006410      0xf18 ..\obj\ui_menu.o
- .debug_line    0x00007328      0x2b7 ..\obj\usbd_cdc_core.o
- .debug_line    0x000075df      0x37e ..\obj\ui_si570.o
- .debug_line    0x0000795d      0x277 ..\obj\cat_driver.o
- .debug_line    0x00007bd4      0x3d6 ..\obj\stm32f4xx_spi.o
- .debug_line    0x00007faa      0x1b3 ..\obj\softdds.o
- .debug_line    0x0000815d      0x45f ..\obj\stm32f4xx_i2c.o
- .debug_line    0x000085bc      0x228 ..\obj\stm32f4xx_exti.o
- .debug_line    0x000087e4      0x1c8 ..\obj\misc.o
- .debug_line    0x000089ac      0x30c ..\obj\usb_dcd.o
- .debug_line    0x00008cb8      0x1fe ..\obj\mchf_hw_i2c2.o
- .debug_line    0x00008eb6      0x2fd ..\obj\cw_gen.o
- .debug_line    0x000091b3      0x597 ..\obj\mchf_board.o
- .debug_line    0x0000974a      0x20a ..\obj\usbd_ioreq.o
- .debug_line    0x00009954      0x243 ..\obj\usbd_bsp.o
- .debug_line    0x00009b97      0x9fc ..\obj\stm32f4xx_tim.o
- .debug_line    0x0000a593     0x2040 ..\obj\ui_driver.o
- .debug_line    0x0000c5d3      0x2b9 ..\obj\eeprom.o
- .debug_line    0x0000c88c      0x163 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_fill_q15.o)
- .debug_line    0x0000c9ef      0x185 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_copy_f32.o)
- .debug_line    0x0000cb74      0x142 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_min_f32.o)
- .debug_line    0x0000ccb6      0x197 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_mean_f32.o)
- .debug_line    0x0000ce4d      0x11d ..\..\..\libs\libarm_cortexM4lf_math.a(arm_max_q15.o)
- .debug_line    0x0000cf6a      0x141 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_max_f32.o)
- .debug_line    0x0000d0ab      0x6ad ..\..\..\libs\libarm_cortexM4lf_math.a(arm_rfft_q15.o)
- .debug_line    0x0000d758      0x155 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_rfft_init_q15.o)
- .debug_line    0x0000d8ad      0x878 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_cfft_radix4_q15.o)
- .debug_line    0x0000e125      0x16d ..\..\..\libs\libarm_cortexM4lf_math.a(arm_cfft_radix4_init_q15.o)
- .debug_line    0x0000e292      0x137 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_lms_norm_init_f32.o)
- .debug_line    0x0000e3c9      0x2e2 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_lms_norm_f32.o)
- .debug_line    0x0000e6ab      0x29c ..\..\..\libs\libarm_cortexM4lf_math.a(arm_iir_lattice_f32.o)
- .debug_line    0x0000e947      0x318 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_fir_interpolate_f32.o)
- .debug_line    0x0000ec5f      0x120 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_fir_init_f32.o)
- .debug_line    0x0000ed7f      0x2d9 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_fir_f32.o)
- .debug_line    0x0000f058      0x2a5 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_fir_decimate_f32.o)
- .debug_line    0x0000f2fd      0x204 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_cmplx_mag_q15.o)
- .debug_line    0x0000f501      0x30c ..\..\..\libs\libarm_cortexM4lf_math.a(arm_sqrt_q15.o)
- .debug_line    0x0000f80d      0x151 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_sin_f32.o)
- .debug_line    0x0000f95e      0x153 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_cos_f32.o)
- .debug_line    0x0000fab1      0x17e ..\..\..\libs\libarm_cortexM4lf_math.a(arm_sub_f32.o)
- .debug_line    0x0000fc2f      0x24b ..\..\..\libs\libarm_cortexM4lf_math.a(arm_shift_q15.o)
- .debug_line    0x0000fe7a      0x1a1 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_scale_f32.o)
- .debug_line    0x0001001b      0x17f ..\..\..\libs\libarm_cortexM4lf_math.a(arm_mult_f32.o)
- .debug_line    0x0001019a      0x17e ..\..\..\libs\libarm_cortexM4lf_math.a(arm_add_f32.o)
- .debug_line    0x00010318       0xfd ..\..\..\libs\libarm_cortexM4lf_math.a(arm_common_tables.o)
+ .debug_line    0x00001a6a      0x387 ..\obj\main.o
+ .debug_line    0x00001df1      0x51e ..\obj\stm32f4xx_rcc.o
+ .debug_line    0x0000230f      0x379 ..\obj\codec.o
+ .debug_line    0x00002688      0x4d7 ..\obj\stm32f4xx_adc.o
+ .debug_line    0x00002b5f      0x885 ..\obj\ui_lcd_hy28.o
+ .debug_line    0x000033e4      0x41c ..\obj\printf.o
+ .debug_line    0x00003800      0x2b3 ..\obj\usbh_bsp.o
+ .debug_line    0x00003ab3      0x1cc ..\obj\usbd_desc.o
+ .debug_line    0x00003c7f      0x3d9 ..\obj\stm32f4xx_fsmc.o
+ .debug_line    0x00004058      0x2c2 ..\obj\stm32f4xx_gpio.o
+ .debug_line    0x0000431a      0x120 ..\obj\ui_lcd_hy28_fonts.o
+ .debug_line    0x0000443a      0x40f ..\obj\stm32f4xx_flash.o
+ .debug_line    0x00004849      0x2df ..\obj\usbd_cdc_vcp.o
+ .debug_line    0x00004b28      0x1a3 ..\obj\system_stm32f4xx.o
+ .debug_line    0x00004ccb      0x35f ..\obj\stm32f4xx_dma.o
+ .debug_line    0x0000502a      0x229 ..\obj\i2s.o
+ .debug_line    0x00005253      0xa4c ..\obj\audio_driver.o
+ .debug_line    0x00005c9f      0x3bf ..\obj\usbd_req.o
+ .debug_line    0x0000605e      0x380 ..\obj\usb_dcd_int.o
+ .debug_line    0x000063de      0xefb ..\obj\ui_menu.o
+ .debug_line    0x000072d9      0x2b7 ..\obj\usbd_cdc_core.o
+ .debug_line    0x00007590      0x37e ..\obj\ui_si570.o
+ .debug_line    0x0000790e      0x277 ..\obj\cat_driver.o
+ .debug_line    0x00007b85      0x3d6 ..\obj\stm32f4xx_spi.o
+ .debug_line    0x00007f5b      0x1b3 ..\obj\softdds.o
+ .debug_line    0x0000810e      0x45f ..\obj\stm32f4xx_i2c.o
+ .debug_line    0x0000856d      0x228 ..\obj\stm32f4xx_exti.o
+ .debug_line    0x00008795      0x1c8 ..\obj\misc.o
+ .debug_line    0x0000895d      0x30c ..\obj\usb_dcd.o
+ .debug_line    0x00008c69      0x1fe ..\obj\mchf_hw_i2c2.o
+ .debug_line    0x00008e67      0x2fd ..\obj\cw_gen.o
+ .debug_line    0x00009164      0x597 ..\obj\mchf_board.o
+ .debug_line    0x000096fb      0x20a ..\obj\usbd_ioreq.o
+ .debug_line    0x00009905      0x243 ..\obj\usbd_bsp.o
+ .debug_line    0x00009b48      0x9fc ..\obj\stm32f4xx_tim.o
+ .debug_line    0x0000a544     0x2027 ..\obj\ui_driver.o
+ .debug_line    0x0000c56b      0x2b9 ..\obj\eeprom.o
+ .debug_line    0x0000c824      0x163 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_fill_q15.o)
+ .debug_line    0x0000c987      0x185 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_copy_f32.o)
+ .debug_line    0x0000cb0c      0x142 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_min_f32.o)
+ .debug_line    0x0000cc4e      0x197 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_mean_f32.o)
+ .debug_line    0x0000cde5      0x11d ..\..\..\libs\libarm_cortexM4lf_math.a(arm_max_q15.o)
+ .debug_line    0x0000cf02      0x141 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_max_f32.o)
+ .debug_line    0x0000d043      0x6ad ..\..\..\libs\libarm_cortexM4lf_math.a(arm_rfft_q15.o)
+ .debug_line    0x0000d6f0      0x155 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_rfft_init_q15.o)
+ .debug_line    0x0000d845      0x878 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_cfft_radix4_q15.o)
+ .debug_line    0x0000e0bd      0x16d ..\..\..\libs\libarm_cortexM4lf_math.a(arm_cfft_radix4_init_q15.o)
+ .debug_line    0x0000e22a      0x137 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_lms_norm_init_f32.o)
+ .debug_line    0x0000e361      0x2e2 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_lms_norm_f32.o)
+ .debug_line    0x0000e643      0x29c ..\..\..\libs\libarm_cortexM4lf_math.a(arm_iir_lattice_f32.o)
+ .debug_line    0x0000e8df      0x318 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_fir_interpolate_f32.o)
+ .debug_line    0x0000ebf7      0x120 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_fir_init_f32.o)
+ .debug_line    0x0000ed17      0x2d9 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_fir_f32.o)
+ .debug_line    0x0000eff0      0x2a5 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_fir_decimate_f32.o)
+ .debug_line    0x0000f295      0x204 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_cmplx_mag_q15.o)
+ .debug_line    0x0000f499      0x30c ..\..\..\libs\libarm_cortexM4lf_math.a(arm_sqrt_q15.o)
+ .debug_line    0x0000f7a5      0x151 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_sin_f32.o)
+ .debug_line    0x0000f8f6      0x153 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_cos_f32.o)
+ .debug_line    0x0000fa49      0x17e ..\..\..\libs\libarm_cortexM4lf_math.a(arm_sub_f32.o)
+ .debug_line    0x0000fbc7      0x24b ..\..\..\libs\libarm_cortexM4lf_math.a(arm_shift_q15.o)
+ .debug_line    0x0000fe12      0x1a1 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_scale_f32.o)
+ .debug_line    0x0000ffb3      0x17f ..\..\..\libs\libarm_cortexM4lf_math.a(arm_mult_f32.o)
+ .debug_line    0x00010132      0x17e ..\..\..\libs\libarm_cortexM4lf_math.a(arm_add_f32.o)
+ .debug_line    0x000102b0       0xfd ..\..\..\libs\libarm_cortexM4lf_math.a(arm_common_tables.o)
 
-.debug_str      0x00000000     0xc175
+.debug_str      0x00000000     0xc11f
  .debug_str     0x00000000      0x22a ..\obj\stm32f4xx_syscfg.o
                                 0x28e (size before relaxing)
  .debug_str     0x0000022a     0x170c ..\obj\usb_core.o
@@ -4807,133 +4807,133 @@ OUTPUT(firmware_Target_Flash.elf elf32-littlearm)
                                 0x100 (size before relaxing)
  .debug_str     0x00002c2b      0x19e ..\obj\usbd_core.o
                                 0xcb5 (size before relaxing)
- .debug_str     0x00002dc9      0xa20 ..\obj\main.o
-                                0xbdc (size before relaxing)
- .debug_str     0x000037e9      0x61a ..\obj\stm32f4xx_rcc.o
+ .debug_str     0x00002dc9      0x9f1 ..\obj\main.o
+                                0xbad (size before relaxing)
+ .debug_str     0x000037ba      0x61a ..\obj\stm32f4xx_rcc.o
                                 0x7df (size before relaxing)
- .debug_str     0x00003e03      0x378 ..\obj\codec.o
-                                0xfa7 (size before relaxing)
- .debug_str     0x0000417b      0x609 ..\obj\stm32f4xx_adc.o
+ .debug_str     0x00003dd4      0x378 ..\obj\codec.o
+                                0xf78 (size before relaxing)
+ .debug_str     0x0000414c      0x609 ..\obj\stm32f4xx_adc.o
                                 0x793 (size before relaxing)
- .debug_str     0x00004784      0x8e8 ..\obj\ui_lcd_hy28.o
-                               0x1587 (size before relaxing)
- .debug_str     0x0000506c      0x482 ..\obj\printf.o
+ .debug_str     0x00004755      0x8e8 ..\obj\ui_lcd_hy28.o
+                               0x1558 (size before relaxing)
+ .debug_str     0x0000503d      0x482 ..\obj\printf.o
                                 0x628 (size before relaxing)
- .debug_str     0x000054ee      0x6ad ..\obj\usbh_bsp.o
+ .debug_str     0x000054bf      0x6ad ..\obj\usbh_bsp.o
                                0x13f1 (size before relaxing)
- .debug_str     0x00005b9b      0x151 ..\obj\usbd_desc.o
+ .debug_str     0x00005b6c      0x151 ..\obj\usbd_desc.o
                                 0x32b (size before relaxing)
- .debug_str     0x00005cec      0x3e4 ..\obj\stm32f4xx_fsmc.o
+ .debug_str     0x00005cbd      0x3e4 ..\obj\stm32f4xx_fsmc.o
                                 0x723 (size before relaxing)
- .debug_str     0x000060d0      0x17a ..\obj\stm32f4xx_gpio.o
+ .debug_str     0x000060a1      0x17a ..\obj\stm32f4xx_gpio.o
                                 0x432 (size before relaxing)
- .debug_str     0x0000624a       0x9c ..\obj\ui_lcd_hy28_fonts.o
+ .debug_str     0x0000621b       0x9c ..\obj\ui_lcd_hy28_fonts.o
                                 0x1ee (size before relaxing)
- .debug_str     0x000062e6      0x331 ..\obj\stm32f4xx_flash.o
+ .debug_str     0x000062b7      0x331 ..\obj\stm32f4xx_flash.o
                                 0x516 (size before relaxing)
- .debug_str     0x00006617      0x1a5 ..\obj\usbd_cdc_vcp.o
-                                0xb8e (size before relaxing)
- .debug_str     0x000067bc       0x94 ..\obj\system_stm32f4xx.o
+ .debug_str     0x000065e8      0x1a5 ..\obj\usbd_cdc_vcp.o
+                                0xb5f (size before relaxing)
+ .debug_str     0x0000678d       0x94 ..\obj\system_stm32f4xx.o
                                 0x32b (size before relaxing)
- .debug_str     0x00006850      0x370 ..\obj\stm32f4xx_dma.o
+ .debug_str     0x00006821      0x370 ..\obj\stm32f4xx_dma.o
                                 0x4db (size before relaxing)
- .debug_str     0x00006bc0      0x115 ..\obj\i2s.o
+ .debug_str     0x00006b91      0x115 ..\obj\i2s.o
                                 0x907 (size before relaxing)
- .debug_str     0x00006cd5      0xbd9 ..\obj\audio_driver.o
-                               0x1a24 (size before relaxing)
- .debug_str     0x000078ae      0x152 ..\obj\usbd_req.o
+ .debug_str     0x00006ca6      0xbd9 ..\obj\audio_driver.o
+                               0x19f5 (size before relaxing)
+ .debug_str     0x0000787f      0x152 ..\obj\usbd_req.o
                                 0xc38 (size before relaxing)
- .debug_str     0x00007a00      0x273 ..\obj\usb_dcd_int.o
+ .debug_str     0x000079d1      0x273 ..\obj\usb_dcd_int.o
                                0x140c (size before relaxing)
- .debug_str     0x00007c73      0xaf9 ..\obj\ui_menu.o
-                               0x19c9 (size before relaxing)
- .debug_str     0x0000876c      0x1a2 ..\obj\usbd_cdc_core.o
+ .debug_str     0x00007c44      0xad2 ..\obj\ui_menu.o
+                               0x1973 (size before relaxing)
+ .debug_str     0x00008716      0x1a2 ..\obj\usbd_cdc_core.o
                                 0xc55 (size before relaxing)
- .debug_str     0x0000890e      0x260 ..\obj\ui_si570.o
+ .debug_str     0x000088b8      0x260 ..\obj\ui_si570.o
                                 0x3f0 (size before relaxing)
- .debug_str     0x00008b6e       0x87 ..\obj\cat_driver.o
+ .debug_str     0x00008b18       0x87 ..\obj\cat_driver.o
                                 0xb0e (size before relaxing)
- .debug_str     0x00008bf5      0x287 ..\obj\stm32f4xx_spi.o
+ .debug_str     0x00008b9f      0x287 ..\obj\stm32f4xx_spi.o
                                 0x619 (size before relaxing)
- .debug_str     0x00008e7c       0x72 ..\obj\softdds.o
+ .debug_str     0x00008e26       0x72 ..\obj\softdds.o
                                 0x1ad (size before relaxing)
- .debug_str     0x00008eee      0x32c ..\obj\stm32f4xx_i2c.o
+ .debug_str     0x00008e98      0x32c ..\obj\stm32f4xx_i2c.o
                                 0x5f4 (size before relaxing)
- .debug_str     0x0000921a      0x1b9 ..\obj\stm32f4xx_exti.o
+ .debug_str     0x000091c4      0x1b9 ..\obj\stm32f4xx_exti.o
                                 0x2fd (size before relaxing)
- .debug_str     0x000093d3      0x115 ..\obj\misc.o
+ .debug_str     0x0000937d      0x115 ..\obj\misc.o
                                 0x368 (size before relaxing)
- .debug_str     0x000094e8       0xf6 ..\obj\usb_dcd.o
+ .debug_str     0x00009492       0xf6 ..\obj\usb_dcd.o
                                 0xc62 (size before relaxing)
- .debug_str     0x000095de       0x66 ..\obj\mchf_hw_i2c2.o
+ .debug_str     0x00009588       0x66 ..\obj\mchf_hw_i2c2.o
                                 0x42f (size before relaxing)
- .debug_str     0x00009644      0x142 ..\obj\cw_gen.o
-                                0xb36 (size before relaxing)
- .debug_str     0x00009786      0x3c6 ..\obj\mchf_board.o
-                               0x1a37 (size before relaxing)
- .debug_str     0x00009b4c       0xbb ..\obj\usbd_ioreq.o
+ .debug_str     0x000095ee      0x142 ..\obj\cw_gen.o
+                                0xb07 (size before relaxing)
+ .debug_str     0x00009730      0x3c6 ..\obj\mchf_board.o
+                               0x1a08 (size before relaxing)
+ .debug_str     0x00009af6       0xbb ..\obj\usbd_ioreq.o
                                 0xaf1 (size before relaxing)
- .debug_str     0x00009c07       0xcf ..\obj\usbd_bsp.o
+ .debug_str     0x00009bb1       0xcf ..\obj\usbd_bsp.o
                                0x1225 (size before relaxing)
- .debug_str     0x00009cd6      0xa69 ..\obj\stm32f4xx_tim.o
+ .debug_str     0x00009c80      0xa69 ..\obj\stm32f4xx_tim.o
                                 0xd5f (size before relaxing)
- .debug_str     0x0000a73f      0xf53 ..\obj\ui_driver.o
-                               0x2bbd (size before relaxing)
- .debug_str     0x0000b692      0x143 ..\obj\eeprom.o
+ .debug_str     0x0000a6e9      0xf53 ..\obj\ui_driver.o
+                               0x2b8e (size before relaxing)
+ .debug_str     0x0000b63c      0x143 ..\obj\eeprom.o
                                 0x31d (size before relaxing)
- .debug_str     0x0000b7d5       0xfd ..\..\..\libs\libarm_cortexM4lf_math.a(arm_fill_q15.o)
+ .debug_str     0x0000b77f       0xfd ..\..\..\libs\libarm_cortexM4lf_math.a(arm_fill_q15.o)
                                 0x1c4 (size before relaxing)
- .debug_str     0x0000b8d2       0x35 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_copy_f32.o)
+ .debug_str     0x0000b87c       0x35 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_copy_f32.o)
                                 0x191 (size before relaxing)
- .debug_str     0x0000b907       0x50 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_min_f32.o)
+ .debug_str     0x0000b8b1       0x50 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_min_f32.o)
                                 0x1ac (size before relaxing)
- .debug_str     0x0000b957       0x33 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_mean_f32.o)
+ .debug_str     0x0000b901       0x33 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_mean_f32.o)
                                 0x197 (size before relaxing)
- .debug_str     0x0000b98a       0x38 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_max_q15.o)
+ .debug_str     0x0000b934       0x38 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_max_q15.o)
                                 0x1b0 (size before relaxing)
- .debug_str     0x0000b9c2       0x31 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_max_f32.o)
+ .debug_str     0x0000b96c       0x31 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_max_f32.o)
                                 0x1ac (size before relaxing)
- .debug_str     0x0000b9f3       0xd0 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_rfft_q15.o)
+ .debug_str     0x0000b99d       0xd0 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_rfft_q15.o)
                                 0x34e (size before relaxing)
- .debug_str     0x0000bac3       0x56 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_rfft_init_q15.o)
+ .debug_str     0x0000ba6d       0x56 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_rfft_init_q15.o)
                                 0x341 (size before relaxing)
- .debug_str     0x0000bb19      0x111 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_cfft_radix4_q15.o)
+ .debug_str     0x0000bac3      0x111 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_cfft_radix4_q15.o)
                                 0x31a (size before relaxing)
- .debug_str     0x0000bc2a       0x68 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_cfft_radix4_init_q15.o)
+ .debug_str     0x0000bbd4       0x68 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_cfft_radix4_init_q15.o)
                                 0x2ca (size before relaxing)
- .debug_str     0x0000bc92       0x44 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_lms_norm_init_f32.o)
+ .debug_str     0x0000bc3c       0x44 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_lms_norm_init_f32.o)
                                 0x1d5 (size before relaxing)
- .debug_str     0x0000bcd6       0x57 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_lms_norm_f32.o)
+ .debug_str     0x0000bc80       0x57 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_lms_norm_f32.o)
                                 0x1f9 (size before relaxing)
- .debug_str     0x0000bd2d       0x58 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_iir_lattice_f32.o)
+ .debug_str     0x0000bcd7       0x58 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_iir_lattice_f32.o)
                                 0x215 (size before relaxing)
- .debug_str     0x0000bd85       0x60 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_fir_interpolate_f32.o)
+ .debug_str     0x0000bd2f       0x60 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_fir_interpolate_f32.o)
                                 0x221 (size before relaxing)
- .debug_str     0x0000bde5       0x3a ..\..\..\libs\libarm_cortexM4lf_math.a(arm_fir_init_f32.o)
+ .debug_str     0x0000bd8f       0x3a ..\..\..\libs\libarm_cortexM4lf_math.a(arm_fir_init_f32.o)
                                 0x1bf (size before relaxing)
- .debug_str     0x0000be1f       0x44 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_fir_f32.o)
+ .debug_str     0x0000bdc9       0x44 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_fir_f32.o)
                                 0x1ed (size before relaxing)
- .debug_str     0x0000be63       0x4f ..\..\..\libs\libarm_cortexM4lf_math.a(arm_fir_decimate_f32.o)
+ .debug_str     0x0000be0d       0x4f ..\..\..\libs\libarm_cortexM4lf_math.a(arm_fir_decimate_f32.o)
                                 0x20e (size before relaxing)
- .debug_str     0x0000beb2       0x59 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_cmplx_mag_q15.o)
+ .debug_str     0x0000be5c       0x59 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_cmplx_mag_q15.o)
                                 0x1e3 (size before relaxing)
- .debug_str     0x0000bf0b       0x8e ..\..\..\libs\libarm_cortexM4lf_math.a(arm_sqrt_q15.o)
+ .debug_str     0x0000beb5       0x8e ..\..\..\libs\libarm_cortexM4lf_math.a(arm_sqrt_q15.o)
                                 0x29f (size before relaxing)
- .debug_str     0x0000bf99       0x58 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_sin_f32.o)
+ .debug_str     0x0000bf43       0x58 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_sin_f32.o)
                                 0x1ac (size before relaxing)
- .debug_str     0x0000bff1       0x3f ..\..\..\libs\libarm_cortexM4lf_math.a(arm_cos_f32.o)
+ .debug_str     0x0000bf9b       0x3f ..\..\..\libs\libarm_cortexM4lf_math.a(arm_cos_f32.o)
                                 0x1ac (size before relaxing)
- .debug_str     0x0000c030       0x3c ..\..\..\libs\libarm_cortexM4lf_math.a(arm_sub_f32.o)
+ .debug_str     0x0000bfda       0x3c ..\..\..\libs\libarm_cortexM4lf_math.a(arm_sub_f32.o)
                                 0x198 (size before relaxing)
- .debug_str     0x0000c06c       0x3e ..\..\..\libs\libarm_cortexM4lf_math.a(arm_shift_q15.o)
+ .debug_str     0x0000c016       0x3e ..\..\..\libs\libarm_cortexM4lf_math.a(arm_shift_q15.o)
                                 0x1d3 (size before relaxing)
- .debug_str     0x0000c0aa       0x34 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_scale_f32.o)
+ .debug_str     0x0000c054       0x34 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_scale_f32.o)
                                 0x19b (size before relaxing)
- .debug_str     0x0000c0de       0x32 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_mult_f32.o)
+ .debug_str     0x0000c088       0x32 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_mult_f32.o)
                                 0x19a (size before relaxing)
- .debug_str     0x0000c110       0x30 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_add_f32.o)
+ .debug_str     0x0000c0ba       0x30 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_add_f32.o)
                                 0x198 (size before relaxing)
- .debug_str     0x0000c140       0x35 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_common_tables.o)
+ .debug_str     0x0000c0ea       0x35 ..\..\..\libs\libarm_cortexM4lf_math.a(arm_common_tables.o)
                                 0x1ad (size before relaxing)
 
 .debug_frame    0x00000000     0x67a4

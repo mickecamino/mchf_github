@@ -110,10 +110,7 @@ void UiDriverUpdateMenu(uchar mode)
 	uchar var;
 	bool  update_vars;
 	static uchar screen_disp = 1;	// used to detect screen display switching and prevent unnecessary blanking
-	static uchar screen_disp_old = 99;
 	ulong	m_clr, c_clr;
-	static	int	menu_var_changed = 99;
-	static	bool menu_var_change_detect = 0;
 
 	m_clr = Yellow;
 	c_clr = Cyan;
@@ -325,20 +322,12 @@ void UiDriverUpdateMenu(uchar mode)
 		c_clr = Black;
 	//
 	UiLcdHy28_PrintText(POS_SPECTRUM_IND_X - 2, POS_SPECTRUM_IND_Y + 60, " Save settings using POWER OFF!  ", c_clr, Black, 0);
-	//
-	//
-	if((sd.use_spi) && (ts.menu_var != menu_var_changed))	{	// if LCD SPI mode is active, do additional validation to avoid additional updates on display
-		update_vars = 1;
-	}
-	menu_var_changed = ts.menu_var;
-	//
+
 	//
 	// These functions are used to scan the individual menu items and display the items.
 	// In each of the FOR loops below, make CERTAIN that the precise number of items are included for each menu!
 	//
-
-	if(((mode == 0) && (sd.use_spi) && (screen_disp != screen_disp_old)) || (((mode == 0) && (!sd.use_spi))) || update_vars)	{		// display all items and their current settings
-		// but minimize updates if the LCD is using an SPI interface
+	if((mode == 0) || update_vars)	{		// display all items and their current settings
 		update_vars = 0;
 		if(ts.menu_item < 6)	{	// first screen of items
 			for(var = 0; var < 6; var++)
@@ -401,9 +390,6 @@ void UiDriverUpdateMenu(uchar mode)
 					UiDriverUpdateConfigMenuLines(var-MAX_MENU_ITEM, 0);
 		}
 	}
-
-	//
-	screen_disp_old = screen_disp;
 	//
 	if(mode == 1)	{	// individual item selected/changed
 		if(ts.menu_item < MAX_MENU_ITEM)					// main menu item

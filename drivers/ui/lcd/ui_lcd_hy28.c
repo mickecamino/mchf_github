@@ -687,12 +687,10 @@ void UiLcdHy28_DrawHorizLineWithGrad(ushort x, ushort y, ushort Length,ushort gr
 //*----------------------------------------------------------------------------
 void UiLcdHy28_DrawEmptyRect(ushort Xpos, ushort Ypos, ushort Height, ushort Width,ushort color)
 {
-
-		UiLcdHy28_DrawStraightLine(Xpos, (Ypos),          Width,        LCD_DIR_HORIZONTAL,color);
-		UiLcdHy28_DrawStraightLine(Xpos, Ypos,            Height,       LCD_DIR_VERTICAL,color);
-		UiLcdHy28_DrawStraightLine((Xpos + Width), Ypos,  (Height + 1), LCD_DIR_VERTICAL,color);
-		UiLcdHy28_DrawStraightLine(Xpos, (Ypos + Height), Width,        LCD_DIR_HORIZONTAL,color);
-
+   UiLcdHy28_DrawStraightLine(Xpos, (Ypos),          Width,        LCD_DIR_HORIZONTAL,color);
+   UiLcdHy28_DrawStraightLine(Xpos, Ypos,            Height,       LCD_DIR_VERTICAL,color);
+   UiLcdHy28_DrawStraightLine((Xpos + Width), Ypos,  (Height + 1), LCD_DIR_VERTICAL,color);
+   UiLcdHy28_DrawStraightLine(Xpos, (Ypos + Height), Width,        LCD_DIR_HORIZONTAL,color);
 }
 
 //*----------------------------------------------------------------------------
@@ -719,38 +717,11 @@ void UiLcdHy28_DrawBottomButton(ushort Xpos, ushort Ypos, ushort Height, ushort 
 //*----------------------------------------------------------------------------
 void UiLcdHy28_DrawFullRect(ushort Xpos, ushort Ypos, ushort Height, ushort Width ,ushort color)
 {
-	ulong i, j;
-
-	if(sd.use_spi)	{		// SPI enabled?
-		UiLcdHy28_SetCursorA(Xpos, Ypos);
-		//
-		UiLcdHy28_WriteReg(0x03,  0x1038);    // set GRAM write direction and BGR=1 and turn on cursor auto-increment
-		// Establish CGRAM window for THIS rectangle
-		UiLcdHy28_WriteReg(0x50, Ypos);    // Vertical GRAM Start Address
-		UiLcdHy28_WriteReg(0x51, (Ypos + Height)-1);    // Vertical GRAM End Address
-		UiLcdHy28_WriteReg(0x52, Xpos);    // Horizontal GRAM Start Address
-		UiLcdHy28_WriteReg(0x53, (Xpos + Width)-1);    // Horizontal GRAM End Address
-		//
-		j = (ulong)Height * (ulong)Width;		// calculate number of pixels in rectangle
-		//
-		UiLcdHy28_WriteRAM_Prepare();			// get ready to write pixels
-		//
-		for(i = 0; i < j; i++)					// fill area with pixels of desired color
-			UiLcdHy28_WriteDataOnly(color);
-		//
-		UiLcdHy28_WriteReg(0x50, 0x0000);    // Horizontal GRAM Start Address
-		UiLcdHy28_WriteReg(0x51, 0x00EF);    // Horizontal GRAM End Address
-		UiLcdHy28_WriteReg(0x52, 0x0000);    // Vertical GRAM Start Address
-		UiLcdHy28_WriteReg(0x53, 0x013F);    // Vertical GRAM End Address
-		//
-		UiLcdHy28_WriteReg(0x03,  0x1030);    // set GRAM write direction and BGR=1 and switch increment mode
-	}
-	else	{
-		while(Width--)	{
-			UiLcdHy28_DrawStraightLine(Xpos,Ypos,Height,LCD_DIR_VERTICAL,color);
-			Xpos++;
-		}
-	}
+   while(Width--)
+   {
+      UiLcdHy28_DrawStraightLine(Xpos,Ypos,Height,LCD_DIR_VERTICAL,color);
+      Xpos++;
+   }
 }
 
 //*----------------------------------------------------------------------------
@@ -768,21 +739,14 @@ void UiLcdHy28_DrawChar(ushort x, ushort y, char symb,ushort Color, ushort bkCol
    uchar      fw = cf->Width;
    const short   *ch = (const short *)(&cf->table[(symb - 32) * cf->Height]);
 
-   UiLcdHy28_SetCursorA(x_addr,y);	// set starting position of character
-
-   if(sd.use_spi)	{		// SPI enabled?
-	   UiLcdHy28_WriteReg(0x03,  0x1038);    // set GRAM write direction and BGR=1 and turn on cursor auto-increment
-	   // Establish CGRAM window for THIS character
-	   UiLcdHy28_WriteReg(0x50, y);    // Vertical GRAM Start Address
-	   UiLcdHy28_WriteReg(0x51, y+(cf->Height)-1);    // Vertical GRAM End Address	-1
-	   UiLcdHy28_WriteReg(0x52, x);    // Horizontal GRAM Start Address
-	   UiLcdHy28_WriteReg(0x53, x_addr+(cf->Width)-1);    // Horizontal GRAM End Address  -1
-   }
+   UiLcdHy28_SetCursorA(x_addr,y);
 
    // Next line
-   for(i = 0; i < cf->Height; i++)	{
+   for(i = 0; i < cf->Height; i++)
+   {
       // Draw line
-      for(j = 0; j < cf->Width; j++)	{
+      for(j = 0; j < cf->Width; j++)
+      {
          UiLcdHy28_WriteRAM_Prepare();
 
          a = ((ch[i] & ((0x80 << ((fw / 12 ) * 8)) >> j)));
@@ -796,28 +760,14 @@ void UiLcdHy28_DrawChar(ushort x, ushort y, char symb,ushort Color, ushort bkCol
          if(sd.use_spi)
             GPIO_SetBits(LCD_CS_PIO, LCD_CS);
 
-         if(!sd.use_spi)	{		// Not SPI mode - update RAM info
-        	 x_addr++;
-        	 UiLcdHy28_SetCursorA(x_addr,y);
-         }
+         x_addr++;
+         UiLcdHy28_SetCursorA(x_addr,y);
       }
 
-      if(!sd.use_spi)	{			// Not SPI mode - update RAM info
-      	  y++;
-      	  x_addr = x;
-      	  UiLcdHy28_SetCursorA(x_addr,y);
-      }
+      y++;
+      x_addr = x;
+      UiLcdHy28_SetCursorA(x_addr,y);
    }
-
-   if(sd.use_spi)	{				// if SPI mode, restore normal operation, removing cursor window, setting it back to default
-	   UiLcdHy28_WriteReg(0x50, 0x0000);    // Horizontal GRAM Start Address
-	   UiLcdHy28_WriteReg(0x51, 0x00EF);    // Horizontal GRAM End Address
-	   UiLcdHy28_WriteReg(0x52, 0x0000);    // Vertical GRAM Start Address
-	   UiLcdHy28_WriteReg(0x53, 0x013F);    // Vertical GRAM End Address
-	   //
-	   UiLcdHy28_WriteReg(0x03,  0x1030);    // set GRAM write direction and BGR=1 and switch increment mode
-   }
-
 }
 
 //*----------------------------------------------------------------------------
