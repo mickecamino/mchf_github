@@ -1608,17 +1608,21 @@ void I2S_RX_CallBack(int16_t *src, int16_t *dst, int16_t size, uint16_t ht)
 	// Perform LCD backlight PWM brightness function
 	//
 
-	if(!lcd_dim_prescale)	{	// Only update dimming PWM counter every fourth time through to reduce frequency below that of audible range
-		if(lcd_dim < ts.lcd_backlight_brightness)
-			LCD_BACKLIGHT_PIO->BSRRH = LCD_BACKLIGHT;	// LCD backlight off
-		else
-			LCD_BACKLIGHT_PIO->BSRRL = LCD_BACKLIGHT;	// LCD backlight on
-		//
-		lcd_dim++;
-		lcd_dim &= 3;	// limit brightness PWM count to 0-3
+	if(!ts.lcd_blanking_flag)	{	// is LCD *NOT* blanked?
+		if(!lcd_dim_prescale)	{	// Only update dimming PWM counter every fourth time through to reduce frequency below that of audible range
+			if(lcd_dim < ts.lcd_backlight_brightness)
+				LCD_BACKLIGHT_PIO->BSRRH = LCD_BACKLIGHT;	// LCD backlight off
+			else
+				LCD_BACKLIGHT_PIO->BSRRL = LCD_BACKLIGHT;	// LCD backlight on
+			//
+			lcd_dim++;
+			lcd_dim &= 3;	// limit brightness PWM count to 0-3
+		}
+		lcd_dim_prescale++;
+		lcd_dim_prescale &= 3;	// limit prescale count to 0-3
 	}
-	lcd_dim_prescale++;
-	lcd_dim_prescale &= 3;	// limit prescale count to 0-3
+	else	// LCD is to be blanked
+		LCD_BACKLIGHT_PIO->BSRRH = LCD_BACKLIGHT;	// LCD backlight off
 	//
 	//
 	tcount+=CLOCKS_PER_DMA_CYCLE;		// add the number of clock cycles that would have passed between DMA cycles

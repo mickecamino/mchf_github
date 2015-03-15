@@ -628,6 +628,7 @@ void TransceiverStateInit(void)
 	ts.dsp_inhibit_timing = 0;				// used to time inhibiting of DSP when it must be turned off for some reason
 	ts.reset_dsp_nr		= 0;				// TRUE if DSP NR coefficients are to be reset when "audio_driver_set_rx_audio_filter()" is called
 	ts.lcd_backlight_brightness = 0;		// = 0 full brightness
+	ts.lcd_backlight_blanking = 0;			// MSB = 1 for auto-off of backlight, lower nybble holds time for auto-off in seconds
 	//
 	ts.tune_step		= 0;				// Used for press-and-hold step size changing mode
 	ts.frequency_lock	= 0;				// TRUE if frequency knob is locked
@@ -644,6 +645,8 @@ void TransceiverStateInit(void)
 	ts.iq_freq_mode		= 0;				// used to set/configure the I/Q frequency/conversion mode
 	ts.lsb_usb_auto_select	= 0;			// holds setting of LSB/USB auto-select above/below 10 MHz
 	ts.hold_off_spectrum_scope	= 0;		// this is a timer used to hold off updates of the spectrum scope when an SPI LCD display interface is used
+	ts.lcd_blanking_time = 0;				// this holds the system time after which the LCD is blanked - if blanking is enabled
+	ts.lcd_blanking_flag = 0;				// if TRUE, the LCD is blanked completely (e.g. backlight is off)
 
 }
 

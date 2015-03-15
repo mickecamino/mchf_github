@@ -45,7 +45,7 @@
 #define 	TRX4M_VER_MAJOR			0
 #define 	TRX4M_VER_MINOR			0
 #define 	TRX4M_VER_RELEASE		219
-#define 	TRX4M_VER_BUILD			1
+#define 	TRX4M_VER_BUILD			2
 //
 #define		ATTRIB_STRING1			"Additional Contributions by"
 #define		ATTRIB_STRING2			"KA7OEI and the Open Source and"
@@ -637,6 +637,10 @@ typedef struct ButtonMap
 #define	METER_ALC					2
 #define	METER_MAX					2
 //
+#define	BACKLIGHT_BLANK_TIMING_DEFAULT	8		// default number of SECONDS for backlight blanking
+#define MIN_LCD_BLANK_DELAY_TIME	5			// minimum number of seconds for backlight "on" time
+#define LCD_STARTUP_BLANKING_TIME	3000		// number of DECISECONDS (e.g. SECONDS * 100) after power-up before LCD blanking occurs if no buttons are pressed/knobs turned
+//
 // *************************************************************************************************************************
 //
 // Eeprom items IDs - if updating, make sure eeprom.h list
@@ -797,6 +801,7 @@ typedef struct ButtonMap
 #define	EEPROM_FREQ_CONV_MODE		131		// Frequency Conversion Mode (e.g. I/Q frequency conversion done in receive/transmit to offset from zero)
 #define	EEPROM_LSB_USB_AUTO_SELECT	132		// Auto selection of LSB/USB above/below 10 MHz (including 60 meters)
 #define	EEPROM_VERSION_BUILD		133		// Storage of current version build number - used to detect change of firmware
+#define	EEPROM_LCD_BLANKING_CONFIG	134		// Configuration of automatic LCD blanking mode settings
 //
 // *******************************************************************************************************
 //
@@ -1035,6 +1040,7 @@ typedef struct TransceiverState
 	bool	reset_dsp_nr;				// TRUE if DSP NR coefficients are to be reset when "audio_driver_set_rx_audio_filter()" is called
 	//
 	uchar	lcd_backlight_brightness;	// LCD backlight brightness, 0-3:  0 = full, 3 = dimmest
+	uchar	lcd_backlight_blanking;		// for controlling backlight auto-off control
 	//
 	uchar	tune_step;					// Used for press-and-hold tune step adjustment
 	ulong	tune_step_idx_holder;		// used to hold the original step size index during the press-and-hold
@@ -1059,6 +1065,8 @@ typedef struct TransceiverState
 	uchar	iq_freq_mode;				// used to set/configure the I/Q frequency/conversion mode
 	uchar	lsb_usb_auto_select;		// holds setting of LSB/USB auto-select above/below 10 MHz
 	ulong	hold_off_spectrum_scope;	// this is a timer used to hold off updates of the spectrum scope when an SPI LCD display interface is used
+	ulong	lcd_blanking_time;			// this holds the system time after which the LCD is blanked - if blanking is enabled
+	bool	lcd_blanking_flag;			// if TRUE, the LCD is blanked completely (e.g. backlight is off)
 
 } TransceiverState;
 //

@@ -75,6 +75,8 @@ typedef struct KeypadState
 
 } KeypadState;
 
+#define	PRESS_HOLD_RELEASE_DELAY_TIME	10		// time after button being released before resetting press-and-hold flag
+
 #define S_METER_MAX							34
 
 // Spectrum scope operational constants
@@ -428,6 +430,8 @@ void 	UiCalcAGCVals(void);
 void 	UiCalcRFGain(void);
 void 	UiCalcALCDecay(void);
 void 	UiCalcAGCDecay(void);
+//
+void	UiLCDBlankTiming(void);
 //
 //
 #define	SIDETONE_MAX_GAIN	10		// Maximum sidetone gain

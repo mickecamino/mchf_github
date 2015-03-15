@@ -145,6 +145,7 @@ void			UiDriverUpdateMenu(uchar mode);
 void 			UiDriverUpdateMenuLines(uchar index, uchar mode);
 void			UiDriverUpdateConfigMenuLines(uchar index, uchar mode);
 void 			UiDriverSaveEepromValuesPowerDown(void);
+//
 
 // Tuning steps
 const ulong tune_steps[MAX_STEPS] = {
@@ -453,6 +454,8 @@ void ui_driver_init(void)
 	ts.refresh_freq_disp = 0;	// Turn off this flag now that we are done
 	UiDriverUpdateFrequency(1);	// Update frequency again
 	//
+	UiLCDBlankTiming();			// init timing for LCD blanking
+	ts.lcd_blanking_time = ts.sysclock + LCD_STARTUP_BLANKING_TIME;
 
 #ifdef DEBUG_BUILD
 	printf("ui driver init ok\n\r");
@@ -731,9 +734,12 @@ static void UiDriverPublicsInit(void)
 static void UiDriverProcessKeyboard(void)
 {
 	uchar temp;
+	ulong ltemp;
 
 	if(ks.button_processed)	{
 		ts.nb_disable = 1;	// disable noise blanker if button is pressed or held
+		//
+		UiLCDBlankTiming();	// calculate/process LCD blanking timing
 		//
 		//printf("button process: %02x, debounce time: %d\n\r",ks.button_id,ks.debounce_time);
 
@@ -1096,8 +1102,24 @@ static void UiDriverProcessKeyboard(void)
 					}
 					break;
 				case BUTTON_POWER_PRESSED:
-					if(ts.txrx_mode == TRX_MODE_RX)		// only allow power-off in RX mode
-						mchf_board_power_off();
+					if(!UiDriverButtonCheck(BUTTON_BNDM_PRESSED))	{	// was button BAND- pressed at the same time?
+						if(ts.lcd_backlight_blanking & 0x80)			// Yes - is MSB set, indicating "stealth" (backlight timed-off) mode?
+							ts.lcd_backlight_blanking &= 0x7f;		// yes - clear that bit, turning off "stealth" mode
+						else
+							ts.lcd_backlight_blanking |= 0x80;		// no - turn on MSB to activate "stealth" mode
+					}
+					else	{	// ONLY the POWER button was pressed
+						if(ts.txrx_mode == TRX_MODE_RX)		// only allow power-off in RX mode
+							mchf_board_power_off();
+					}
+					break;
+				case BUTTON_BNDM_PRESSED:			// BAND- button pressed-and-held?
+					if(!UiDriverButtonCheck(BUTTON_POWER_PRESSED))	{	// and POWER button pressed-and-held at the same time?
+						if(ts.lcd_backlight_blanking & 0x80)			// Yes - is MSB set, indicating "stealth" (backlight timed-off) mode?
+							ts.lcd_backlight_blanking &= 0x7f;		// yes - clear that bit, turning off "stealth" mode
+						else
+							ts.lcd_backlight_blanking |= 0x80;		// no - turn on MSB to activate "stealth" mode
+					}
 					break;
 				case BUTTON_STEPM_PRESSED:
 					if(!UiDriverButtonCheck(BUTTON_STEPP_PRESSED))	{	// was button STEP+ pressed at the same time?
@@ -3660,6 +3682,7 @@ static void UiDriverTimeScheduler(void)
 	static bool	dsp_rx_reenable_flag = 0;
 	static ulong dsp_rx_reenable_timer = 0;
 	static uchar dsp_crash_count = 0;
+	static uchar press_hold_release_delay = 0;
 
 	//
 	// TR->RX audio un-muting timer and Audio/AGC De-Glitching handler
@@ -3817,8 +3840,6 @@ static void UiDriverTimeScheduler(void)
 			dsp_crash_count = 0;				// clear crash count flag
 		}
 	}
-
-
 	//
 	// This delays the start-up of the DSP for several seconds to minimize the likelihood that the LMS function will get "jammed"
 	// and stop working.  It also does a delayed detection - and action - on the presence of a new version of firmware being installed.
@@ -3848,8 +3869,20 @@ static void UiDriverTimeScheduler(void)
 		Codec_Mute(0);						// make sure that audio is un-muted
 		//
 	}
+	//
+	//
+	// Process LCD auto-blanking
+	if(ts.lcd_backlight_blanking & 0x80)	{	// is LCD auto-blanking enabled?
+		if(ts.sysclock > ts.lcd_blanking_time)	{	// has the time expired and the LCD should be blanked?
+			ts.lcd_blanking_flag = 1;				// yes - blank the LCD
 
-
+		}
+		else									// time not expired
+			ts.lcd_blanking_flag = 0;				// un-blank the LCD
+	}
+	else								// auto-blanking NOT enabled
+		ts.lcd_blanking_flag = 0;				// always un-blank the LCD in this case
+	//
 	//
 	// State machine - processing old click
 	if(ks.button_processed)
@@ -3887,12 +3920,17 @@ static void UiDriverTimeScheduler(void)
 		ks.button_processed = 1;						// indicate that a button was processed
 		ks.button_still_pressed = 0;					// clear this flag so that the release (below) won't be detected
 		ks.press_hold = 1;
+		press_hold_release_delay = PRESS_HOLD_RELEASE_DELAY_TIME;	// Set up a bit of delay for when press-and-hold is released
 	}
 	else if(ks.press_hold && (UiDriverButtonCheck(ks.button_id)))	{	// was there a press-and-hold and the button is now released?
-		ks.button_pressed = 0;						// reset
-		ks.button_released = 0;
-		ks.press_hold = 0;
-		ks.button_still_pressed = 0;
+		if(press_hold_release_delay)					// press-and-hold delay expired?
+			press_hold_release_delay--;					// no - continue counting down before cancelling "press-and-hold" mode
+		else	{							// Press-and-hold mode time expired!
+			ks.button_pressed = 0;			// reset and exit press-and-hold mode, this to prevent extraneous button-presses when using multiple buttons
+			ks.button_released = 0;
+			ks.press_hold = 0;
+			ks.button_still_pressed = 0;
+		}
 	}
 	else if(UiDriverButtonCheck(ks.button_id) && (!ks.press_hold))	{	// button released and had been debounced?
 		// Change state from click to released, and processing flag on - if the button had been held down adequately
@@ -4164,6 +4202,8 @@ static bool UiDriverCheckFrequencyEncoder(void)
 	if(df.value_old == df.value_new)
 		return false;
 
+	UiLCDBlankTiming();	// calculate/process LCD blanking timing
+
 #ifdef USE_DETENTED_ENCODERS
 	// SW de-detent routine
 	df.de_detent++;
@@ -4257,6 +4297,7 @@ static void UiDriverCheckEncoderOne(void)
 
 	//printf("pot diff: %d\n\r",pot_diff);
 
+	UiLCDBlankTiming();	// calculate/process LCD blanking timing
 
 	// Take appropriate action
 	switch(ts.enc_one_mode)
@@ -4391,6 +4432,8 @@ static void UiDriverCheckEncoderTwo(void)
 		pot_diff = -1;
 
 	//printf("pot diff: %d\n\r",pot_diff);
+
+	UiLCDBlankTiming();	// calculate/process LCD blanking timing
 
 	if(ts.menu_mode)	{
 		if(pot_diff < 0)	{
@@ -4550,6 +4593,8 @@ static void UiDriverCheckEncoderThree(void)
 		pot_diff = -1;
 
 	//printf("pot diff: %d\n\r",pot_diff);
+
+	UiLCDBlankTiming();	// calculate/process LCD blanking timing
 
 	if(ts.menu_mode)	{
 		if(pot_diff < 0)	{
@@ -5426,8 +5471,8 @@ static void UiDriverReDrawSpectrumDisplay(void)
 	//if(ts.dmod_mode == DEMOD_DIGI)
 	//	return;
 
-	// Nothing to do here otherwise, or if scope is to be held off while other parts of the display are to be updated
-	if((!sd.enabled) || (ts.hold_off_spectrum_scope > ts.sysclock))
+	// Nothing to do here otherwise, or if scope is to be held off while other parts of the display are to be updated or the LCD is being blanked
+	if((!sd.enabled) || (ts.hold_off_spectrum_scope > ts.sysclock) || (ts.lcd_blanking_flag))
 		return;
 
 	// The state machine will rest
@@ -6740,6 +6785,27 @@ void UiDriverSetBandPowerFactor(uchar band)
 	}
 	//
 	ts.tx_power_factor *= pf_temp;	// rescale this for the actual power level
+}
+//
+//
+//*----------------------------------------------------------------------------
+//* Function Name       : UiLCDBlankTiming
+//* Object              : Do LCD Auto-Blank timing
+//* Input Parameters    :
+//* Output Parameters   :
+//* Functions called    :
+//*----------------------------------------------------------------------------
+//
+void UiLCDBlankTiming(void)
+{
+	ulong ltemp;
+
+	if(ts.lcd_backlight_blanking & 0x80)	{	// is LCD blanking enabled?
+		ltemp = (ulong)(ts.lcd_backlight_blanking & 0x0f);		// get setting of LCD blanking timing
+		ltemp *= 100;		// multiply to convert to deciseconds
+		ts.lcd_blanking_time = ltemp + ts.sysclock;		// calculate future time at which LCD is to be turned off
+		ts.lcd_blanking_flag = 0;		// clear flag to make LCD turn on
+	}
 }
 //
 //
@@ -8370,10 +8436,21 @@ void UiDriverLoadEepromValues(void)
 		//printf("-->LSB/USB select mode loaded\n\r");
 	}
 	//
+	// ------------------------------------------------------------------------------------
+	// Try to read auto LCD backlight blanking mode
+	if(Read_VirtEEPROM(EEPROM_LCD_BLANKING_CONFIG, &value) == 0)
+	{
+		if(value > 255)				// if out of range, it was bogus
+			value = 0;		// reset to OFF
+		//
+		ts.lcd_backlight_blanking = value;
+		//printf("-->auto LCD backlight blanking mode loaded\n\r");
+	}
+	//
 	// Next setting...
 }
 //
-// Below is a marker to make it easier to find the "Read" and "Save" EEPROM functions when scanning the source code
+// Below is a marker to make it easier to find the "Read" and "Save" EEPROM functions when scanning/scrolling the source code
 //
 // ********************************************************************************************************************
 // ********************************************************************************************************************
@@ -9653,6 +9730,19 @@ void UiDriverSaveEepromValuesPowerDown(void)
 	{
 		Write_VirtEEPROM(EEPROM_LSB_USB_AUTO_SELECT, AUTO_LSB_USB_DEFAULT);
 		//printf("-->LSB/USB auto select mode\n\r");
+	}
+	//
+	// ------------------------------------------------------------------------------------
+	// Try to read LCD blanking configuration - update if changed
+	if(Read_VirtEEPROM(EEPROM_LCD_BLANKING_CONFIG, &value) == 0)
+	{
+		Write_VirtEEPROM(EEPROM_LCD_BLANKING_CONFIG, ts.lcd_backlight_blanking);
+		//printf("-->LCD blanking configuration\n\r");
+	}
+	else	// create
+	{
+		Write_VirtEEPROM(EEPROM_LCD_BLANKING_CONFIG, 0);
+		//printf("-->LCD blanking configuration\n\r");
 	}
 	//
 	//
