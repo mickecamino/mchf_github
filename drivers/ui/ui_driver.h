@@ -26,8 +26,22 @@
 #define 	T_STEP_1KHZ						1000
 #define 	T_STEP_10KHZ					10000
 #define 	T_STEP_100KHZ					100000
+#define		T_STEP_1MHZ						1000000		// Used for transverter offset adjust
+#define		T_STEP_10MHZ					10000000	// Used for transverter offset adjust
+//
+enum {
+	T_STEP_1HZ_IDX = 0,
+	T_STEP_10HZ_IDX,
+	T_STEP_100HZ_IDX,
+	T_STEP_1KHZ_IDX,
+	T_STEP_10KHZ_IDX,
+	T_STEP_100KHZ_IDX,
+	T_STEP_1MHZ_IDX,
+	T_STEP_10MHZ_IDX,
+	T_STEP_MAX_STEPS
+};
 
-#define 	MAX_STEPS						6
+//#define 	MAX_STEPS						6
 
 // S meter
 #define 	S_METER_V_POS					55
@@ -119,18 +133,23 @@ typedef struct KeypadState
 #define SPECTRUM_SCOPE_SPI_HOLDOFF_TIME_TUNE	25	// time, in 100's of second to inhibit spectrum scope update after adjusting tuning while in SPI mode
 //
 #define SWR_SAMPLES_SKP						1	//5000
-#define SWR_SAMPLES_CNT						4
+#define SWR_SAMPLES_CNT						5//10
 //
 #define	SD_DB_DIV_SCALING					0.0316	// Scaling factor for number of dB/Division	0.0316 = 10dB/Division
 
-// SWR meter public
+// SWR and RF power meter public
 typedef struct SWRMeter
 {
 	ulong	skip;
 
-	ushort	pwr_aver;
-	ushort	swr_aver;
-	uchar	p_curr;
+	float fwd_calc;			// forward power readings in A/D units
+	float rev_calc;			// reverse power readings in A/D units
+	float fwd_pwr;			// forward power in watts
+	float rev_pwr;			// reverse power in watts
+	float fwd_dbm;			// forward power in dBm
+	float rev_dbm;			// reverse power in dBm
+	float vswr;				// vswr
+	uchar	p_curr;			// count used to update power meter
 	uchar	fwd_cal;		// SWR forward calibration (75-150 = 0.75-1.50)
 
 } SWRMeter;
@@ -139,38 +158,22 @@ typedef struct SWRMeter
 #define	SWR_CAL_MAX		150
 #define	SWR_CAL_DEFAULT	100
 //
-
-// Power levels ranges
-#define POWER_1W_MIN						0
-#define POWER_1W_MAX						1400
-
-#define POWER_2W_MIN						1400
-#define POWER_2W_MAX						1700
-
-#define POWER_3W_MIN						1700
-#define POWER_3W_MAX						2000
-
-#define POWER_4W_MIN						2000
-#define POWER_4W_MAX						2400
-
-#define POWER_5W_MIN						2400
-#define POWER_5W_MAX						2700
-
-#define POWER_6W_MIN						2700
-#define POWER_6W_MAX						2900
-
-#define POWER_7W_MIN						2900
-#define POWER_7W_MAX						3100
-
-#define POWER_8W_MIN						3100
-#define POWER_8W_MAX						3400
-
-#define POWER_9W_MIN						3400
-#define POWER_9W_MAX						3600
-
-#define POWER_10W_MIN						3600
-#define POWER_10W_MAX						4000
-
+#define	SWR_ADC_FULL_SCALE		4095	// full scale of A/D converter (4095 = 10 bits)
+#define	SWR_ADC_VOLT_REFERENCE	3.3		// NOMINAL A/D reference voltage.  The PRECISE value is calibrated by a menu item!  (Probably "FWD/REV ADC Cal.")
+//
+// Coefficients for calculating RF power from power sensor reading
+// The formula is:  P = a + bx + c x^2  where "x" is the *voltage* reading from the power sensor
+//
+#define	RF_PWR_COEFF_A	0.0119393		// constant (offset)
+#define	RF_PWR_COEFF_B	0.83376			// "b" coefficient (for x)
+#define	RF_PWR_COEFF_C	1.56918			// "c" coefficient (for X^2)
+//
+#define	SWR_MIN_CALC_POWER		0.25	// Minimum forward power required for SWR calculation
+//
+#define	VSWR_DAMPENING_FACTOR	0.25		// dampening/averaging factor (e.g. amount of "new" reading each time) - for VSWR meter indication ONLY
+//
+// Volt (DC power) meter
+//
 #define POWER_SAMPLES_SKP					10	//1500
 #define POWER_SAMPLES_CNT					32
 
@@ -432,6 +435,7 @@ void 	UiCalcALCDecay(void);
 void 	UiCalcAGCDecay(void);
 //
 void	UiLCDBlankTiming(void);
+void 	UiDriverChangeTuningStep(uchar is_up);
 //
 //
 #define	SIDETONE_MAX_GAIN	10		// Maximum sidetone gain
@@ -481,6 +485,7 @@ void	UiLCDBlankTiming(void);
 //
 #define	MAX_PA_BIAS			115		// Maximum PA Bias Setting
 #define	DEFAULT_PA_BIAS		0		// Default PA Bias setting
+#define	MIN_BIAS_SETTING	20		// Minimum bias setting.  (Below this, number is red)
 //
 #define	BIAS_OFFSET			25		// Offset value to be added to bias setting
 //  DA value = (OFFSET + (2*setting))  where DA value is 0-255
@@ -498,7 +503,7 @@ void	UiLCDBlankTiming(void);
 #define	MAX_RX_IQ_PHASE_BALANCE	32	// Maximum setting for RX IQ phase balance
 //
 #define	XVERTER_MULT_MAX		10		// maximum LO multipler in xverter mode
-#define	XVERTER_OFFSET_MAX		150000000	// Maximum transverter offset (150 MHz)
+#define	XVERTER_OFFSET_MAX		999000000	// Maximum transverter offset (999 MHz)
 //
 #define	AUTO_LSB_USB_OFF		0
 #define	AUTO_LSB_USB_ON			1

@@ -722,7 +722,7 @@ void UiLcdHy28_DrawFullRect(ushort Xpos, ushort Ypos, ushort Height, ushort Widt
 	ulong i, j;
 
 	if(sd.use_spi)	{		// SPI enabled?
-		UiLcdHy28_SetCursorA(Xpos, Ypos);
+		UiLcdHy28_SetCursorA(Xpos, Ypos);	// yes, establish window in which rectangle will be filled
 		//
 		UiLcdHy28_WriteReg(0x03,  0x1038);    // set GRAM write direction and BGR=1 and turn on cursor auto-increment
 		// Establish CGRAM window for THIS rectangle
@@ -735,9 +735,12 @@ void UiLcdHy28_DrawFullRect(ushort Xpos, ushort Ypos, ushort Height, ushort Widt
 		//
 		UiLcdHy28_WriteRAM_Prepare();			// get ready to write pixels
 		//
-		for(i = 0; i < j; i++)					// fill area with pixels of desired color
-			UiLcdHy28_WriteDataOnly(color);
-		//
+		for(i = 0; i < j; i++)	{				// fill area with pixels of desired color
+		      UiLcdHy28_SendByteSpi((color >>   8));      /* Write D8..D15                */
+		      UiLcdHy28_SendByteSpi((color & 0xFF));      /* Write D0..D7                 */
+		}
+
+		// Restore normal operation, removing window, setting it back to default (entire display)
 		UiLcdHy28_WriteReg(0x50, 0x0000);    // Horizontal GRAM Start Address
 		UiLcdHy28_WriteReg(0x51, 0x00EF);    // Horizontal GRAM End Address
 		UiLcdHy28_WriteReg(0x52, 0x0000);    // Vertical GRAM Start Address
@@ -777,39 +780,27 @@ void UiLcdHy28_DrawChar(ushort x, ushort y, char symb,ushort Color, ushort bkCol
 	   UiLcdHy28_WriteReg(0x51, y+(cf->Height)-1);    // Vertical GRAM End Address	-1
 	   UiLcdHy28_WriteReg(0x52, x);    // Horizontal GRAM Start Address
 	   UiLcdHy28_WriteReg(0x53, x_addr+(cf->Width)-1);    // Horizontal GRAM End Address  -1
-   }
-
-   // Next line
-   for(i = 0; i < cf->Height; i++)	{
-      // Draw line
-      for(j = 0; j < cf->Width; j++)	{
-         UiLcdHy28_WriteRAM_Prepare();
-
-         a = ((ch[i] & ((0x80 << ((fw / 12 ) * 8)) >> j)));
-         b = ((ch[i] &  (0x01 << j)));
-
-         if((!a && (fw <= 12)) || (!b && (fw > 12)))
-            UiLcdHy28_WriteDataOnly(bkColor);
-         else
-            UiLcdHy28_WriteDataOnly(Color);
-
-         if(sd.use_spi)
-            GPIO_SetBits(LCD_CS_PIO, LCD_CS);
-
-         if(!sd.use_spi)	{		// Not SPI mode - update RAM info
-        	 x_addr++;
-        	 UiLcdHy28_SetCursorA(x_addr,y);
-         }
-      }
-
-      if(!sd.use_spi)	{			// Not SPI mode - update RAM info
-      	  y++;
-      	  x_addr = x;
-      	  UiLcdHy28_SetCursorA(x_addr,y);
-      }
-   }
-
-   if(sd.use_spi)	{				// if SPI mode, restore normal operation, removing cursor window, setting it back to default
+	   //
+	   UiLcdHy28_WriteRAM_Prepare();					// prepare for bulk-write to character window
+	   //
+	   for(i = 0; i < cf->Height; i++)	{
+		   // Draw line
+		   for(j = 0; j < cf->Width; j++)	{
+			   a = ((ch[i] & ((0x80 << ((fw / 12 ) * 8)) >> j)));
+			   b = ((ch[i] &  (0x01 << j)));
+			   //
+			   if((!a && (fw <= 12)) || (!b && (fw > 12)))	{	// background color
+				      UiLcdHy28_SendByteSpi((bkColor >>   8));      /* Write D8..D15                */
+				      UiLcdHy28_SendByteSpi((bkColor & 0xFF));      /* Write D0..D7                 */
+			   }
+			   else	{	// foreground color
+				      UiLcdHy28_SendByteSpi((Color >>   8));      /* Write D8..D15                */
+				      UiLcdHy28_SendByteSpi((Color & 0xFF));      /* Write D0..D7                 */
+			   }
+		   }
+	   }
+	   GPIO_SetBits(LCD_CS_PIO, LCD_CS);	// bulk-write complete!
+	   //
 	   UiLcdHy28_WriteReg(0x50, 0x0000);    // Horizontal GRAM Start Address
 	   UiLcdHy28_WriteReg(0x51, 0x00EF);    // Horizontal GRAM End Address
 	   UiLcdHy28_WriteReg(0x52, 0x0000);    // Vertical GRAM Start Address
@@ -817,6 +808,30 @@ void UiLcdHy28_DrawChar(ushort x, ushort y, char symb,ushort Color, ushort bkCol
 	   //
 	   UiLcdHy28_WriteReg(0x03,  0x1030);    // set GRAM write direction and BGR=1 and switch increment mode
    }
+
+   else	{	// NOT SPI mode
+	   for(i = 0; i < cf->Height; i++)	{
+		   // Draw line
+		   for(j = 0; j < cf->Width; j++)	{
+			   UiLcdHy28_WriteRAM_Prepare();
+			   a = ((ch[i] & ((0x80 << ((fw / 12 ) * 8)) >> j)));
+			   b = ((ch[i] &  (0x01 << j)));
+
+			   if((!a && (fw <= 12)) || (!b && (fw > 12)))
+				   UiLcdHy28_WriteDataOnly(bkColor);
+			   else
+				   UiLcdHy28_WriteDataOnly(Color);
+
+			   x_addr++;
+			   UiLcdHy28_SetCursorA(x_addr,y);
+		   }
+
+		   y++;
+		   x_addr = x;
+		   UiLcdHy28_SetCursorA(x_addr,y);
+	   }
+   }
+
 
 }
 
@@ -1663,8 +1678,8 @@ void UiLcdHy28_ShowStartUpScreen(ulong hold_time)
    Read_VirtEEPROM(EEPROM_FREQ_CONV_MODE, &i);	// get setting of frequency translation mode
 
    if(!(i & 0xff))	{
-	   sprintf(tx,"Freq. Translate OFF!");
-	   UiLcdHy28_PrintText(80,140,tx,Grey2,Black,0);
+	   sprintf(tx,"WARNING:  Freq. Translation is OFF!!!");
+	   UiLcdHy28_PrintText(16,140,tx,Red3,Black,0);
    }
    else	{
 	   sprintf(tx," Freq. Translate On ");

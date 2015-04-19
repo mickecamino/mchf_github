@@ -39,6 +39,7 @@
 #define Blue2          		0x051F				// =#00A0FF
 #define Red            		RGB(0xFF,0x38,0x38)	// Brighter (easier to see) Red	//Original 0xF800 =#FF0000
 #define	Red2				RGB(0xFF,0x80,0x80)	// Even "brighter" red (almost pink)
+#define Red3				RGB(0xFF,0xC0,0xC0) // A sort of pink-ish, pale red
 #define Magenta        		RGB(0xFF,0x30,0xFF)	// Brighter Magenta	//Original 0xF81F =#FF00FF
 #define Green          		0x07E0				// =#00FF00
 #define Cyan           		0x7FFF

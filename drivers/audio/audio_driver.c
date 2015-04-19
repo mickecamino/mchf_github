@@ -1370,7 +1370,8 @@ static void audio_tx_processor(int16_t *src, int16_t *dst, int16_t size)
 						// and then a gradual roll-off toward the high end.  The net result is a very flat (to better than 1dB) response
 						// over the 275-2500 Hz range.
 						//
-			arm_iir_lattice_f32(&IIR_TXFilter, (float *)ads.a_buffer, (float *)ads.a_buffer, size/2);
+			if(!(ts.misc_flags1 & 64))	// Do the audio filtering *IF* it is to be enabled
+				arm_iir_lattice_f32(&IIR_TXFilter, (float *)ads.a_buffer, (float *)ads.a_buffer, size/2);
 		}
 		//
 		// This is a phase-added 0-90 degree Hilbert transformer that also does low-pass and high-pass filtering
@@ -1621,7 +1622,7 @@ void I2S_RX_CallBack(int16_t *src, int16_t *dst, int16_t size, uint16_t ht)
 		lcd_dim_prescale++;
 		lcd_dim_prescale &= 3;	// limit prescale count to 0-3
 	}
-	else	// LCD is to be blanked
+	else if(!ts.menu_mode)	// LCD is to be blanked - if NOT in menu mode
 		LCD_BACKLIGHT_PIO->BSRRH = LCD_BACKLIGHT;	// LCD backlight off
 	//
 	//

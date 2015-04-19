@@ -94,7 +94,7 @@ uchar 			UiDriverCheckBand(ulong freq, ushort update);
 //static void 	UiDriverUpdateFrequencyFast(void);
 static void 	UiDriverUpdateLcdFreq(ulong dial_freq,ushort color);
 static void 	UiDriverUpdateSecondLcdFreq(ulong dial_freq);
-static void 	UiDriverChangeTuningStep(uchar is_up);
+//static void 	UiDriverChangeTuningStep(uchar is_up);
 static uchar 	UiDriverButtonCheck(ulong button_num);
 static void		UiDriverTimeScheduler(void);				// Also handles audio gain and switching of audio on return from TX back to RX
 static void 	UiDriverChangeDemodMode(uchar noskip);
@@ -148,23 +148,17 @@ void 			UiDriverSaveEepromValuesPowerDown(void);
 //
 
 // Tuning steps
-const ulong tune_steps[MAX_STEPS] = {
+const ulong tune_steps[T_STEP_MAX_STEPS] = {
 T_STEP_1HZ,
 T_STEP_10HZ,
 T_STEP_100HZ,
 T_STEP_1KHZ,
 T_STEP_10KHZ,
-T_STEP_100KHZ
+T_STEP_100KHZ,
+T_STEP_1MHZ,
+T_STEP_10MHZ
 };
 
-enum {
-	T_STEP_1HZ_IDX = 0,
-	T_STEP_10HZ_IDX,
-	T_STEP_100HZ_IDX,
-	T_STEP_1KHZ_IDX,
-	T_STEP_10KHZ_IDX,
-	T_STEP_100KHZ_IDX
-};
 
 //
 // Band definitions - band base frequency value
@@ -707,8 +701,14 @@ static void UiDriverPublicsInit(void)
 	// SWR meter init
 	swrm.skip 				= 0;
 	swrm.p_curr				= 0;
-	swrm.pwr_aver 			= 0;
-	swrm.swr_aver 			= 0;
+
+	swrm.fwd_calc			= 0;
+	swrm.rev_calc			= 0;
+	swrm.fwd_pwr			= 0;
+	swrm.rev_pwr			= 0;
+	swrm.fwd_dbm			= 0;
+	swrm.rev_dbm			= 0;
+	swrm.vswr			 	= 0;
 
 	// Power supply meter
 	pwmt.skip 				= 0;
@@ -1313,8 +1313,8 @@ static void UiDriverProcessFunctionKeyClick(ulong id)
 				UiLcdHy28_PrintText(POS_BOTTOM_BAR_F3_X,POS_BOTTOM_BAR_F3_Y,"  PREV",Yellow,Black,0);
 				UiLcdHy28_PrintText(POS_BOTTOM_BAR_F4_X,POS_BOTTOM_BAR_F4_Y,"  NEXT",Yellow,Black,0);
 				//
-								//
-				// Grey out adjustments using to put encoders in known states
+				//
+				// Grey out adjustments and put encoders in known states
 				//
 				if(ts.dmod_mode == DEMOD_CW)
 					UiDriverChangeStGain(0);
@@ -1394,7 +1394,7 @@ static void UiDriverProcessFunctionKeyClick(ulong id)
 		}
 		else	{	// Not in MENU mode - select the meter mode
 			ts.tx_meter_mode++;
-			if(ts.tx_meter_mode > METER_MAX)
+			if(ts.tx_meter_mode >= METER_MAX)
 				ts.tx_meter_mode = 0;
 			//
 			UiLcdHy28_PrintText(POS_BOTTOM_BAR_F2_X,POS_BOTTOM_BAR_F2_Y," METER",White,Black,0);
@@ -1627,6 +1627,14 @@ void UiDriverShowStep(ulong step)
 			break;
 		case T_STEP_100KHZ:
 			UiLcdHy28_PrintText((POS_TUNE_STEP_X + SMALL_FONT_WIDTH*0),POS_TUNE_STEP_Y,"100kHz",color,Black,0);
+			line_loc = 3;
+			break;
+		case T_STEP_1MHZ:
+			UiLcdHy28_PrintText((POS_TUNE_STEP_X + SMALL_FONT_WIDTH*0),POS_TUNE_STEP_Y,"1MHz",color,Black,0);
+			line_loc = 3;
+			break;
+		case T_STEP_10MHZ:
+			UiLcdHy28_PrintText((POS_TUNE_STEP_X + SMALL_FONT_WIDTH*0),POS_TUNE_STEP_Y,"10MHz",color,Black,0);
 			line_loc = 3;
 			break;
 		default:
@@ -2759,8 +2767,13 @@ void UiDriverClearSpectrumDisplay(void)
 {
 	ulong i;
 
-	for(i = 0; i < 8; i++)	{
-		UiLcdHy28_PrintText(POS_SPECTRUM_IND_X - 2, (POS_SPECTRUM_IND_Y - 22) + (i* 12), "                                 ", Black, Black, 0);
+	if(sd.use_spi)	{
+		UiLcdHy28_DrawFullRect(POS_SPECTRUM_IND_X - 2, (POS_SPECTRUM_IND_Y - 22), 82, 264, Black);	// Clear screen under spectrum scope by drawing a single, black block (faster with SPI!)
+	}
+	else	{
+		for(i = 0; i < 8; i++)	{
+			UiLcdHy28_PrintText(POS_SPECTRUM_IND_X - 2, (POS_SPECTRUM_IND_Y - 22) + (i* 12), "                                 ", Black, Black, 0);
+		}
 	}
 }
 
@@ -2905,6 +2918,7 @@ static void UiDriverInitFrequency(void)
 	df.de_detent	= 0;
 
 	// Set virtual segments initial value (diff than zero!)
+	df.dial_100_mhz	= 0;
 	df.dial_010_mhz	= 1;
 	df.dial_001_mhz	= 4;
 	df.dial_100_khz	= 0;
@@ -2968,6 +2982,12 @@ uchar UiDriverCheckBand(ulong freq, ushort update)
 
 	band_scan = 0;
 	flag = 0;
+	//
+	if(ts.iq_freq_mode == 1)	// is frequency translate active and in "RX LO HIGH" mode?
+		freq -= FREQ_SHIFT_MAG * 4;	// yes - subtract offset amount
+	else if(ts.iq_freq_mode == 2)	// is frequency translate active and in "RX LO LOW" mode?
+		freq += FREQ_SHIFT_MAG * 4;	// yes - add offset amount
+
 
 	while((!flag) && (band_scan < MAX_BANDS))	{
 		if((freq >= tune_bands[band_scan]) && (freq <= (tune_bands[band_scan] + size_bands[band_scan])))	// Is this frequency within this band?
@@ -3051,11 +3071,13 @@ skip_check:
 
 
 	// Frequency range check, moved from si570 routine here
-	if((ts.tune_freq > SI570_MAX_FREQ) || (ts.tune_freq < SI570_MIN_FREQ))
-	{
-		//printf("out of freq err: %d\n\r",tune_freq);
-		df.tune_new = df.tune_old;						// reload old value
-		return;
+	if(!(ts.misc_flags1 & 32))	{	// is frequency tuning limit disabled?
+		if((ts.tune_freq > SI570_MAX_FREQ) || (ts.tune_freq < SI570_MIN_FREQ))	// no - enforce limit
+		{
+			//printf("out of freq err: %d\n\r",tune_freq);
+			df.tune_new = df.tune_old;						// reload old value
+			return;
+		}
 	}
 
 	// Extra tuning actions
@@ -3219,7 +3241,7 @@ void UiDriverUpdateFrequencyFast(void)
 //*----------------------------------------------------------------------------
 static void UiDriverUpdateLcdFreq(ulong dial_freq,ushort color)
 {
-	uchar		d_10mhz,d_1mhz;
+	uchar		d_100mhz,d_10mhz,d_1mhz;
 	uchar		d_100khz,d_10khz,d_1khz;
 	uchar		d_100hz,d_10hz,d_1hz;
 
@@ -3228,8 +3250,8 @@ static void UiDriverUpdateLcdFreq(ulong dial_freq,ushort color)
 	if(ts.xverter_mode)	{	// transverter mode active?
 		dial_freq *= (ulong)ts.xverter_mode;	// yes - scale by LO multiplier
 		dial_freq += ts.xverter_offset;	// add transverter frequency offset
-		if(dial_freq > 100000000)		// over 100 MHz?
-			dial_freq -= 100000000;		// yes, offset to prevent overflow of display
+		if(dial_freq > 1000000000)		// over 1000 MHz?
+			dial_freq -= 1000000000;		// yes, offset to prevent overflow of display
 		if(ts.xverter_mode)	// if in transverter mode, frequency is yellow
 			color = Yellow;
 	}
@@ -3268,8 +3290,29 @@ static void UiDriverUpdateLcdFreq(ulong dial_freq,ushort color)
 	//printf("dial_001_hz:  %d\n\r",df.dial_001_hz);
 
 	// -----------------------
+	// See if 100 Mhz needs update
+	d_100mhz = (dial_freq/100000000);
+	if((d_100mhz != df.dial_100_mhz) || ts.refresh_freq_disp)
+	{
+		//printf("100 mhz diff: %d\n\r",d_100mhz);
+
+		// To string
+		digit[0] = 0x30 + (d_100mhz & 0x0F);
+
+		// Update segment
+		if(d_100mhz)
+			UiLcdHy28_PrintText((POS_TUNE_FREQ_X - LARGE_FONT_WIDTH),POS_TUNE_FREQ_Y,digit,color,Black,1);
+		else
+			UiLcdHy28_PrintText((POS_TUNE_FREQ_X - LARGE_FONT_WIDTH),POS_TUNE_FREQ_Y,digit,Black,Black,1);	// mask the zero
+
+		// Save value
+		df.dial_100_mhz = d_100mhz;
+	}
+
+
+	// -----------------------
 	// See if 10 Mhz needs update
-	d_10mhz = (dial_freq/10000000);
+	d_10mhz = (dial_freq%100000000)/10000000;
 	if((d_10mhz != df.dial_010_mhz) || ts.refresh_freq_disp)
 	{
 		//printf("10 mhz diff: %d\n\r",d_10mhz);
@@ -3277,12 +3320,14 @@ static void UiDriverUpdateLcdFreq(ulong dial_freq,ushort color)
 		// To string
 		digit[0] = 0x30 + (d_10mhz & 0x0F);
 
-		// Update segment
-		if(d_10mhz)
+		if(d_100mhz)	// update if 100 MHz digit is being displayed
 			UiLcdHy28_PrintText((POS_TUNE_FREQ_X + 0),POS_TUNE_FREQ_Y,digit,color,Black,1);
-		else
-			UiLcdHy28_PrintText((POS_TUNE_FREQ_X + 0),POS_TUNE_FREQ_Y,digit,Black,Black,1);	// mask the zero
-
+		else	{
+			if(d_10mhz)
+				UiLcdHy28_PrintText((POS_TUNE_FREQ_X + 0),POS_TUNE_FREQ_Y,digit,color,Black,1);
+			else
+				UiLcdHy28_PrintText((POS_TUNE_FREQ_X + 0),POS_TUNE_FREQ_Y,digit,Black,Black,1);	// mask the zero
+		}
 		// Save value
 		df.dial_010_mhz = d_10mhz;
 	}
@@ -3417,7 +3462,7 @@ static void UiDriverUpdateLcdFreq(ulong dial_freq,ushort color)
 //*----------------------------------------------------------------------------
 static void UiDriverUpdateSecondLcdFreq(ulong dial_freq)
 {
-	uchar		d_10mhz,d_1mhz;
+	uchar		d_100mhz,d_10mhz,d_1mhz;
 	uchar		d_100khz,d_10khz,d_1khz;
 	uchar		d_100hz,d_10hz,d_1hz;
 
@@ -3425,8 +3470,8 @@ static void UiDriverUpdateSecondLcdFreq(ulong dial_freq)
 
 	if(ts.xverter_mode)	{	// transverter mode active?
 		dial_freq += ts.xverter_offset;	// yes - add transverter frequency offset
-		if(dial_freq > 100000000)		// over 100 MHz?
-			dial_freq -= 100000000;		// yes, offset to prevent overflow of display
+		if(dial_freq > 1000000000)		// over 1000 MHz?
+			dial_freq -= 1000000000;		// yes, offset to prevent overflow of display
 	}
 
 	//
@@ -3464,8 +3509,31 @@ static void UiDriverUpdateSecondLcdFreq(ulong dial_freq)
 	//UiLcdHy28_PrintText((POS_TUNE_FREQ_X + 175),(POS_TUNE_FREQ_Y + 8),"14.000.000",Grey,Black,0);
 
 	// -----------------------
+	// See if 100 Mhz needs update
+	d_100mhz = (dial_freq/100000000);
+	if(d_100mhz != df.sdial_100_mhz)
+	{
+		//printf("100 mhz diff: %d\n\r",d_10mhz);
+
+		// To string
+		digit[0] = 0x30 + (d_100mhz & 0x0F);
+
+		// Update segment
+		if(d_100mhz)
+			UiLcdHy28_PrintText((POS_TUNE_SFREQ_X - SMALL_FONT_WIDTH),POS_TUNE_SFREQ_Y,digit,Grey,Black,0);
+		else
+			UiLcdHy28_PrintText((POS_TUNE_SFREQ_X - SMALL_FONT_WIDTH),POS_TUNE_SFREQ_Y,digit,Black,Black,0);	// mask the zero
+
+		// Save value
+		df.sdial_100_mhz = d_100mhz;
+	}
+	else if(!d_100mhz)	// no digit in the 10's place?
+		UiLcdHy28_PrintText((POS_TUNE_SFREQ_X + 0),POS_TUNE_SFREQ_Y,digit,Black,Black,0);	// mask the leading first digit
+
+
+	// -----------------------
 	// See if 10 Mhz needs update
-	d_10mhz = (dial_freq/10000000);
+	d_10mhz = (dial_freq%100000000)/10000000;
 	if(d_10mhz != df.sdial_010_mhz)
 	{
 		//printf("10 mhz diff: %d\n\r",d_10mhz);
@@ -3474,11 +3542,14 @@ static void UiDriverUpdateSecondLcdFreq(ulong dial_freq)
 		digit[0] = 0x30 + (d_10mhz & 0x0F);
 
 		// Update segment
-		if(d_10mhz)
+		if(d_100mhz)
 			UiLcdHy28_PrintText((POS_TUNE_SFREQ_X + 0),POS_TUNE_SFREQ_Y,digit,Grey,Black,0);
-		else
-			UiLcdHy28_PrintText((POS_TUNE_SFREQ_X + 0),POS_TUNE_SFREQ_Y,digit,Black,Black,0);	// mask the zero
-
+		else	{
+			if(d_10mhz)
+				UiLcdHy28_PrintText((POS_TUNE_SFREQ_X + 0),POS_TUNE_SFREQ_Y,digit,Grey,Black,0);
+			else
+				UiLcdHy28_PrintText((POS_TUNE_SFREQ_X + 0),POS_TUNE_SFREQ_Y,digit,Black,Black,0);	// mask the zero
+		}
 		// Save value
 		df.sdial_010_mhz = d_10mhz;
 	}
@@ -3612,17 +3683,17 @@ static void UiDriverUpdateSecondLcdFreq(ulong dial_freq)
 //* Output Parameters   :
 //* Functions called    :
 //*----------------------------------------------------------------------------
-static void UiDriverChangeTuningStep(uchar is_up)
+void UiDriverChangeTuningStep(uchar is_up)
 {
 	ulong 	idx = df.selected_idx;
 
 	if(is_up)
 	{
 		// Increase step index or reset
-		if(idx < (MAX_STEPS - 1))
 			idx++;
-		else
-			idx = 0;
+			if(idx >= T_STEP_MAX_STEPS)
+				idx = 0;
+
 	}
 	else
 	{
@@ -3630,10 +3701,29 @@ static void UiDriverChangeTuningStep(uchar is_up)
 		if(idx)
 			idx--;
 		else
-			idx = (MAX_STEPS - 1);
+			idx = (T_STEP_MAX_STEPS - 1);
 	}
 
 	// Update publics
+	if(ts.freq_cal_adjust_flag)	{		// are we in "calibrate" mode?
+		if(idx > T_STEP_1KHZ_IDX)	{	// yes - limit to 1 kHz steps, maximum
+			if(is_up)	// did we get there via an increase?
+				idx = 0;	// yes - wrap back around to minimum step size
+			else		// we go there via a decrease
+				idx = T_STEP_1KHZ_IDX;
+		}
+	}
+	//	if ts.freq_cal_adjust_flag is set, do NOTHING
+	//
+	else if((!ts.freq_cal_adjust_flag) && (!ts.xvtr_adjust_flag))	{			// are we NOT in "transverter adjust" or "frequency calibrate adjust" mode?
+		if(idx > T_STEP_100KHZ_IDX)	{	// yes - limit to 100 kHz steps, maximum
+			if(is_up)	// did we get ther via an increase?
+				idx = 0;	// yes - wrap back around to minimum step size
+			else
+				idx = T_STEP_100KHZ_IDX;
+		}
+	}
+
 	df.tuning_step	= tune_steps[idx];
 	df.selected_idx = idx;
 
@@ -5886,12 +5976,17 @@ static void UiDriverHandleSmeter(void)
 static void UiDriverHandleSWRMeter(void)
 {
 	ushort	val_p,val_s = 0;
-	float	fwd_calc, scale_calc;
+	float	scale_calc;
+	static float	vswr_dampened;
+
+
 	//float 	rho,swr;
 
 	// Only in TX mode
-	if(ts.txrx_mode != TRX_MODE_TX)
+	if(ts.txrx_mode != TRX_MODE_TX)	{
+		vswr_dampened = 0;		// reset averaged VSWR reading when not in TX mode
 		return;
+	}
 
 	swrm.skip++;
 	if(swrm.skip < SWR_SAMPLES_SKP)
@@ -5903,12 +5998,18 @@ static void UiDriverHandleSWRMeter(void)
 	if(swrm.p_curr < SWR_SAMPLES_CNT)
 	{
 		// Get next sample
-		val_p = ADC_GetConversionValue(ADC2);	// forward
-		val_s = ADC_GetConversionValue(ADC3);	// return
+		if(!(ts.misc_flags1 & 16))	{	// is bit NOT set?  If this is so, do NOT swap FWD/REV inputs from power detectors
+			val_p = ADC_GetConversionValue(ADC2);	// forward
+			val_s = ADC_GetConversionValue(ADC3);	// return
+		}
+		else	{	// FWD/REV bits should be swapped
+			val_p = ADC_GetConversionValue(ADC3);	// forward
+			val_s = ADC_GetConversionValue(ADC2);	// return
+		}
 
-		// Add to accumulator
-		swrm.pwr_aver = swrm.pwr_aver + val_p;
-		swrm.swr_aver = swrm.swr_aver + val_s;
+		// Add to accumulator to average A/D values
+		swrm.fwd_calc += (float)val_p;
+		swrm.rev_calc += (float)val_s;
 
 		swrm.p_curr++;
 
@@ -5916,26 +6017,52 @@ static void UiDriverHandleSWRMeter(void)
 		return;
 	}
 
-	//
-	// adjust power meter reading according to calibration variable
-	// (This is temporary - until this function is rewritten)
-	//
-	if((swrm.fwd_cal >= SWR_CAL_MIN) && (swrm.fwd_cal <= SWR_CAL_MAX))	{	// do this only if a valid value is stored
-		fwd_calc = (float)swrm.pwr_aver;	//
-		scale_calc = (float)swrm.fwd_cal;	// get calibration factor
-		scale_calc /= 100;					// divide by 100
-		fwd_calc *= scale_calc;				// apply calibration
-		swrm.pwr_aver = (ushort)fwd_calc;
-	}
+	scale_calc = (float)swrm.fwd_cal;	// get calibration factor
+	scale_calc /= 100;					// divide by 100 so 100 = unity
+
+	// Compute average values
+
+	swrm.fwd_calc /= SWR_SAMPLES_CNT;
+	swrm.rev_calc /= SWR_SAMPLES_CNT;
+
+
+	// Calculate voltage of A/D inputs
+
+	swrm.fwd_calc *= SWR_ADC_VOLT_REFERENCE;	// get nominal A/D reference voltage
+	swrm.fwd_calc /= SWR_ADC_FULL_SCALE;		// divide by full-scale A/D count to yield actual input voltage from detector
+	swrm.fwd_calc *= scale_calc;				// multiply by A/D calibration factor
+
+	swrm.rev_calc *= SWR_ADC_VOLT_REFERENCE;	// get nominal A/D reference voltage
+	swrm.rev_calc /= SWR_ADC_FULL_SCALE;		// divide by full-scale A/D count to yield actual input voltage from detector
+	swrm.rev_calc *= scale_calc;				// multiply by A/D calibration factor
+
+	// calculate forward and reverse RF power in watts (p = a + bx + cx^2)
+
+	swrm.fwd_pwr = RF_PWR_COEFF_A + RF_PWR_COEFF_B * swrm.fwd_calc + RF_PWR_COEFF_C * swrm.fwd_calc * swrm.fwd_calc;
+	swrm.rev_pwr = RF_PWR_COEFF_A + RF_PWR_COEFF_B * swrm.rev_calc + RF_PWR_COEFF_C * swrm.rev_calc * swrm.rev_calc;
+
+	// calculate forward and reverse RF power in dBm  (We are using dBm - just because!)
+
+	swrm.fwd_dbm = (10 * (log10(swrm.fwd_pwr * 10)))+30;
+	swrm.rev_dbm = (10 * (log10(swrm.rev_pwr * 10)))+30;
+
+	swrm.vswr = swrm.fwd_dbm-swrm.rev_dbm;		// calculate return loss in dB since this method is power-insensitive!
+
+	// Calculate VSWR from return loss
+
+	swrm.vswr = (pow10(0.05*swrm.vswr)+1)/(pow10(0.05*swrm.vswr)-1);
+
 	//
 
-	// Get average
-	val_p  = swrm.pwr_aver/SWR_SAMPLES_CNT;
-	val_s  = swrm.swr_aver/SWR_SAMPLES_CNT;
+// used for debugging
+//	char txt[32];
+//	sprintf(txt, "  %d   ", (ulong)(fwd_pwr*100));
+//	UiLcdHy28_PrintText    ((POS_RIT_IND_X + 1), (POS_RIT_IND_Y + 20),txt,White,Grid,0);
 
 	//printf("aver power %d, aver ret %d\n\r", val_p,val_s);
 
-	// Transmitter protection
+	// Transmitter protection - not enabled yet
+/*
 	if(val_s > 2000)
 	{
 		// Display
@@ -5944,68 +6071,34 @@ static void UiDriverHandleSWRMeter(void)
 		// Disable tx - not used for now
 		//ts.tx_power_factor	= 0.0;
 	}
+*/
+	// calculate and display RF power reading
+	//
+	scale_calc = (uchar)(swrm.fwd_pwr * 3);		// 3 dots-per-watt for RF power meter
+	//
+	if(scale_calc > 34)		// limit maximum reading
+		scale_calc = 34;
+	UiDriverUpdateTopMeterA(scale_calc, 33);
 
-	//UiDriverUpdateTopMeterA((uchar)(val_p/190),0);
-
-	// Show 1W
-	if((val_p > POWER_1W_MIN) && (val_p < POWER_1W_MAX))
-		UiDriverUpdateTopMeterA(3,0);
-
-	// Show 2W
-	if((val_p > POWER_2W_MIN) && (val_p < POWER_2W_MAX))
-		UiDriverUpdateTopMeterA(6,0);
-
-	// Show 3W
-	if((val_p > POWER_3W_MIN) && (val_p < POWER_3W_MAX))
-		UiDriverUpdateTopMeterA(9,0);
-
-	// Show 4W
-	if((val_p > POWER_4W_MIN) && (val_p < POWER_4W_MAX))
-		UiDriverUpdateTopMeterA(12,0);
-
-	// Show 5W
-	if((val_p > POWER_5W_MIN) && (val_p < POWER_5W_MAX))
-		UiDriverUpdateTopMeterA(15,0);
-
-	// Show 6W
-	if((val_p > POWER_6W_MIN) && (val_p < POWER_6W_MAX))
-		UiDriverUpdateTopMeterA(18,0);
-
-	// Show 7W
-	if((val_p > POWER_7W_MIN) && (val_p < POWER_7W_MAX))
-		UiDriverUpdateTopMeterA(21,0);
-
-	// Show 8W
-	if((val_p > POWER_8W_MIN) && (val_p < POWER_8W_MAX))
-		UiDriverUpdateTopMeterA(24,0);
-
-	// Show 9W
-	if((val_p > POWER_9W_MIN) && (val_p < POWER_9W_MAX))
-		UiDriverUpdateTopMeterA(27,0);
-
-	// Show 10W
-	if((val_p > POWER_10W_MIN) && (val_p < POWER_10W_MAX))
-		UiDriverUpdateTopMeterA(30,0);
-
-	// Show overload
-	if(val_p > POWER_10W_MAX)
-		UiDriverUpdateTopMeterA(34,0);
-
+	//
+	// Do selectable meter readings
+	//
 	if(ts.tx_meter_mode == METER_SWR)	{
-		// Just test
-		//UiDriverUpdateBtmMeter((uchar)(val_s / 250), 0);
-
-		// From http://ac6v.com/swrmeter.html
-		// not working, to fix !!!
-		//
-		//rho 	= (float)sqrt((val_s/val_p));
-		//swr 	= (1 + rho)/(1 - rho);
-		//swr 	= (swr * 30);
-		//val_s	 = ((ushort)swr);
-		//printf("swr %i\n\r", val_s);
-
-		// Display SWR
-		//UiDriverUpdateBtmMeter((uchar)(val_s / 10), 0);
+		if(swrm.fwd_pwr >= SWR_MIN_CALC_POWER)	{		// is the forward power high enough for valid VSWR calculation?
+														// (Do nothing/freeze old data if below this power level)
+			//
+			if(vswr_dampened < 1)	// initialize averaging if this is the first time (e.g. VSWR <1 = just returned from RX)
+				vswr_dampened = swrm.vswr;
+			else	{
+				vswr_dampened = vswr_dampened * (1 - VSWR_DAMPENING_FACTOR);
+				vswr_dampened += swrm.vswr * VSWR_DAMPENING_FACTOR;
+			}
+			//
+			scale_calc = (uchar)(vswr_dampened * 4);		// yes - four dots per unit of VSWR
+			if(scale_calc > 34)					// limit maximum scale
+				scale_calc = 34;
+			UiDriverUpdateBtmMeter((uchar)(scale_calc), 13);	// update the meter, setting the "red" threshold
+		}
 	}
 	else if(ts.tx_meter_mode == METER_ALC)	{
 		scale_calc = ads.alc_val;		// get TX ALC value
@@ -6018,12 +6111,6 @@ static void UiDriverHandleSWRMeter(void)
 			scale_calc = 0;
 		//
 		UiDriverUpdateBtmMeter((uchar)(scale_calc), 13);	// update the meter, setting the "red" threshold
-
-// used for debugging
-//		char txt[32];
-//		sprintf(txt, "  %d   ", (ulong)(scale_calc * 1000));
-//		UiLcdHy28_PrintText    ((POS_RIT_IND_X + 1), (POS_RIT_IND_Y + 20),txt,White,Grid,0);
-
 	}
 	else if(ts.tx_meter_mode == METER_AUDIO)	{
 		scale_calc = ads.peak_audio/10000;		// get a copy of the peak TX audio (maximum reference = 30000)
@@ -6041,13 +6128,12 @@ static void UiDriverHandleSWRMeter(void)
 		UiDriverUpdateBtmMeter((uchar)(scale_calc), 22);	// update the meter, setting the "red" threshold
 	}
 
+	// Reset accumulators and variables for power measurements
 
-	// Reset accumulator for SWR measurements
-	swrm.pwr_aver = 0;
-	swrm.swr_aver = 0;
 	swrm.p_curr   = 0;
+	swrm.fwd_calc = 0;
+	swrm.rev_calc = 0;
 }
-
 
 
 //*----------------------------------------------------------------------------
@@ -7419,8 +7505,8 @@ void UiDriverLoadEepromValues(void)
 	// Try to read Step saved values
 	if(Read_VirtEEPROM(EEPROM_FREQ_STEP, &value) == 0)
 	{
-		if(value >= MAX_STEPS -1)		// did we get step size value outside the range?
-			value = 3;					// yes - set to default size of 1 kHz steps
+		if(value >= T_STEP_MAX_STEPS -1)	// did we get step size value outside the range?
+			value = 3;						// yes - set to default size of 1 kHz steps
 		//
 		df.selected_idx = value;
 		df.tuning_step	= tune_steps[df.selected_idx];
@@ -8220,7 +8306,7 @@ void UiDriverLoadEepromValues(void)
 	// Try to read meter mode
 	if(Read_VirtEEPROM(EEPROM_METER_MODE, &value) == 0)
 	{
-		if(value > METER_MAX)	// if out of range, it was bogus
+		if(value >= METER_MAX)	// if out of range, it was bogus
 			value = METER_SWR;	// reset to default
 		//
 		ts.tx_meter_mode = value;

@@ -45,7 +45,7 @@
 #define 	TRX4M_VER_MAJOR			0
 #define 	TRX4M_VER_MINOR			0
 #define 	TRX4M_VER_RELEASE		219
-#define 	TRX4M_VER_BUILD			2
+#define 	TRX4M_VER_BUILD			5
 //
 #define		ATTRIB_STRING1			"Additional Contributions by"
 #define		ATTRIB_STRING2			"KA7OEI and the Open Source and"
@@ -481,14 +481,14 @@ typedef struct ButtonMap
 //
 #define	BAND_MODE_10				8
 #define	BAND_FREQ_10				28000*KHZ_MULT		// 28000 kHz
-#define	BAND_SIZE_10				2700*KHZ_MULT		// 2700 kHz in size
+#define	BAND_SIZE_10				1700*KHZ_MULT		// 1700 kHz in size
 //
 #define	BAND_MODE_GEN				9					// General Coverage
 #define	BAND_FREQ_GEN				10000*KHZ_MULT		// 10000 kHz
 #define	BAND_SIZE_GEN				1*KHZ_MULT			// Dummy variable
 //
 //
-//	Frequency limits for filters, in Hz
+//	Frequency limits for filters, in Hz, for bandpass filter selection
 //
 #define	BAND_FILTER_UPPER_80		4250000				// Upper limit for 80 meter filter
 //
@@ -513,18 +513,21 @@ typedef struct ButtonMap
 #define ENC_THREE_MAX_MODE			2
 
 //
-// Audio filters
+// Audio filter select enumeration
 //
-#define	AUDIO_300HZ				0
-#define	AUDIO_500HZ				1
-#define	AUDIO_1P8KHZ			2
-#define	AUDIO_2P3KHZ			3
-#define	AUDIO_3P6KHZ			4
-#define	AUDIO_10KHZ				5
+enum	{
+	AUDIO_300HZ = 0,
+	AUDIO_500HZ,
+	AUDIO_1P8KHZ,
+	AUDIO_2P3KHZ,
+	AUDIO_3P6KHZ,
+	AUDIO_10KHZ
+};
 //
-// use below to define the lowest-used filter number
 //
 #define	AUDIO_DEFAULT_FILTER		AUDIO_2P3KHZ
+//
+// use below to define the lowest-used filter number
 //
 #define AUDIO_MIN_FILTER			0
 //
@@ -560,12 +563,15 @@ typedef struct ButtonMap
 #define CW_MODE_STRAIGHT			2
 #define CW_MAX_MODE					3
 
-#define PA_LEVEL_FULL				0
-#define PA_LEVEL_5W					1
-#define PA_LEVEL_2W					2
-#define PA_LEVEL_1W					3
-#define PA_LEVEL_0_5W				4
-#define PA_LEVEL_MAX_ENTRY			5
+// PA power level setting enumeration
+enum {
+	PA_LEVEL_FULL = 0,
+	PA_LEVEL_5W,
+	PA_LEVEL_2W,
+	PA_LEVEL_1W,
+	PA_LEVEL_0_5W,
+	PA_LEVEL_MAX_ENTRY
+};
 //
 #define	PA_LEVEL_DEFAULT	PA_LEVEL_2W		// Default power level
 
@@ -614,28 +620,34 @@ typedef struct ButtonMap
 #define	TX_POWER_FACTOR_12_DEFAULT	75
 #define	TX_POWER_FACTOR_10_DEFAULT	75
 //
-// Colours used in spectrum scope display
+// Enumeration of colours used in spectrum scope display
 //
-#define	SPEC_WHITE					0
-#define	SPEC_GREY					1
-#define	SPEC_BLUE					2
-#define	SPEC_RED					3
-#define	SPEC_MAGENTA				4
-#define	SPEC_GREEN					5
-#define	SPEC_CYAN					6
-#define	SPEC_YELLOW					7
-#define	SPEC_ORANGE					8
-#define	SPEC_BLACK					9
-#define	SPEC_MAX_COLOUR				9
+enum {
+	SPEC_WHITE = 0,
+	SPEC_GREY,
+	SPEC_BLUE,
+	SPEC_RED,
+	SPEC_MAGENTA,
+	SPEC_GREEN,
+	SPEC_CYAN,
+	SPEC_YELLOW,
+	SPEC_ORANGE,
+	SPEC_BLACK,
+	SPEC_MAX_COLOUR,
+};
 //
 #define	SPEC_COLOUR_TRACE_DEFAULT	SPEC_WHITE
 #define	SPEC_COLOUR_GRID_DEFAULT	SPEC_GREY
 #define SPEC_COLOUR_SCALE_DEFAULT	SPEC_GREY
 //
-#define	METER_SWR					0
-#define	METER_AUDIO					1
-#define	METER_ALC					2
-#define	METER_MAX					2
+// Enumeration of transmit meter modes
+//
+enum {
+	METER_SWR = 0,
+	METER_AUDIO,
+	METER_ALC,
+	METER_MAX,
+};
 //
 #define	BACKLIGHT_BLANK_TIMING_DEFAULT	8		// default number of SECONDS for backlight blanking
 #define MIN_LCD_BLANK_DELAY_TIME	5			// minimum number of seconds for backlight "on" time
@@ -645,6 +657,9 @@ typedef struct ButtonMap
 //
 // Eeprom items IDs - if updating, make sure eeprom.h list
 // is updated as well!!!
+//
+// These do NOT use "enum" as it is important that the number *NOT* change by the ineration of new variables:  All NEW variable should be placed at the END of the
+// list to maintain compatibility with older versions and the settings!
 //
 #define EEPROM_ZERO_LOC_UNRELIABLE	0		// DO NOT USE LOCATION ZERO AS IT MAY BE UNRELIABLE!!!!
 #define EEPROM_BAND_MODE			1
@@ -1055,6 +1070,7 @@ typedef struct TransceiverState
 										// LSB+2 = 1 if TX audio output from LINE OUT is to be muted during transmit (audio output only enabled
 											//	when translate mode is DISABLED
 										// LSB+3 = 1 if AM TX has transmit filter DISABLED
+										// LSB+4 = 1 if FWD/REV A/D inputs from RF power detectors are to be reversed
 	ulong	sysclock;					// This counts up from zero when the unit is powered up at precisely 100 Hz over the long term.  This
 										// is NEVER reset and is used for timing certain events.
 	uint16_t	version_number_build;	// version number - build - used to hold version number and detect change
@@ -1067,6 +1083,8 @@ typedef struct TransceiverState
 	ulong	hold_off_spectrum_scope;	// this is a timer used to hold off updates of the spectrum scope when an SPI LCD display interface is used
 	ulong	lcd_blanking_time;			// this holds the system time after which the LCD is blanked - if blanking is enabled
 	bool	lcd_blanking_flag;			// if TRUE, the LCD is blanked completely (e.g. backlight is off)
+	bool	freq_cal_adjust_flag;		// set TRUE if frequency calibration is in process
+	bool	xvtr_adjust_flag;			// set TRUE if transverter offset adjustment is in process
 
 } TransceiverState;
 //
