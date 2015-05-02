@@ -59,9 +59,9 @@ static void Audio_Init(void);
 // ---------------------------------
 // DMA buffers for I2S
 __IO int16_t 	tx_buffer[BUFF_LEN+1];
-__IO int16_t		rx_buffer[BUFF_LEN+1];
+__IO int16_t	rx_buffer[BUFF_LEN+1];
 
-static int16_t	test_a[5000];	// grab a large chunk of RAM - for testing, and to prevent "memory leak" anomalies (kludgy work-around - problem to be solved!)
+int16_t	test_a[5000];	// grab a large chunk of RAM - for testing, and to prevent "memory leak" anomalies (kludgy work-around)
 //
 float32_t	lms1_nr_delay[LMS_NR_DELAYBUF_SIZE_MAX+16];
 //
@@ -78,8 +78,6 @@ arm_lms_instance_f32	lms1_instance;
 float32_t	lms1StateF32[192];
 float32_t	lms1NormCoeff_f32[192];
 //
-static int16_t	test_j[1000];	// grab a large chunk of RAM - for testing, and to prevent "memory leak" anomalies (kludgy work-around)
-//
 arm_lms_norm_instance_f32	lms2Norm_instance;
 arm_lms_instance_f32	lms2_instance;
 float32_t	lms2StateF32[192];
@@ -90,33 +88,32 @@ float32_t	lms2NormCoeff_f32[192];
 float32_t	agc_delay	[AGC_DELAY_BUFSIZE+16];
 //
 //
-static int16_t	test_c[5000];	// grab a large chunk of RAM - for testing, and to prevent "memory leak" anomalies (kludgy work-around - problem to be solved!)
+int16_t	test_b[5000];	// grab a large chunk of RAM - for testing, and to prevent "memory leak" anomalies (kludgy work-around)
 //
 // Audio RX - Decimator
 static	arm_fir_decimate_instance_f32	DECIMATE_RX;
 __IO float32_t			decimState[FIR_RXAUDIO_BLOCK_SIZE + FIR_RXAUDIO_NUM_TAPS - 1];
 //
-static int16_t	test_d[1000];	// grab a large chunk of RAM - for testing, and to prevent "memory leak" anomalies (kludgy work-around - problem to be solved!)
+int16_t	test_c[1000];	// grab a large chunk of RAM - for testing, and to prevent "memory leak" anomalies (kludgy work-around)
 //
 // Audio RX - Interpolator
 static	arm_fir_interpolate_instance_f32 INTERPOLATE_RX;
 __IO float32_t			interpState[FIR_RXAUDIO_BLOCK_SIZE + FIR_RXAUDIO_NUM_TAPS - 1];
 //
-static int16_t	test_e[1000];	// grab a large chunk of RAM - for testing, and to prevent "memory leak" anomalies (kludgy work-around - problem to be solved!)
+int16_t	test_d[1000];	// grab a large chunk of RAM - for testing, and to prevent "memory leak" anomalies (kludgy work-around)
 //
 // variables for RX IIR filters
 static float32_t		iir_rx_state[FIR_RXAUDIO_BLOCK_SIZE+FIR_RXAUDIO_NUM_TAPS-1];
 static arm_iir_lattice_instance_f32	IIR_PreFilter;
 //
-static int16_t	test_f[1000];	// grab a large chunk of RAM - for testing, and to prevent "memory leak" anomalies (kludgy work-around - problem to be solved!)
+int16_t	test_e[1000];	// grab a large chunk of RAM - for testing, and to prevent "memory leak" anomalies (kludgy work-around)
 //
 //
 // variables for TX IIR filter
 //
 float32_t		iir_tx_state[FIR_RXAUDIO_BLOCK_SIZE+FIR_RXAUDIO_NUM_TAPS-1];
 arm_iir_lattice_instance_f32	IIR_TXFilter;
-//
-//static int16_t	test_b[1000];	// grab a large chunk of RAM - for testing, and to prevent "memory leak" anomalies (kludgy work-around - problem to be solved!)
+
 //
 // RX Hilbert transform (90 degree) FIR filters
 //
@@ -182,21 +179,11 @@ void audio_driver_config_nco(void)
 void audio_driver_init(void)
 {
 	ulong word_size;
-	uchar x;
 
 
 #ifdef DEBUG_BUILD
 	printf("audio driver init...\n\r");
 #endif
-
-	// "use" the temporary variables to keep the compiler from "optimizing" them out of existence
-	//
-	test_a[0] = 0;
-//	test_b[0] = 0;
-	test_c[0] = 0;
-	test_d[0] = 0;
-	test_e[0] = 0;
-	test_f[0] = 0;
 
 	word_size = WORD_SIZE_16;
 
@@ -213,11 +200,7 @@ void audio_driver_init(void)
 	sm.gain_calc = 0;	// gain calculation used for S-meter
 
 	ads.agc_val = 1;			// Post AF Filter gain (AGC)
-	ads.agc_holder = 1;			// initialize holder for AGC value
-	for(x = 0; x < BUFF_LEN; x++)	// initialize running buffer for AGC delay
-		ads.agc_valbuf[x] = 1;
-	//
-	ads.alc_val = 1;			// init TX audio auto-level-control (ALC)
+	ads.alc_val = 1;			// TX audio auto-level-control (ALC)
 	//
 	ads.decimation_rate	=	RX_DECIMATION_RATE_12KHZ;		// Decimation rate, when enabled
 	//
@@ -1180,20 +1163,15 @@ static void audio_rx_processor(int16_t *src, int16_t *dst, int16_t size)
 	//
 	arm_fir_interpolate_f32(&INTERPOLATE_RX, ads.a_buffer, ads.b_buffer, psize/2);
 	//
-	if(ts.rx_muting)	{
-		arm_fill_f32(0, ads.a_buffer, size/2);
-		arm_fill_f32(0, ads.b_buffer, size/2);
-	}
-	else	{
-		arm_scale_f32(ads.b_buffer, LINE_OUT_SCALING_FACTOR, ads.a_buffer, size/2);		// Do fixed scaling of audio for LINE OUT and copy to "a" buffer in one operation
-		//
-		// AF gain in "ts.audio_gain-active"
-		//  0 - 16: via codec command
-		// 17 - 20: soft gain after decoder
-		//
-		if(ts.audio_gain > 16)	// is volume control above highest hardware setting?
-			arm_scale_f32(ads.b_buffer, (float32_t)ts.audio_gain_active, ads.b_buffer, size/2);	// yes, do software volume control adjust on "b" buffer
-	}
+	//
+	arm_scale_f32(ads.b_buffer, LINE_OUT_SCALING_FACTOR, ads.a_buffer, size/2);		// Do fixed scaling of audio for LINE OUT and copy to "a" buffer in one operation
+	//
+	// AF gain in "ts.audio_gain-active"
+	//  0 - 16: via codec command
+	// 17 - 20: soft gain after decoder
+	//
+	if(ts.audio_gain > 16)	// is volume control above highest hardware setting?
+		arm_scale_f32(ads.b_buffer, (float32_t)ts.audio_gain_active, ads.b_buffer, size/2);	// yes, do software volume control adjust on "b" buffer
 	//
 	// Transfer processed audio to DMA buffer
 	//

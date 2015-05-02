@@ -26,8 +26,6 @@
 #define SI570_MIN_FREQ			7200000		// 7.2=1.8 MHz
 #define SI570_MAX_FREQ			128000000	// 128=32 Mhz
 
-#define	LARGE_STEP_HYSTERESIS	10000//0.01		// size, in MHz, of hysteresis in large tuning step at output frequency (4x tuning freq)
-
 #define SI570_RECALL			(1<<0)
 #define SI570_FREEZE_DCO		(1<<4)
 #define SI570_FREEZE_M			(1<<5)
@@ -97,7 +95,7 @@ typedef struct OscillatorState
 // ------------------
 
 uchar 	ui_si570_get_configuration(void);
-uchar 	ui_si570_set_frequency(ulong freq,int calib,int temp_factor, uchar test);
+uchar 	ui_si570_set_frequency(ulong freq,int calib,int temp_factor);
 
 uchar 	ui_si570_init_temp_sensor(void);
 uchar 	ui_si570_read_temp(int *temp);

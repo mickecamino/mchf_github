@@ -30,9 +30,6 @@ const float 	fdco_min 	= FDCO_MIN;
 // All publics as struct, so eventually could be malloc-ed and in CCM for faster access!!
 __IO OscillatorState os;
 
-// Transceiver state public structure
-extern __IO TransceiverState 	ts;
-
 //*----------------------------------------------------------------------------
 //* Function Name       : ui_si570_setbits
 //* Object              :
@@ -212,13 +209,13 @@ critical:
 static uchar ui_si570_is_large_change(void)
 {
 	long double	delta_rfreq;
-
+	
 	if(os.rfreq_old == os.rfreq)
 		return 0;
 
-	if(os.rfreq_old < os.rfreq)
+	if (os.rfreq_old < os.rfreq)
 		delta_rfreq = os.rfreq - os.rfreq_old;
-	else
+	else			
 		delta_rfreq = os.rfreq_old - os.rfreq;
 
 	if((delta_rfreq / os.rfreq_old) <= 0.0035)
@@ -343,11 +340,11 @@ uchar ui_si570_get_configuration(void)
 //*----------------------------------------------------------------------------
 //* Function Name       : ui_si570_change_frequency
 //* Object              :
-//* Input Parameters    : input frequency (float), test: 0 = tune, 1 = calculate, but do not actually tune to see if a large tuning step will occur
+//* Input Parameters    :
 //* Output Parameters   :
 //* Functions called    :
 //*----------------------------------------------------------------------------
-static uchar ui_si570_change_frequency(float new_freq, uchar test)
+static uchar ui_si570_change_frequency(float new_freq)
 {
 	uchar 	i,res = 0;
    	ushort 	divider_max,curr_div,whole;
@@ -449,11 +446,6 @@ found:
 
    	//printf("write %02x %02x %02x %02x %02x %02x\n\r",os.regs[0],os.regs[1],os.regs[2],os.regs[3],os.regs[4],os.regs[5]);
 
-   	// check to see if this tuning will result in a "large" tuning step, without setting the frequency
-   	if(test)
-   		return(ui_si570_is_large_change());
-
-   	//
 	if(ui_si570_is_large_change())
 	{
 		res = ui_si570_large_frequency_change();
@@ -487,11 +479,11 @@ found:
 //*----------------------------------------------------------------------------
 //* Function Name       : ui_si570_set_frequency
 //* Object              :
-//* Input Parameters    : freq = 32 bit frequency in HZ, temp_factor = temperature calibration factor ref to 14.000 MHz, test: 0= set freq, 1= calculate, but do not change freq
+//* Input Parameters    :
 //* Output Parameters   :
 //* Functions called    :
 //*----------------------------------------------------------------------------
-uchar ui_si570_set_frequency(ulong freq,int calib,int temp_factor, uchar test)
+uchar ui_si570_set_frequency(ulong freq,int calib,int temp_factor)
 {
 	long double d;
 	float		si_freq, freq_calc, freq_scale, temp_scale, temp;
@@ -523,8 +515,7 @@ uchar ui_si570_set_frequency(ulong freq,int calib,int temp_factor, uchar test)
 
 	//printf("set si750 freq to: %d\n\r",freq);
 
-
-	return ui_si570_change_frequency(si_freq, test);
+	return ui_si570_change_frequency(si_freq);
 }
 
 //*----------------------------------------------------------------------------

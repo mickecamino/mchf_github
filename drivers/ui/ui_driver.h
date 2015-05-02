@@ -149,15 +149,8 @@ typedef struct SWRMeter
 	float fwd_dbm;			// forward power in dBm
 	float rev_dbm;			// reverse power in dBm
 	float vswr;				// vswr
-	float vswr_dampened;	// dampened VSWR reading
-	bool  pwr_meter_disp;	// TRUE if numerical FWD/REV power metering (in milliwatts) is to be displayed
-	bool  pwr_meter_was_disp;	// TRUE if numerical FWD/REV power metering WAS displayed (used to clear it)
 	uchar	p_curr;			// count used to update power meter
-	uchar	sensor_null;	// used to null out the sensor offset voltage
-	uchar	coupling_80m_calc;	// coupling coefficient for forward and reverse couplers for 80 meters
-	uchar	coupling_40m_calc;	// coupling coefficient for forward and reverse couplers for 40/60 meters
-	uchar	coupling_20m_calc;	// coupling coefficient for forward and reverse couplers for 30/20 meters
-	uchar	coupling_15m_calc;	// coupling coefficient for forward and reverse couplers for 17/15/12/10 meters
+	uchar	fwd_cal;		// SWR forward calibration (75-150 = 0.75-1.50)
 
 } SWRMeter;
 
@@ -165,48 +158,17 @@ typedef struct SWRMeter
 #define	SWR_CAL_MAX		150
 #define	SWR_CAL_DEFAULT	100
 //
-#define	SENSOR_NULL_MIN	75
-#define	SENSOR_NULL_MAX	125
-#define	SENSOR_NULL_DEFAULT	100
-//
-#define	FILTER_BAND_80	1
-#define	FILTER_BAND_40	2
-#define	FILTER_BAND_20	3
-#define FILTER_BAND_15	4
-//
-// Location of numerical FWD/REV power indicator
-//
-#define	POS_PWR_NUM_IND_X	1
-#define	POS_PWR_NUM_IND_Y	80
-//
-#define	PWR_DAMPENING_FACTOR	0.10		// dampening/averaging factor (e.g. amount of "new" reading each time) - for numerical power reading ONLY
-//
-// Coupling adjustment limits
-//
-#define	SWR_COUPLING_MIN		50
-#define	SWR_COUPLING_MAX		150
-#define	SWR_COUPLING_DEFAULT	100
-//
 #define	SWR_ADC_FULL_SCALE		4095	// full scale of A/D converter (4095 = 10 bits)
 #define	SWR_ADC_VOLT_REFERENCE	3.3		// NOMINAL A/D reference voltage.  The PRECISE value is calibrated by a menu item!  (Probably "FWD/REV ADC Cal.")
 //
-// coefficients for very low power (<75 milliwatt) power levels.  Do NOT use this above approx. 0.07 volts input!
+// Coefficients for calculating RF power from power sensor reading
+// The formula is:  P = a + bx + c x^2  where "x" is the *voltage* reading from the power sensor
 //
-#define	LOW_RF_PWR_COEFF_A	-0.0338205168744131		// constant (offset)
-#define	LOW_RF_PWR_COEFF_B	5.02584652062682		// "b" coefficient (for x)
-#define LOW_RF_PWR_COEFF_C	-106.610490958242		// "c" coefficient (for x^2)
-#define	LOW_RF_PWR_COEFF_D	853.156505329744		// "d" coefficient (for x^3)
-//
-// coefficients for higher power levels (>50 milliwatts).  This is actually good down to 25 milliwatts or so.
-//
-#define	HIGH_RF_PWR_COEFF_A	0.01209	//0.0120972709513557		// constant (offset)
-#define HIGH_RF_PWR_COEFF_B	0.8334	//0.833438917330908		// "b" coefficient (for x)
-#define HIGH_RF_PWR_COEFF_C 1.569	//1.56930042559198		// "c" coefficient (for x^2)
-//
+#define	RF_PWR_COEFF_A	0.0119393		// constant (offset)
+#define	RF_PWR_COEFF_B	0.83376			// "b" coefficient (for x)
+#define	RF_PWR_COEFF_C	1.56918			// "c" coefficient (for X^2)
 //
 #define	SWR_MIN_CALC_POWER		0.25	// Minimum forward power required for SWR calculation
-//
-#define	LOW_POWER_CALC_THRESHOLD	0.05	// voltage from sensor below which we use the "low power" calculations, above
 //
 #define	VSWR_DAMPENING_FACTOR	0.25		// dampening/averaging factor (e.g. amount of "new" reading each time) - for VSWR meter indication ONLY
 //
@@ -214,16 +176,7 @@ typedef struct SWRMeter
 //
 #define POWER_SAMPLES_SKP					10	//1500
 #define POWER_SAMPLES_CNT					32
-//
-// used to limit the voltmeter calibration parameters
-//
-#define	POWER_VOLTMETER_CALIBRATE_DEFAULT	100
-#define	POWER_VOLTMETER_CALIBRATE_MIN		00
-#define	POWER_VOLTMETER_CALIBRATE_MAX		200
-//
-#define	VOLTMETER_ADC_FULL_SCALE	4095
-//
-//
+
 // Power supply
 typedef struct PowerMeter
 {
@@ -270,7 +223,7 @@ typedef struct EepromSave
 } EepromSave;
 
 // --------------------------------------------------------------------------
-// Controls positions and some related colours
+// Controls positions
 // --------------------
 #define SMALL_FONT_WIDTH					8
 #define LARGE_FONT_WIDTH					16
@@ -278,12 +231,6 @@ typedef struct EepromSave
 // Frequency display control
 #define POS_TUNE_FREQ_X						116
 #define POS_TUNE_FREQ_Y						100
-//
-#define	POS_TUNE_SPLIT_FREQ_X				POS_TUNE_FREQ_X+72
-#define	POS_TUNE_SPLIT_FREQ_Y_TX			POS_TUNE_FREQ_Y+12
-//
-#define	SPLIT_ACTIVE_COLOUR		Yellow		// colour of "SPLIT" indicator when active
-#define	SPLIT_INACTIVE_COLOUR	Grey		// colour of "SPLIT" indicator when NOT active
 
 // Second frequency display control
 #define POS_TUNE_SFREQ_X					(POS_TUNE_FREQ_X + 120)
@@ -338,7 +285,7 @@ typedef struct EepromSave
 #define POS_BOTTOM_BAR_F4_X					(POS_BOTTOM_BAR_X + POS_BOTTOM_BAR_BUTTON_W*3 +  8)
 #define POS_BOTTOM_BAR_F4_Y					POS_BOTTOM_BAR_Y
 
-// Virtual Button 5
+// Virual Button 5
 #define POS_BOTTOM_BAR_F5_X					(POS_BOTTOM_BAR_X + POS_BOTTOM_BAR_BUTTON_W*4 + 10)
 #define POS_BOTTOM_BAR_F5_Y					POS_BOTTOM_BAR_Y
 
@@ -453,7 +400,7 @@ void 	UiDriverClearSpectrumDisplay(void);
 void 	UiDriverChangeBandFilter(uchar band,uchar bpf_only);
 void 	UiDriverChangeFilter(uchar ui_only_update);
 void 	UiDriverCreateTemperatureDisplay(uchar enabled,uchar create);
-void 	UiDriverUpdateFrequency(char skip_encoder_check, uchar mode);
+void 	UiDriverUpdateFrequency(char skip_encoder_check);
 void 	UiDriverUpdateFrequencyFast(void);
 void	UiCalcRxIqGainAdj(void);
 void	UiCalcTxIqGainAdj(void);
@@ -461,6 +408,8 @@ void 	UiDriverSetBandPowerFactor(uchar band);
 void UiDrawSpectrumScopeFrequencyBarText(void);
 //
 void 	UiDriverChangeBandFilter(uchar band,uchar bpf_only);
+void 	UiDriverUpdateFrequency(char skip_encoder_check);
+void 	UiDriverUpdateFrequencyFast(void);
 void 	UiDriverChangeFilter(uchar ui_only_update);
 void 	UiDriverSetBandPowerFactor(uchar band);
 void	UiCalcRxIqGainAdj(void);
@@ -566,11 +515,7 @@ void 	UiDriverChangeTuningStep(uchar is_up);
 //
 #define	DSP_STARTUP_DELAY		350		// Delay, in 100ths of seconds, after startup, before allowing DSP NR or Notch to be enabled.
 #define	DSP_REENABLE_DELAY		13		// Delay, in 100ths of seconds, after return to RX before allowing DSP NR or Notch to be re-enabled
-#define	DSP_BAND_CHANGE_DELAY	100		// Delay, in 100ths of a second, after changing bands before restoring DSP NR
-//
-#define TUNING_LARGE_STEP_MUTING_TIME_DSP_ON	5	// Delay, in 100ths of a second, for audio to be muted after a "large" frequency step (to avoid audio "POP") when DSP on
-#define TUNING_LARGE_STEP_MUTING_TIME_DSP_OFF	3	// Delay, in 100ths of a second, for audio to be muted after a "large" frequency step (to avoid audio "POP") when DSP on
-#define	RX_MUTE_START_DELAY	(DSP_STARTUP_DELAY + TUNING_LARGE_STEP_MUTING_TIME_DSP_ON)	// establish earliest time after system start before audio muting will work
+#define	DSP_BAND_CHANGE_DELAY	100		// Delay, in 100ths of a seconds, after changing bands before restoring DSP NR
 //
 // Button definitions
 //

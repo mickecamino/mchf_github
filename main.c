@@ -248,71 +248,7 @@ const uint16_t VirtAddVarTab[NB_OF_VAR] =
 		VAR_ADDR_188,
 		VAR_ADDR_189,
 		VAR_ADDR_190,
-		VAR_ADDR_191,
-		VAR_ADDR_192,
-		VAR_ADDR_193,
-		VAR_ADDR_194,
-		VAR_ADDR_195,
-		VAR_ADDR_196,
-		VAR_ADDR_197,
-		VAR_ADDR_198,
-		VAR_ADDR_199,
-		VAR_ADDR_200,
-		VAR_ADDR_201,
-		VAR_ADDR_202,
-		VAR_ADDR_203,
-		VAR_ADDR_204,
-		VAR_ADDR_205,
-		VAR_ADDR_206,
-		VAR_ADDR_207,
-		VAR_ADDR_208,
-		VAR_ADDR_209,
-		VAR_ADDR_210,
-		VAR_ADDR_211,
-		VAR_ADDR_212,
-		VAR_ADDR_213,
-		VAR_ADDR_214,
-		VAR_ADDR_215,
-		VAR_ADDR_216,
-		VAR_ADDR_217,
-		VAR_ADDR_218,
-		VAR_ADDR_219,
-		VAR_ADDR_220,
-		VAR_ADDR_221,
-		VAR_ADDR_222,
-		VAR_ADDR_223,
-		VAR_ADDR_224,
-		VAR_ADDR_225,
-		VAR_ADDR_226,
-		VAR_ADDR_227,
-		VAR_ADDR_228,
-		VAR_ADDR_229,
-		VAR_ADDR_230,
-		VAR_ADDR_231,
-		VAR_ADDR_232,
-		VAR_ADDR_233,
-		VAR_ADDR_234,
-		VAR_ADDR_235,
-		VAR_ADDR_236,
-		VAR_ADDR_237,
-		VAR_ADDR_238,
-		VAR_ADDR_239,
-		VAR_ADDR_240,
-		VAR_ADDR_241,
-		VAR_ADDR_242,
-		VAR_ADDR_243,
-		VAR_ADDR_244,
-		VAR_ADDR_245,
-		VAR_ADDR_246,
-		VAR_ADDR_247,
-		VAR_ADDR_248,
-		VAR_ADDR_249,
-		VAR_ADDR_250,
-		VAR_ADDR_251,
-		VAR_ADDR_252,
-		VAR_ADDR_253,
-		VAR_ADDR_254,
-		VAR_ADDR_255
+		VAR_ADDR_191
 };
 
 // System tick if needed
@@ -566,7 +502,6 @@ void TransceiverStateInit(void)
 
 	ts.band		  		= BAND_MODE_20;				// band from eeprom
 	ts.band_change		= 0;						// used in muting audio during band change
-	ts.filter_band		= 0;						// used to indicate the bpf filter selection for power detector coefficient selection
 	ts.dmod_mode 		= DEMOD_USB;				// demodulator mode
 	ts.audio_gain		= DEFAULT_AUDIO_GAIN;		// Set initial volume
 	ts.audio_gain		= MAX_VOLUME_DEFAULT;		// Set max volume default
@@ -643,8 +578,6 @@ void TransceiverStateInit(void)
 	ts.scope_trace_colour	= SPEC_COLOUR_TRACE_DEFAULT;	// default colour for the spectrum scope trace
 	ts.scope_grid_colour	= SPEC_COLOUR_GRID_DEFAULT;		// default colour for the spectrum scope grid
 	ts.scope_grid_colour_active = Grid;
-	ts.scope_centre_grid_colour = SPEC_COLOUR_GRID_DEFAULT;		// color of center line of scope grid
-	ts.scope_centre_grid_colour_active = Grid;
 	ts.scope_scale_colour	= SPEC_COLOUR_SCALE_DEFAULT;	// default colour for the spectrum scope frequency scale at the bottom
 	ts.scope_rescale_rate = SPECTRUM_SCOPE_RESCALE_DEFAULT;	// load default spectrum scope rescale rate
 	ts.scope_agc_rate	= SPECTRUM_SCOPE_AGC_DEFAULT;		// load default spectrum scope AGC rate
@@ -691,7 +624,6 @@ void TransceiverStateInit(void)
 	ts.dsp_nr_strength	= 0;				// "Strength" of DSP noise reduction (0 = weak)
 	ts.dsp_notch_delaybuf_len =	DSP_NOTCH_DELAYBUF_DEFAULT;
 	ts.dsp_inhibit		= 1;				// TRUE if DSP is to be inhibited - power up with DSP disabled
-	ts.dsp_inhibit_mute = 0;				// holder for "dsp_inhibit" during muting operations to allow restoration of previous state
 	ts.dsp_timed_mute	= 0;				// TRUE if DSP is to be muted for a timed amount
 	ts.dsp_inhibit_timing = 0;				// used to time inhibiting of DSP when it must be turned off for some reason
 	ts.reset_dsp_nr		= 0;				// TRUE if DSP NR coefficients are to be reset when "audio_driver_set_rx_audio_filter()" is called
@@ -717,13 +649,7 @@ void TransceiverStateInit(void)
 	ts.lcd_blanking_flag = 0;				// if TRUE, the LCD is blanked completely (e.g. backlight is off)
 	ts.freq_cal_adjust_flag = 0;			// set TRUE if frequency calibration is in process
 	ts.xvtr_adjust_flag = 0;				// set TRUE if transverter offset adjustment is in process
-	ts.rx_muting = 0;						// set TRUE if audio output is to be muted
-	ts.rx_blanking_time = 0;				// this is a timer used to delay the un-blanking of the audio after a large synthesizer tuning step
-	ts.vfo_mem_mode = 0;					// this is used to record the VFO/memory mode (0 = VFO "A" = backwards compatibility)
-											// LSB+6 (0x40) = 0:  VFO A,  1 = VFO B
-											// LSB+7 (0x80) = 0:  Normal mode, 1 = SPLIT mode
-											// Other bits are currently reserved
-	ts.voltmeter_calibrate	= POWER_VOLTMETER_CALIBRATE_DEFAULT;	// Voltmeter calibration constant
+
 }
 
 //*----------------------------------------------------------------------------
