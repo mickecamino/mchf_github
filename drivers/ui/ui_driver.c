@@ -90,9 +90,9 @@ static void 	UiDriverInitFrequency(void);
 //
 static void 	UiDriverCheckFilter(ulong freq);
 uchar 			UiDriverCheckBand(ulong freq, ushort update);
-//static void 	UiDriverUpdateFrequency(char skip_encoder_check);
+//static void 	UiDriverUpdateFrequency(char skip_encoder_check, uchar mode);
 //static void 	UiDriverUpdateFrequencyFast(void);
-static void 	UiDriverUpdateLcdFreq(ulong dial_freq,ushort color);
+static void 	UiDriverUpdateLcdFreq(ulong dial_freq,ushort color,ushort mode);
 static void 	UiDriverUpdateSecondLcdFreq(ulong dial_freq);
 //static void 	UiDriverChangeTuningStep(uchar is_up);
 static uchar 	UiDriverButtonCheck(ulong button_num);
@@ -128,7 +128,7 @@ static ulong 	UiDriverGetScopeTraceColour(void);
 //static void 	UiDriverUpdateEthernetStatus(void);
 //static void 	UiDriverUpdateUsbKeyboardStatus(void);
 static void 	UiDriverHandleSmeter(void);
-static void 	UiDriverHandleSWRMeter(void);
+static void 	UiDriverHandleLowerMeter(void);
 static void 	UiDriverHandlePowerSupply(void);
 // LO TCXO routines
 static void 	UiDriverUpdateLoMeter(uchar val,uchar active);
@@ -145,6 +145,7 @@ void			UiDriverUpdateMenu(uchar mode);
 void 			UiDriverUpdateMenuLines(uchar index, uchar mode);
 void			UiDriverUpdateConfigMenuLines(uchar index, uchar mode);
 void 			UiDriverSaveEepromValuesPowerDown(void);
+static void UiDriverInitMainFreqDisplay(void);
 //
 
 // Tuning steps
@@ -251,11 +252,27 @@ const float S_Meter_Cal[] =
 		28183829.3,	//2818382.93	//33, +70, 129dB
 };
 //
-// Bands tuning values
+// Bands tuning values - WORKING registers - used "live" during transceiver operation
+// (May contain VFO A, B or "Memory" channel values)
+//
 __IO ulong band_dial_value[MAX_BANDS+1];
 __IO ulong band_decod_mode[MAX_BANDS+1];
 __IO ulong band_filter_mode[MAX_BANDS+1];
-
+//
+// VFO A registers
+//
+__IO ulong band_dial_value_a[MAX_BANDS+1];
+__IO ulong band_decod_mode_a[MAX_BANDS+1];
+__IO ulong band_filter_mode_a[MAX_BANDS+1];
+//
+// VFO B registers
+//
+__IO ulong band_dial_value_b[MAX_BANDS+1];
+__IO ulong band_decod_mode_b[MAX_BANDS+1];
+__IO ulong band_filter_mode_b[MAX_BANDS+1];
+//
+static int16_t test_ui_a[250];
+//
 // ------------------------------------------------
 // Transceiver state public structure
 extern __IO TransceiverState 	ts;
@@ -370,6 +387,7 @@ extern __IO	arm_fir_instance_f32	FIR_Q_TX;
 void ui_driver_init(void)
 {
 	short res;
+	uchar i;
 
 #ifdef DEBUG_BUILD
 	printf("ui driver init...\n\r");
@@ -380,21 +398,26 @@ void ui_driver_init(void)
 
 	// Load stored data from eeprom - some are needed for initialization
 	UiDriverLoadEepromValues();
-	//
-	UiCWSidebandMode();			// determine CW sideband mode from the restored frequency
+
 	// Init frequency publics
 	UiDriverInitFrequency();
 
-	// Load stored data from eeprom - again - as some of the values above would have been overwritten
+	// Load stored data from eeprom - again - as some of the values above would have been overwritten from the above
 	UiDriverLoadEepromValues();
 	//
-	UiCalcRxIqGainAdj();
 	//
-	UiCalcRxPhaseAdj();
+	df.tune_new = band_dial_value[ts.band];		// init "tuning dial" frequency based on restored settings
+	df.tune_old = df.tune_new;
 	//
-	UiCalcTxPhaseAdj();
+	UiCWSidebandMode();			// determine CW sideband mode from the restored frequency
 	//
-	UiCalcTxIqGainAdj();
+	UiCalcRxIqGainAdj();		// Init RX IQ gain
+	//
+	UiCalcRxPhaseAdj();			// Init RX IQ Phase (Hilbert transform)
+	//
+	UiCalcTxPhaseAdj();			// Init TX IQ Phase (Hilbert transform)
+	//
+	UiCalcTxIqGainAdj();		// Init TX IQ gain
 	//
 	// Init spectrum display
 	UiDriverInitSpectrumDisplay();
@@ -414,9 +437,9 @@ void ui_driver_init(void)
 
 	// Set SoftDDS in CW mode
 	if(ts.dmod_mode == DEMOD_CW)
-		softdds_setfreq((float)ts.sidetone_freq,ts.samp_rate,0);
+		softdds_setfreq((float)ts.sidetone_freq,ts.samp_rate,0);	// set sidetone - and CW TX offset from carrier
 	else
-		softdds_setfreq(0.0,ts.samp_rate,0);
+		softdds_setfreq(0.0,ts.samp_rate,0);						// no "DDS" in non-CW modes
 
 	// Update codec volume
 	//  0 - 16: via codec command
@@ -442,11 +465,17 @@ void ui_driver_init(void)
 	drv_init = 1;
 
 	// Do update of frequency display
+	ts.refresh_freq_disp = 1;	// make frequency display refresh all digits
+	//
+	if(ts.vfo_mem_mode & 0x80)	{	// in SPLIT mode?
+		UiDriverUpdateFrequency(1,3);	// force display of second (TX) VFO frequency
+		UiDriverUpdateFrequency(1,2);	// update RX frequency
+	}
+	else	// not in SPLIT mode - standard update
+		UiDriverUpdateFrequency(1,0);
 
-	ts.refresh_freq_disp = 1;	// cause frequency display to be completely refreshed
-	UiDriverUpdateFrequency(1);	// Yes - update frequency
-	ts.refresh_freq_disp = 0;	// Turn off this flag now that we are done
-	UiDriverUpdateFrequency(1);	// Update frequency again
+	ts.refresh_freq_disp = 0;	// clear flag that causes frequency display function to update ALL digits
+
 	//
 	UiLCDBlankTiming();			// init timing for LCD blanking
 	ts.lcd_blanking_time = ts.sysclock + LCD_STARTUP_BLANKING_TIME;
@@ -474,7 +503,7 @@ void ui_driver_thread(void)
 //	UiDriverHandleSmeter();
 
 	// FWD/SWR meter
-//	UiDriverHandleSWRMeter();
+//	UiDriverHandleLowerMeter();
 
 	// Display voltage
 //	UiDriverHandlePowerSupply();
@@ -533,7 +562,7 @@ void ui_driver_irq(void)
 			UiDriverHandleSmeter();
 			break;
 		case STATE_SWR_METER:
-			UiDriverHandleSWRMeter();
+			UiDriverHandleLowerMeter();
 			break;
 		case STATE_HANDLE_POWERSUPPLY:
 			UiDriverHandlePowerSupply();
@@ -554,7 +583,7 @@ void ui_driver_irq(void)
 			UiDriverCheckEncoderThree();
 			break;
 		case STATE_UPDATE_FREQUENCY:
-			UiDriverUpdateFrequency(0);
+			UiDriverUpdateFrequency(0,0);
 			break;
 		case STATE_PROCESS_KEYBOARD:
 			UiDriverProcessKeyboard();
@@ -581,6 +610,9 @@ void ui_driver_toggle_tx(void)
 {
 
 	static bool was_menu = 0;		// used to detect if we *were* in the menu
+	static bool was_rx = 1;
+	static bool rx_muted = 0;
+	bool	reset_freq = 0;
 	ulong	calc_var;
 
 	// Disable irq processing
@@ -594,6 +626,19 @@ void ui_driver_toggle_tx(void)
 		//
 		ts.dsp_inhibit = 1;								// disable DSP when going into TX mode
 		//
+		if(ts.dmod_mode == DEMOD_AM)	{		// is it AM mode?
+			if(ts.power_level < PA_LEVEL_2W)	{	// is it over 2 watts?
+				ts.power_level = PA_LEVEL_2W;	// yes - force to 2 watts
+				//
+				UiDriverChangePowerLevel();			// update the power level display
+				if(ts.tune)		// recalculate sidetone gain only if transmitting/tune mode
+					Codec_SidetoneSetgain();
+				//
+				if(ts.menu_mode)	// are we in menu mode?
+					UiDriverUpdateMenu(0);	// yes, update display when we change power setting
+			}
+		}
+		//
 		if(ts.dmod_mode != DEMOD_CW)	{				// are we in a voice mode?
 			if(ts.tx_audio_source != TX_AUDIO_MIC)	{	// yes - are we in LINE IN mode?
 				Codec_Line_Gain_Adj(0);	// yes - momentarily mute LINE IN audio if in LINE IN mode until we have switched to TX
@@ -604,6 +649,12 @@ void ui_driver_toggle_tx(void)
 				ts.tx_mic_gain_mult = 0;		// momentarily set the mic gain to zero while we go to TX
 				Codec_WriteRegister(W8731_ANLG_AU_PATH_CNTR,0x0016);	// Mute the microphone with the CODEC (this does so without a CLICK)
 			}
+			//
+			if((ts.iq_freq_mode) && (!rx_muted))	{	// Is translate mode active and we have NOT already muted the audio?
+				Codec_Volume(0);	// yes - mute the audio codec to suppress an approx. 6 kHz chirp when going in to TX mode
+				rx_muted = 1;		// indicate that we've muted the audio so we don't do this every time through
+			}
+			//
 			non_os_delay();		// pause an instant because the codec chip has its own delay before tasks complete!
 		}
 		//
@@ -637,14 +688,44 @@ void ui_driver_toggle_tx(void)
 	// RX Mode
 	else
 	{
+		was_rx = 1;								// indicate that we WERE in RX mode
 		PTT_CNTR_PIO->BSRRH  	= PTT_CNTR;		// TX off
 		RED_LED_PIO->BSRRH 		= RED_LED;		// Red led off
 		//
 		UiDriverUpdateBtmMeter(0,0);		// clear bottom meter of any outstanding indication when going back to RX
 		//
+		rx_muted = 0;		// clear flag to indicate that we've muted the audio
 	}
 
-	if((ts.rit_value) || ((ts.iq_freq_mode) && (ts.dmod_mode == DEMOD_CW)))		// Re-set frequency if RIT is non-zero or in CW mode with translate
+	reset_freq = 0;		// clear flag that indicates that we should reset the frequency
+
+	if(ts.vfo_mem_mode & 0x80)	{				// is SPLIT mode active?
+		reset_freq = 1;							// yes - indicate that we WILL need to reset the synthesizer frequency
+		if(ts.vfo_mem_mode & 0x40)	{				// is VFO-B active?
+			if(ts.txrx_mode == TRX_MODE_TX)	{	// are we in TX mode?
+				if(was_rx)	{						// did we just enter TX mode?
+					band_dial_value_b[ts.band] = df.tune_new;	// yes - save current RX frequency in VFO location (B)
+					was_rx = 0;						// indicate that we are now in transmit mode to prevent re-loading of frequency
+				}
+				df.tune_new = band_dial_value_a[ts.band];	// load with VFO-A frequency
+			}
+			else					// we are in RX mode
+				df.tune_new = band_dial_value_b[ts.band];	// load with VFO-B frequency
+		}
+		else	{	// VFO-A is active
+			if(ts.txrx_mode == TRX_MODE_TX)	{				// are we in TX mode?
+				if(was_rx)	{								// did we just enter TX mode?
+					band_dial_value_a[ts.band] = df.tune_new;	// yes - save current RX frequency in VFO location (A)
+					was_rx = 0;						// indicate that we are now in transmit mode to prevent re-loading of frequency
+				}
+				df.tune_new = band_dial_value_b[ts.band];	// load with VFO-B frequency
+			}
+			else							// we are in RX mode
+				df.tune_new = band_dial_value_a[ts.band];	// load with VFO-A frequency
+		}
+	}
+
+	if((reset_freq) || (ts.rit_value) || ((ts.iq_freq_mode) && (ts.dmod_mode == DEMOD_CW)))		// Re-set frequency if RIT is non-zero or in CW mode with translate OR if in SPLIT mode and we had to retune
 		UiDriverUpdateFrequencyFast();
 
 	if((ts.menu_mode) || (was_menu))	{			// update menu when we are (or WERE) in MENU mode
@@ -709,6 +790,13 @@ static void UiDriverPublicsInit(void)
 	swrm.fwd_dbm			= 0;
 	swrm.rev_dbm			= 0;
 	swrm.vswr			 	= 0;
+	swrm.sensor_null		= SENSOR_NULL_DEFAULT;
+	swrm.coupling_80m_calc		= SWR_COUPLING_DEFAULT;
+	swrm.coupling_40m_calc		= SWR_COUPLING_DEFAULT;
+	swrm.coupling_20m_calc		= SWR_COUPLING_DEFAULT;
+	swrm.coupling_15m_calc		= SWR_COUPLING_DEFAULT;
+	swrm.pwr_meter_disp		= 0;	// Display of numerical FWD/REV power metering off by default
+	swrm.pwr_meter_was_disp = 0;	// Used to indicate if FWD/REV numerical power metering WAS displayed
 
 	// Power supply meter
 	pwmt.skip 				= 0;
@@ -760,7 +848,7 @@ static void UiDriverProcessKeyboard(void)
 						UiCalcTxPhaseAdj();
 						UiCalcRxPhaseAdj();
 						UiDriverChangeDSPMode();	// Change DSP display setting as well
-						UiDriverUpdateFrequency(1);	// update frequency display without checking encoder
+						UiDriverUpdateFrequency(1,0);	// update frequency display without checking encoder
 						//
 						if(ts.dmod_mode == DEMOD_CW)	{		// update on-screen adjustments
 							UiDriverChangeKeyerSpeed(0);		// emplace keyer speed (WPM) and
@@ -770,6 +858,7 @@ static void UiDriverProcessKeyboard(void)
 							UIDriverChangeAudioGain(0);			// display Line/Mic gain and
 							UiDriverChangeCmpLevel(0);			// Compression level when in voice mode
 						}
+						//
 					}
 					break;
 				//
@@ -787,7 +876,11 @@ static void UiDriverProcessKeyboard(void)
 						}
 					}
 					else if((!(ts.dsp_active & 1)) && (ts.dsp_active & 4))	//	NR inactive, notch active
-						ts.dsp_active |= 1;									// turn on NR
+						if((ts.dmod_mode == DEMOD_AM) && (ts.filter_id == AUDIO_10KHZ))		// was it AM with a 10 kHz filter selected?
+
+							ts.dsp_active &= 0xfa;			// it was AM + 10 kHz - turn off NR and notch
+						else
+							ts.dsp_active |= 1;				// no - turn on NR
 					//
 					else	{
 						ts.dsp_active &= 0xfa;								// turn off NR and notch
@@ -812,13 +905,20 @@ static void UiDriverProcessKeyboard(void)
 				case BUTTON_G3_PRESSED:		// BUTTON_G3 - Change power setting
 				{
 					ts.power_level++;
-
-					if(ts.power_level >= PA_LEVEL_MAX_ENTRY)
-						ts.power_level = PA_LEVEL_FULL;
+					//
+					if(ts.dmod_mode == DEMOD_AM)	{			// in AM mode?
+						if(ts.power_level >= PA_LEVEL_MAX_ENTRY)	// yes, power over 2 watts?
+							ts.power_level = PA_LEVEL_2W;	// force to 2 watt mode when we "roll over"
+					}
+					else	{	// other modes, do not limit max power
+						if(ts.power_level >= PA_LEVEL_MAX_ENTRY)
+							ts.power_level = PA_LEVEL_FULL;
+					}
 					//
 					UiDriverChangePowerLevel();
 					if(ts.tune)		// recalculate sidetone gain only if transmitting/tune mode
-						Codec_SidetoneSetgain();
+						if(!ts.iq_freq_mode)	// Is translate mode *NOT* active?
+							Codec_SidetoneSetgain();
 					//
 					if(ts.menu_mode)	// are we in menu mode?
 						UiDriverUpdateMenu(0);	// yes, update display when we change power setting
@@ -889,7 +989,7 @@ static void UiDriverProcessKeyboard(void)
 					//
 					UiCWSidebandMode();
 					UiDriverShowMode();
-					UiDriverUpdateFrequency(1);	// update frequency display without checking encoder
+					UiDriverUpdateFrequency(1,0);	// update frequency display without checking encoder
 					if(ts.menu_mode)	// are we in menu mode?
 						UiDriverUpdateMenu(0);	// yes, update menu display when we change bands
 					//
@@ -911,7 +1011,7 @@ static void UiDriverProcessKeyboard(void)
 					//
 					UiCWSidebandMode();
 					UiDriverShowMode();
-					UiDriverUpdateFrequency(1);	// update frequency display without checking encoder
+					UiDriverUpdateFrequency(1,0);	// update frequency display without checking encoder
 					if(ts.menu_mode)	// are we in menu mode?
 						UiDriverUpdateMenu(0);	// yes, update display when we change bands
 					//
@@ -936,9 +1036,9 @@ static void UiDriverProcessKeyboard(void)
 			switch(ks.button_id)	{
 				case BUTTON_F1_PRESSED:	// Press-and-hold button F1:  Write settings to EEPROM
 					if(ts.txrx_mode == TRX_MODE_RX)	{				// only allow EEPROM write in receive mode
-						if(!ts.menu_mode)	{						// Clear spectrum scope when NOT in menu mode
+						if(!ts.menu_mode)	{						// not in menu mode
 							UiDriverClearSpectrumDisplay();			// clear display under spectrum scope
-							UiLcdHy28_PrintText(80,160," Saving settings to EEPROM ",Blue,Black,0);
+							UiLcdHy28_PrintText(80,160," Saving settings to EEPROM ",Cyan,Black,0);
 							UiDriverSaveEepromValuesPowerDown();	// save settings to EEPROM
 							for(temp = 0; temp < 6; temp++)			// delay so that it may be read
 								non_os_delay();
@@ -1005,6 +1105,34 @@ static void UiDriverProcessKeyboard(void)
 						UiDriverUpdateMenu(0);	// update menu display
 						UiDriverUpdateMenu(1);	// update cursor
 					}
+					else	{	// not in menu mode:  Make VFO A = VFO B or VFO B = VFO A, as appropriate
+						if(ts.vfo_mem_mode & 0x40)	{	// are we in VFO B mode?
+							band_dial_value_a[ts.band] = df.tune_new;					// yes, copy frequency into A
+							band_decod_mode_a[ts.band] = ts.dmod_mode;					// copy active VFO (B) settings into A
+							band_filter_mode_a[ts.band] = ts.filter_id;
+						}
+						else	{	// we were in VFO A mode
+							band_dial_value_b[ts.band] = df.tune_new;					// yes, copy frequency into B
+							band_decod_mode_b[ts.band] = ts.dmod_mode;					// copy active VFO (A) settings into B
+							band_filter_mode_b[ts.band] = ts.filter_id;
+						}
+						if(ts.vfo_mem_mode & 0x80)	{	// are we in SPLIT mode?
+							ts.refresh_freq_disp = 1;	// yes, we need to update the TX frequency:  Make frequency display refresh all digits
+							UiDriverUpdateFrequency(1,3);	// force display of second (TX) VFO frequency
+							UiDriverUpdateFrequency(1,2);	// Update receive frequency
+							ts.refresh_freq_disp = 0;	// disable refresh all digits flag
+						}
+						UiDriverClearSpectrumDisplay();			// clear display under spectrum scope
+						if(ts.vfo_mem_mode & 0x40)	// VFO B active?
+							UiLcdHy28_PrintText(80,160,"VFO B -> VFO A",Cyan,Black,1);		// yes, indicate copy of B into A
+						else			// VFO A active
+							UiLcdHy28_PrintText(80,160,"VFO A -> VFO B",Cyan,Black,1);		// indicate copy of A into B
+						for(temp = 0; temp < 18; temp++)			// delay so that it may be read
+							non_os_delay();
+							//
+						UiDriverClearSpectrumDisplay();			// clear display under spectrum scope
+						UiDriverCreateSpectrumScope();
+					}
 					break;
 				case BUTTON_F5_PRESSED:			// Button F5 was pressed-and-held - Toggle TX Disable
 					if(ts.tx_disable)	{
@@ -1027,7 +1155,7 @@ static void UiDriverProcessKeyboard(void)
 						UiCalcTxPhaseAdj();
 						UiCalcRxPhaseAdj();
 						UiDriverChangeDSPMode();	// Change DSP display setting as well
-						UiDriverUpdateFrequency(1);	// update frequency display without checking encoder
+						UiDriverUpdateFrequency(1,0);	// update frequency display without checking encoder
 						//
 						if(ts.dmod_mode == DEMOD_CW)	{		// update on-screen adjustments
 							UiDriverChangeKeyerSpeed(0);		// emplace keyer speed (WPM) and
@@ -1124,9 +1252,17 @@ static void UiDriverProcessKeyboard(void)
 				case BUTTON_STEPM_PRESSED:
 					if(!UiDriverButtonCheck(BUTTON_STEPP_PRESSED))	{	// was button STEP+ pressed at the same time?
 						ts.frequency_lock = !ts.frequency_lock;
-						ts.refresh_freq_disp = 1;		// force update of all digits
-						UiDriverUpdateFrequency(1);		// Update display of frequency to change color
-						ts.refresh_freq_disp = 0;
+						// update frequency display
+						ts.refresh_freq_disp = 1;	// make frequency display refresh all digits
+						//
+						if(ts.vfo_mem_mode & 0x80)	{	// in SPLIT mode?
+							UiDriverUpdateFrequency(1,3);	// force display of second (TX) VFO frequency
+							UiDriverUpdateFrequency(1,2);	// update RX frequency
+						}
+						else	{	// not in SPLIT mode - standard update
+							UiDriverUpdateFrequency(1,0);
+						}
+						ts.refresh_freq_disp = 0;	// restore selective update mode for frequency display
 					}
 					else	{
 						if(!(ts.freq_step_config & 0xf0))	// button swap NOT enabled
@@ -1139,9 +1275,17 @@ static void UiDriverProcessKeyboard(void)
 				case BUTTON_STEPP_PRESSED:
 					if(!UiDriverButtonCheck(BUTTON_STEPM_PRESSED))	{	// was button STEP- pressed at the same time?
 						ts.frequency_lock = !ts.frequency_lock;
-						ts.refresh_freq_disp = 1;		// force update of all digits
-						UiDriverUpdateFrequency(1);		// Update display of frequency to change color
-						ts.refresh_freq_disp = 0;
+						// update frequency display
+						ts.refresh_freq_disp = 1;	// make frequency display refresh all digits
+						//
+						if(ts.vfo_mem_mode & 0x80)	{	// in SPLIT mode?
+							UiDriverUpdateFrequency(1,3);	// force display of second (TX) VFO frequency
+							UiDriverUpdateFrequency(1,2);	// update RX frequency
+						}
+						else	{	// not in SPLIT mode - standard update
+							UiDriverUpdateFrequency(1,0);
+						}
+						ts.refresh_freq_disp = 0;	// restore selective update mode for frequency display
 					}
 					else	{
 						if(!(ts.freq_step_config & 0xf0))	// button swap NOT enabled
@@ -1297,6 +1441,7 @@ bool	voice_mode, select_10k, select_3k6;
 static void UiDriverProcessFunctionKeyClick(ulong id)
 {
 	static bool is_last_menu_item = 0;
+	ulong i;
 	//printf("button: %02x\n\r",id);
 
 	// --------------------------------------------
@@ -1375,8 +1520,15 @@ static void UiDriverProcessFunctionKeyClick(ulong id)
 				}
 				*/
 				//
-				UiLcdHy28_PrintText(POS_BOTTOM_BAR_F3_X,POS_BOTTOM_BAR_F3_Y,"      ",Yellow,Black,0);
-				UiLcdHy28_PrintText(POS_BOTTOM_BAR_F4_X,POS_BOTTOM_BAR_F4_Y,"      ",Yellow,Black,0);
+				if(ts.vfo_mem_mode & 0x80)	// SPLIT mode active?
+					UiLcdHy28_PrintText(POS_BOTTOM_BAR_F3_X,POS_BOTTOM_BAR_F3_Y," SPLIT",SPLIT_ACTIVE_COLOUR,Black,0);	// yes - indicate with color
+				else
+					UiLcdHy28_PrintText(POS_BOTTOM_BAR_F3_X,POS_BOTTOM_BAR_F3_Y," SPLIT",SPLIT_INACTIVE_COLOUR,Black,0);		// not active - grey
+				//
+				if(ts.vfo_mem_mode & 0x40)		// VFO B active?
+					UiLcdHy28_PrintText(POS_BOTTOM_BAR_F4_X,POS_BOTTOM_BAR_F4_Y," VFO B",White,Black,0);	// VFO B active
+				else
+					UiLcdHy28_PrintText(POS_BOTTOM_BAR_F4_X,POS_BOTTOM_BAR_F4_Y," VFO A",White,Black,0);
 			}
 		}
 	}
@@ -1398,22 +1550,6 @@ static void UiDriverProcessFunctionKeyClick(ulong id)
 				ts.tx_meter_mode = 0;
 			//
 			UiLcdHy28_PrintText(POS_BOTTOM_BAR_F2_X,POS_BOTTOM_BAR_F2_Y," METER",White,Black,0);
-			//
-			/*
-			switch(ts.tx_meter_mode)	{	// redraw button according to meter mode
-			case METER_SWR:
-				UiLcdHy28_PrintText(POS_BOTTOM_BAR_F2_X,POS_BOTTOM_BAR_F2_Y,"  SWR ",White,Black,0);
-				break;
-			case METER_ALC:
-				UiLcdHy28_PrintText(POS_BOTTOM_BAR_F2_X,POS_BOTTOM_BAR_F2_Y,"  ALC ",White,Black,0);
-				break;
-			case METER_AUDIO:
-				UiLcdHy28_PrintText(POS_BOTTOM_BAR_F2_X,POS_BOTTOM_BAR_F2_Y," AUDIO",White,Black,0);
-				break;
-			default:
-				break;
-			}
-			*/
 			//
 			UiDriverDeleteSMeter();
 			UiDriverCreateSMeter();	// redraw meter
@@ -1439,8 +1575,23 @@ static void UiDriverProcessFunctionKeyClick(ulong id)
 			ts.menu_var = 0;			// clear variable that is used to change a menu item
 			UiDriverUpdateMenu(1);		// Update that menu item
 		}
-		//
-		//
+		else	{	// NOT menu mode
+			if(ts.vfo_mem_mode & 0x80)	{	// are we in SPLIT mode?
+				ts.vfo_mem_mode &= 0x7f;	// yes - turn off MSB to turn off SPLIT
+				UiDriverInitMainFreqDisplay();		// update the main frequency display to reflect the mode
+				ts.refresh_freq_disp = 1;	// make frequency display refresh all digits
+				UiDriverUpdateFrequency(1,1);	// force update of large digits
+				ts.refresh_freq_disp = 0;	// disable refresh all digits flag
+			}
+			else if(!(ts.vfo_mem_mode & 0x80))	{	// are we NOT in SPLIT mode?
+				ts.vfo_mem_mode |= 0x80;		// yes - turn on MSB to activate SPLIT
+				UiDriverInitMainFreqDisplay();		//
+				ts.refresh_freq_disp = 1;	// make frequency display refresh all digits
+				UiDriverUpdateFrequency(1,3);	// force display of second (TX) VFO frequency
+				UiDriverUpdateFrequency(1,2);	// force display of first (RX) VFO frequency
+				ts.refresh_freq_disp = 0;	// disable refresh all digits flag
+			}
+		}
 	}
 
 	// --------------------------------------------
@@ -1489,6 +1640,63 @@ static void UiDriverProcessFunctionKeyClick(ulong id)
 			//
 			ts.menu_var = 0;			// clear variable that is used to change a menu item
 			UiDriverUpdateMenu(1);		// Update that menu item
+		}
+		else	{	// NOT menu mode
+			if(ts.vfo_mem_mode & 0x40)		{	// LSB on VFO mode byte set?
+				ts.vfo_mem_mode &= 0xbf;	// yes, it's now VFO-B mode, so clear it, setting it to VFO A mode
+				band_dial_value_b[ts.band] = df.tune_old;	//band_dial_value[ts.band];		// save "VFO B" settings
+				band_decod_mode_b[ts.band] = ts.dmod_mode;	//band_decod_mode[ts.band];
+				band_filter_mode_b[ts.band] = ts.filter_id;	//band_filter_mode[ts.band];
+				//
+				band_dial_value[ts.band] = band_dial_value_a[ts.band];		// load "VFO A" settings into working registers
+				band_decod_mode[ts.band] = band_decod_mode_a[ts.band];
+				band_filter_mode[ts.band] = band_filter_mode_a[ts.band];
+				//
+				UiLcdHy28_PrintText(POS_BOTTOM_BAR_F4_X,POS_BOTTOM_BAR_F4_Y," VFO A",White,Black,0);
+				//
+			}
+			else	{						// LSB on VFO mode byte NOT set?
+				ts.vfo_mem_mode |= 0x40;			// yes, it's now in VFO-A mode, so set it, setting it to VFO B mode
+				band_dial_value_a[ts.band] = df.tune_old;	//band_dial_value[ts.band];		// save "VFO A" settings
+				band_decod_mode_a[ts.band] = ts.dmod_mode;	//band_decod_mode[ts.band];
+				band_filter_mode_a[ts.band] = ts.filter_id;	//band_filter_mode[ts.band];
+					//
+				band_dial_value[ts.band] = band_dial_value_b[ts.band];		// load "VFO B" settings
+				band_decod_mode[ts.band] = band_decod_mode_b[ts.band];
+				band_filter_mode[ts.band] = band_filter_mode_b[ts.band];
+				UiLcdHy28_PrintText(POS_BOTTOM_BAR_F4_X,POS_BOTTOM_BAR_F4_Y," VFO B",White,Black,0);
+				//
+			}
+			df.tune_new = band_dial_value[ts.band];
+			//
+			// do frequency/display update
+			if(ts.vfo_mem_mode & 0x80)	{	// in SPLIT mode?
+				ts.refresh_freq_disp = 1;	// make frequency display refresh all digits
+				UiDriverUpdateFrequency(1,3);	// force display of second (TX) VFO frequency - do this first so small display shows RX freq
+				UiDriverUpdateFrequency(1,2);	// update RX frequency
+				ts.refresh_freq_disp = 0;
+			}
+			else	// not in SPLIT mode - standard update
+				UiDriverUpdateFrequency(1,0);
+
+			// Change decode mode if need to
+			if(ts.dmod_mode != band_decod_mode[ts.band])
+			{
+				// Update mode
+				ts.dmod_mode = band_decod_mode[ts.band];
+
+				// Update Decode Mode (USB/LSB/AM/FM/CW)
+				UiDriverShowMode();
+			}
+
+			// Change filter mode if need to
+			if(ts.filter_id != band_filter_mode[ts.band])
+			{
+				ts.filter_id = band_filter_mode[ts.band];
+				UiDriverChangeFilter(0);	// update display and change filter
+				audio_driver_set_rx_audio_filter();
+				audio_driver_set_rx_audio_filter();	// we have to invoke the filter change several times for some unknown reason - 'dunno why!
+			}
 		}
 		//
 		//
@@ -1879,6 +2087,32 @@ do_bpf:
 	}
 }
 
+
+
+//*----------------------------------------------------------------------------
+//* Function Name       : UiDriverInitMainFreqDisplay
+//* Object              :
+//* Input Parameters    :
+//* Output Parameters   :
+//* Functions called    :
+//*----------------------------------------------------------------------------
+static void UiDriverInitMainFreqDisplay(void)
+{
+	if(!(ts.vfo_mem_mode & 0x80))	{	// are we in SPLIT mode?
+		UiLcdHy28_PrintText(POS_BOTTOM_BAR_F3_X,POS_BOTTOM_BAR_F3_Y," SPLIT",SPLIT_INACTIVE_COLOUR,Black,0);	// make SPLIT indicator grey to indicate off
+//		UiLcdHy28_PrintText(POS_TUNE_FREQ_X,POS_TUNE_FREQ_Y + 4,"          ",White,Black,1);	// clear area near frequency display
+		UiLcdHy28_PrintText(POS_TUNE_FREQ_X,POS_TUNE_FREQ_Y,"  .   .   ",White,Black,1);	// clear frequency display and replace dots
+	}
+	else	{	// are we NOT in SPLIT mode?
+		UiLcdHy28_PrintText(POS_BOTTOM_BAR_F3_X,POS_BOTTOM_BAR_F3_Y," SPLIT",SPLIT_ACTIVE_COLOUR,Black,0);	// make SPLIT indicator YELLOW to indicate on
+		UiLcdHy28_PrintText(POS_TUNE_FREQ_X,POS_TUNE_FREQ_Y,"          ",White,Black,1);	// clear large frequency digits
+		UiLcdHy28_PrintText(POS_TUNE_SPLIT_FREQ_X,POS_TUNE_FREQ_Y,"  .   .   ",White,Black,0);	// clear frequency display and replace dots for RX freq
+		UiLcdHy28_PrintText(POS_TUNE_SPLIT_FREQ_X,POS_TUNE_SPLIT_FREQ_Y_TX,"  .   .   ",White,Black,0);	// clear frequency display and replace dots for TX freq
+		UiLcdHy28_PrintText(POS_TUNE_SPLIT_FREQ_X-(SMALL_FONT_WIDTH*5),POS_TUNE_FREQ_Y,"RX->",RX_Grey,Black,0);	// Place identifying marker for RX frequency
+		UiLcdHy28_PrintText(POS_TUNE_SPLIT_FREQ_X-(SMALL_FONT_WIDTH*5),POS_TUNE_SPLIT_FREQ_Y_TX,"TX->",TX_Grey,Black,0);	// Place identifying marker for TX frequency
+	}
+}
+
 //*----------------------------------------------------------------------------
 //* Function Name       : UiDriverCreateDesktop
 //* Object              :
@@ -1909,10 +2143,10 @@ static void UiDriverCreateDesktop(void)
 	UiDriverShowStep(df.tuning_step);
 
 	// Frequency
-	UiLcdHy28_PrintText(POS_TUNE_FREQ_X,POS_TUNE_FREQ_Y,"14.000.000",White,Black,1);
+	UiDriverInitMainFreqDisplay();
 
 	// Second Frequency
-	UiLcdHy28_PrintText(POS_TUNE_SFREQ_X,POS_TUNE_SFREQ_Y,"14.000.000",Grey,Black,0);
+	UiLcdHy28_PrintText(POS_TUNE_SFREQ_X,POS_TUNE_SFREQ_Y,"00.000.00 ",Grey,Black,0);	// clear area of display, placing decimal points
 
 	// Function buttons
 	UiDriverCreateFunctionButtons(true);
@@ -1983,8 +2217,18 @@ static void UiDriverCreateDesktop(void)
 		UiDriverCreateTemperatureDisplay(0,1);
 
 	// Set correct frequency
-	UiDriverUpdateFrequency(1);
-
+	//UiDriverUpdateFrequency(1,0);
+	ts.refresh_freq_disp = 1;	// make frequency display refresh all digits
+	//
+	if(!(ts.vfo_mem_mode & 0x80))	{	// are we in SPLIT mode?
+		UiDriverUpdateFrequency(1,1);	// yes - force update of large digits
+	}
+	else	{	// are we in SPLIT mode?
+		UiDriverUpdateFrequency(1,3);	// yes - force display of second (TX) VFO frequency
+		UiDriverUpdateFrequency(1,2);	// force display of first (RX) VFO frequency
+	}
+	//
+	ts.refresh_freq_disp = 0;	// disable refresh all digits flag
 	// Backlight on - only when all is drawn
 	LCD_BACKLIGHT_PIO->BSRRL = LCD_BACKLIGHT;
 }
@@ -2013,14 +2257,23 @@ static void UiDriverCreateFunctionButtons(bool full_repaint)
 
 	strcpy(cap1,"  MENU");
 	strcpy(cap2," METER");
-	strcpy(cap3,"      ");
-	strcpy(cap4,"      ");
+	strcpy(cap3," SPLIT");
+	if(ts.vfo_mem_mode & 0x40)		// VFO B mode?
+		strcpy(cap4," VFO B");	// yes - indicate
+	else
+		strcpy(cap4," VFO A");	// VFO A mode otherwise
 	strcpy(cap5,"  TUNE");
+	//
 
 	// Draw buttons text
 	UiLcdHy28_PrintText(POS_BOTTOM_BAR_F1_X,POS_BOTTOM_BAR_F1_Y,cap1,White,Black,0);
 	UiLcdHy28_PrintText(POS_BOTTOM_BAR_F2_X,POS_BOTTOM_BAR_F2_Y,cap2,White,Black,0);
-	UiLcdHy28_PrintText(POS_BOTTOM_BAR_F3_X,POS_BOTTOM_BAR_F3_Y,cap3,White,Black,0);
+
+	if(ts.vfo_mem_mode & 0x80)	// SPLIT mode active?
+		UiLcdHy28_PrintText(POS_BOTTOM_BAR_F3_X,POS_BOTTOM_BAR_F3_Y,cap3,SPLIT_ACTIVE_COLOUR,Black,0);		// yes - make orange
+	else
+		UiLcdHy28_PrintText(POS_BOTTOM_BAR_F3_X,POS_BOTTOM_BAR_F3_Y,cap3,SPLIT_INACTIVE_COLOUR,Black,0);		// SPLIT mode not active - grey
+
 	UiLcdHy28_PrintText(POS_BOTTOM_BAR_F4_X,POS_BOTTOM_BAR_F4_Y,cap4,White,Black,0);
 	//
 	if(ts.tx_disable)	// is transmit disabled?
@@ -2512,6 +2765,9 @@ void UiDrawSpectrumScopeFrequencyBarText(void)
 	char	txt[16], *c;
 	ulong	grat;
 
+	if(ts.scope_scale_colour == SPEC_BLACK)		// don't bother updating frequency scale if it is black (invisible)!
+		return;
+
 	grat = 6;	// Default - Magnify mode OFF, graticules spaced 6 kHz
 	//
 	if(sd.magnify)			// magnify mode on - only available when NOT in translate mode
@@ -2639,10 +2895,10 @@ void UiDrawSpectrumScopeFrequencyBarText(void)
 //*----------------------------------------------------------------------------
 static void UiDriverCreateSpectrumScope(void)
 {
-	ulong i;
+	ulong i, clr;
 
 	//
-	// get grid colour
+	// get grid colour of all but center line
 	//
 	if(ts.scope_grid_colour == SPEC_GREY)
 		ts.scope_grid_colour_active = Grid;
@@ -2662,8 +2918,37 @@ static void UiDriverCreateSpectrumScope(void)
 		ts.scope_grid_colour_active = Black;
 	else if(ts.scope_grid_colour == SPEC_ORANGE)
 		ts.scope_grid_colour_active = Orange;
+	else if(ts.scope_grid_colour == SPEC_GREY2)
+		ts.scope_grid_colour_active = Grey;
 	else
 		ts.scope_grid_colour_active = White;
+	//
+	//
+	// Get color of center vertical line of spectrum scope
+	//
+	if(ts.scope_centre_grid_colour == SPEC_GREY)
+		ts.scope_centre_grid_colour_active = Grid;
+	else if(ts.scope_centre_grid_colour == SPEC_BLUE)
+		ts.scope_centre_grid_colour_active = Blue;
+	else if(ts.scope_centre_grid_colour == SPEC_RED)
+		ts.scope_centre_grid_colour_active = Red;
+	else if(ts.scope_centre_grid_colour == SPEC_MAGENTA)
+		ts.scope_centre_grid_colour_active = Magenta;
+	else if(ts.scope_centre_grid_colour == SPEC_GREEN)
+		ts.scope_centre_grid_colour_active = Green;
+	else if(ts.scope_centre_grid_colour == SPEC_CYAN)
+		ts.scope_centre_grid_colour_active = Cyan;
+	else if(ts.scope_centre_grid_colour == SPEC_YELLOW)
+		ts.scope_centre_grid_colour_active = Yellow;
+	else if(ts.scope_centre_grid_colour == SPEC_BLACK)
+		ts.scope_centre_grid_colour_active = Black;
+	else if(ts.scope_centre_grid_colour == SPEC_ORANGE)
+		ts.scope_centre_grid_colour_active = Orange;
+	else if(ts.scope_centre_grid_colour == SPEC_GREY2)
+		ts.scope_centre_grid_colour_active = Grey;
+	else
+		ts.scope_centre_grid_colour_active = White;
+
 
 	// Clear screen where frequency information will be under graticule
 	//
@@ -2728,8 +3013,18 @@ static void UiDriverCreateSpectrumScope(void)
 	}
 
 	// Vertical grid lines
-	for(i = 1; i < 8; i++)
-	{
+	for(i = 1; i < 8; i++)		{
+
+		// determine if we are drawing the "center" line on the spectrum  display
+        if((ts.iq_freq_mode == FREQ_IQ_CONV_LO_LOW) && (i == 5))			// is it frequency translate RF LOW mode?  If so, shift right of center
+     	   clr = ts.scope_centre_grid_colour_active;
+        else if((ts.iq_freq_mode == FREQ_IQ_CONV_LO_HIGH) && (i == 3))		// shift left of center if RF HIGH translate mode
+     	   clr = ts.scope_centre_grid_colour_active;
+        else if ((ts.iq_freq_mode == FREQ_IQ_CONV_MODE_OFF) && (i == 4))	// center if translate mode not active
+     	   clr = ts.scope_centre_grid_colour_active;
+        else
+     	   clr = ts.scope_grid_colour_active;								// normal color if other lines
+
 		// Save x position for repaint
 		sd.vert_grid_id[i - 1] = (POS_SPECTRUM_IND_X + 32*i + 1);
 
@@ -2739,7 +3034,7 @@ static void UiDriverCreateSpectrumScope(void)
 									(POS_SPECTRUM_IND_H - 15),
 									LCD_DIR_VERTICAL,
 //									RGB((COL_SPECTRUM_GRAD),(COL_SPECTRUM_GRAD),(COL_SPECTRUM_GRAD)));
-									ts.scope_grid_colour_active);
+									clr);
 
 		//printf("vx: %d\n\r",sd.vert_grid_id[i - 1]);
 	}
@@ -2912,7 +3207,7 @@ static void UiDriverInitFrequency(void)
 	//if(ts.band == BAND_MODE_4)
 	//	df.transv_freq = TRANSVT_FREQ_A;
 	//else
-	df.transv_freq	= 0;	// LO freq, zero on HF, 42 Mhz on 4m
+//	df.transv_freq	= 0;	// LO freq, zero on HF, 42 Mhz on 4m
 
 	//df.tx_shift		= 0;		// offcet fo tx
 	df.de_detent	= 0;
@@ -2939,30 +3234,29 @@ static void UiDriverInitFrequency(void)
 //*----------------------------------------------------------------------------
 static void UiDriverCheckFilter(ulong freq)
 {
-	static ushort bandnum = 0;		// this assures that the filter change occurs only if needed
 
 	if(freq < BAND_FILTER_UPPER_80)	{	// are we low enough if frequency for the 80 meter filter?
-		if(bandnum != 1)	{
+		if(ts.filter_band != FILTER_BAND_80)	{
 			UiDriverChangeBandFilter(BAND_MODE_80, 0);	// yes - set to 80 meters
-			bandnum = 1;
+			ts.filter_band = FILTER_BAND_80;
 		}
 	}
 	else if(freq < BAND_FILTER_UPPER_40)	{
-		if(bandnum != 2)	{
+		if(ts.filter_band != FILTER_BAND_40)	{
 			UiDriverChangeBandFilter(BAND_MODE_40, 0);	// yes - set to 40 meters
-			bandnum = 2;
+			ts.filter_band = FILTER_BAND_40;
 		}
 	}
 	else if(freq < BAND_FILTER_UPPER_20)	{
-		if(bandnum != 3)	{
+		if(ts.filter_band != FILTER_BAND_20)	{
 			UiDriverChangeBandFilter(BAND_MODE_20, 0);	// yes - set to 20 meters
-			bandnum = 3;
+			ts.filter_band = FILTER_BAND_20;
 		}
 	}
 	else if(freq >= BAND_FILTER_UPPER_20)	{
-		if(bandnum != 4)	{
+		if(ts.filter_band != FILTER_BAND_15)	{
 			UiDriverChangeBandFilter(BAND_MODE_10, 0);	// yes - set to 10 meters
-			bandnum = 4;
+			ts.filter_band = FILTER_BAND_15;
 		}
 	}
 }
@@ -3008,11 +3302,12 @@ uchar UiDriverCheckBand(ulong freq, ushort update)
 //*----------------------------------------------------------------------------
 //* Function Name       : UiDriverUpdateFrequency
 //* Object              :
-//* Input Parameters    : If TRUE, do not check encoder
+//* Input Parameters    :skip_encoder_check: If TRUE, do not check encoder;  mode: =0 automatic, 1=force large, 2=force small, upper (RX), 3 = small, lower (TX)
+//*                      WARNING:  If called with "mode = 3", you must ALWAYS call again with "mode = 2" to reset internal variables.
 //* Output Parameters   :
 //* Functions called    :
 //*----------------------------------------------------------------------------
-void UiDriverUpdateFrequency(char skip_encoder_check)
+void UiDriverUpdateFrequency(char skip_encoder_check, uchar mode)
 {
 	ulong		loc_tune_new, dial_freq, second_freq;
 	//uchar		old_rf_gain = ts.rf_gain;
@@ -3029,10 +3324,18 @@ void UiDriverUpdateFrequency(char skip_encoder_check)
 skip_check:
 
 	// Get value, while blocking update
-	loc_tune_new = df.tune_new;
+
+	if(mode == 3)	{				// are we updating the TX frequency (small, lower display)?
+		if(ts.vfo_mem_mode & 0x40)					// yes are we receiving with VFO B?
+			loc_tune_new = band_dial_value_a[ts.band];		// yes - get VFO A frequency for TX
+		else									// we must be receiving with VFO A
+			loc_tune_new = band_dial_value_b[ts.band];		// get VFO B frequency for TX
+	}
+	else	// everything else uses main VFO frequency
+		loc_tune_new = df.tune_new;				// yes, get that frequency
 
 	// Calculate display frequency
-	dial_freq = ((loc_tune_new/4) + df.transv_freq);
+	dial_freq = loc_tune_new/4;
 
 	//
 	// Do "Icom" style frequency offset of the LO if in "CW OFFSET" mode.  (Display freq. is also offset!)
@@ -3051,7 +3354,7 @@ skip_check:
 	}
 
 	// Calculate actual tune frequency
-	ts.tune_freq = (dial_freq - df.transv_freq)*4;
+	ts.tune_freq = dial_freq*4;
 	second_freq = ts.tune_freq;					// get copy for secondary display
 	//
 	// Update second display for RIT offset
@@ -3069,62 +3372,73 @@ skip_check:
 			ts.tune_freq -= FREQ_SHIFT_MAG * 4;
 	}
 
-
-	// Frequency range check, moved from si570 routine here
-	if(!(ts.misc_flags1 & 32))	{	// is frequency tuning limit disabled?
-		if((ts.tune_freq > SI570_MAX_FREQ) || (ts.tune_freq < SI570_MIN_FREQ))	// no - enforce limit
-		{
-			//printf("out of freq err: %d\n\r",tune_freq);
-			df.tune_new = df.tune_old;						// reload old value
-			return;
+	if(mode != 3)	{		// do not bother checking frequency limits if updating ONLY the TX frequency
+		// Frequency range check, moved from si570 routine here
+		if(!(ts.misc_flags1 & 32))	{	// is frequency tuning limit disabled?
+			if((ts.tune_freq > SI570_MAX_FREQ) || (ts.tune_freq < SI570_MIN_FREQ))	// no - enforce limit
+			{
+				//printf("out of freq err: %d\n\r",tune_freq);
+				df.tune_new = df.tune_old;						// reload old value
+				return;
+			}
 		}
 	}
 
-	// Extra tuning actions
-	if(ts.txrx_mode == TRX_MODE_RX)		{
-		ts.tune_freq += (ts.rit_value*80);	// Add RIT on receive
+	if(mode != 3)	{		// updating ONLY the TX frequency?
+
+		// Extra tuning actions
+		if(ts.txrx_mode == TRX_MODE_RX)		{
+			ts.tune_freq += (ts.rit_value*80);	// Add RIT on receive
+		}
+		//
+
+		//printf("--------------------\n\r");
+		//printf("dial: %dHz, tune: %dHz\n\r",dial_freq,tune_freq);
+
+		if((ts.tune_freq == ts.tune_freq_old) && (!ts.refresh_freq_disp))	// has the frequency changed and full display refresh not requested AND we are in "AUTOMATIC" mode?
+			return;								// no - bail out - save time by NOT updating synthesizer!
+
+		ts.tune_freq_old = ts.tune_freq;		// frequency change required - update change detector
+
+
+		if(ui_si570_set_frequency(ts.tune_freq,ts.freq_cal,df.temp_factor, 1))	{	// did the tuning require that a large tuning step occur?
+			if(ts.sysclock > RX_MUTE_START_DELAY)	{	// has system start-up completed?
+				ads.agc_holder = ads.agc_val;	// grab current AGC value as synthesizer "click" can momentarily desense radio as we tune
+				ts.rx_muting = 1;				// yes - mute audio output
+				ts.dsp_inhibit_mute = ts.dsp_inhibit;		// get current status of DSP muting and save for later restoration
+				ts.dsp_inhibit = 1;				// disable DSP during tuning to avoid disruption
+				if(ts.dsp_active & 1)	// is DSP active?
+					ts.rx_blanking_time = ts.sysclock + TUNING_LARGE_STEP_MUTING_TIME_DSP_ON;	// yes - schedule un-muting of audio when DSP is on
+				else
+					ts.rx_blanking_time = ts.sysclock + TUNING_LARGE_STEP_MUTING_TIME_DSP_OFF;	// no - schedule un-muting of audio when DSP is off
+			}
+		}
+
+		// Set frequency
+		if(ui_si570_set_frequency(ts.tune_freq,ts.freq_cal,df.temp_factor, 0))
+		{
+			if(ui_si570_set_frequency(ts.tune_freq,ts.freq_cal,df.temp_factor, 0))	// Try again if it didn't work the first time
+				col = Red;	// Color in red if there was a problem setting frequency
+		}
+		//
+		// If using a serial (SPI) LCD, hold off on updating the spectrum scope for a time AFTER we stop twiddling the tuning knob.
+		//
+		if(sd.use_spi)
+			ts.hold_off_spectrum_scope	= ts.sysclock + SPECTRUM_SCOPE_SPI_HOLDOFF_TIME_TUNE;	// schedule the time after which we again update the spectrum scope
 	}
-	//
-
-	//printf("--------------------\n\r");
-	//printf("dial: %dHz, tune: %dHz\n\r",dial_freq,tune_freq);
-
-	if((ts.tune_freq == ts.tune_freq_old) && (!ts.refresh_freq_disp))	// has the frequency changed and full display refresh not requested
-		return;								// no - bail out - save time by NOT updating synthesizer!
-
-	ts.tune_freq_old = ts.tune_freq;		// frequency change required - update change detector
-
-	//
-	ads.agc_holder = ads.agc_val;	// grab current AGC value as synthesizer "click" can momentarily desense radio as we tune
-//	dsp_temp = ts.dsp_inhibit;		// get current status of DSP muting
-	Codec_Mute(1);					// mute audio when tuning
-//	ts.dsp_inhibit = 1;				// disable DSP during tuning
-	// Set frequency
-	if(ui_si570_set_frequency(ts.tune_freq,ts.freq_cal,df.temp_factor))
-	{
-		if(ui_si570_set_frequency(ts.tune_freq,ts.freq_cal,df.temp_factor))	// Try again if it didn't work the first time
-			col = Red;	// Color in red if there was a problem setting frequency
-	}
-	//
-//	ts.dsp_inhibit = dsp_temp;		// restore status of DSP muting
-
-	//
-	// If using a serial (SPI) LCD, hold off on updating the spectrum scope for a time AFTER we stop twiddling the tuning knob.
-	//
-	if(sd.use_spi)
-		ts.hold_off_spectrum_scope	= ts.sysclock + SPECTRUM_SCOPE_SPI_HOLDOFF_TIME_TUNE;	// schedule the time after which we again update the spectrum scope
-
 	//
 	// Update main frequency display
 	//
-	UiDriverUpdateLcdFreq(dial_freq,col);
+		UiDriverUpdateLcdFreq(dial_freq,col, mode);
 	//
 	// Update second display to reflect RX frequency with RIT
 	//
-	UiDriverUpdateSecondLcdFreq(second_freq/4);
-	//
-	UiDriverCheckFilter(ts.tune_freq/4);	// check the filter status with the new frequency update
-	UiDriverCheckBand(ts.tune_freq, 1);		// check which band in which we are currently tuning and update the display
+	if(mode != 3)	{		// do not update second display or check filters if we are updating TX frequency in SPLIT mode
+		UiDriverUpdateSecondLcdFreq(second_freq/4);
+		//
+		UiDriverCheckFilter(ts.tune_freq/4);	// check the filter status with the new frequency update
+		UiDriverCheckBand(ts.tune_freq, 1);		// check which band in which we are currently tuning and update the display
+	}
 	//
 	// Allow clear of spectrum display in its state machine
 	sd.dial_moved = 1;
@@ -3132,15 +3446,11 @@ skip_check:
 	// Save current freq
 	df.tune_old = loc_tune_new;
 
+
 	// Save the tuning step used during the last dial update
 	// - really important so we know what segments to clear
 	// during tune step change
 //	df.last_tune_step = df.tuning_step;
-	//
-	ads.agc_val = ads.agc_holder;	// restore stored AGC value
-	//
-
-	Codec_Mute(0);	// un-mute audio
 	//
 }
 
@@ -3159,7 +3469,7 @@ void UiDriverUpdateFrequencyFast(void)
 	loc_tune_new = df.tune_new;
 
 	// Calculate display frequency
-	dial_freq = ((loc_tune_new/4) + df.transv_freq);
+	dial_freq = loc_tune_new/4;
 
 	//
 	// Do "Icom" style frequency offset of the LO if in "CW OFFSET" mode.  (Display freq. is also offset!)
@@ -3184,7 +3494,7 @@ void UiDriverUpdateFrequencyFast(void)
 	dial_freq *= df.tunning_step;
 */
 	// Calculate actual tune frequency
-	ts.tune_freq = (dial_freq - df.transv_freq)*4;
+	ts.tune_freq = dial_freq*4;
 
 	//
 	// Offset dial frequency if the RX/TX frequency translation is active
@@ -3216,7 +3526,7 @@ void UiDriverUpdateFrequencyFast(void)
 	//printf("dial: %dHz, tune: %dHz\n\r",dial_freq,tune_freq);
 
 	// Set frequency
-	ui_si570_set_frequency(ts.tune_freq,ts.freq_cal,df.temp_factor);
+	ui_si570_set_frequency(ts.tune_freq,ts.freq_cal,df.temp_factor, 0);
 
 	// Allow clear of spectrum display in its state machine
 	sd.dial_moved = 1;
@@ -3235,15 +3545,19 @@ void UiDriverUpdateFrequencyFast(void)
 //* Function Name       : UiDriverUpdateLcdFreq
 //* Object              : this function will split LCD freq display control
 //* Object              : and update as it is 7 segments indicator
-//* Input Parameters    :
+//* Input Parameters    : freq=freq (Hz), color=color, mode: 0 = auto, 1= force normal (large digits), 2= force upper, small, 3 = force lower, small
 //* Output Parameters   :
 //* Functions called    :
 //*----------------------------------------------------------------------------
-static void UiDriverUpdateLcdFreq(ulong dial_freq,ushort color)
+static void UiDriverUpdateLcdFreq(ulong dial_freq,ushort color, ushort mode)
 {
 	uchar		d_100mhz,d_10mhz,d_1mhz;
 	uchar		d_100khz,d_10khz,d_1khz;
 	uchar		d_100hz,d_10hz,d_1hz;
+	uchar		digit_size;
+	ulong		pos_y_loc;
+	ulong		pos_x_loc;
+	ulong		font_width;
 
 	char		digit[2];
 
@@ -3278,16 +3592,32 @@ static void UiDriverUpdateLcdFreq(ulong dial_freq,ushort color)
 	// Terminate
 	digit[1] = 0;
 
+	if(!mode)	{
+		if(ts.vfo_mem_mode & 0x80)	// in "split" mode?
+			mode = 2;				// yes - update upper, small digits (receive frequency)
+		else
+			mode = 1;				// NOT in split mode:  large, normal-sized digits
+	}
 
-	//printf("--------------------\n\r");
-	//printf("dial: %dHz\n\r",dial_freq);
-	//printf("dial_001_mhz: %d\n\r",df.dial_001_mhz);
-	//printf("dial_100_khz: %d\n\r",df.dial_100_khz);
-	//printf("dial_010_khz: %d\n\r",df.dial_010_khz);
-	//printf("dial_001_khz: %d\n\r",df.dial_001_khz);
-	//printf("dial_100_hz:  %d\n\r",df.dial_100_hz);
-	//printf("dial_010_hz:  %d\n\r",df.dial_010_hz);
-	//printf("dial_001_hz:  %d\n\r",df.dial_001_hz);
+
+	if(mode == 2)	{		// small digits in upper location
+		digit_size = 0;
+		pos_y_loc = POS_TUNE_FREQ_Y;
+		pos_x_loc = POS_TUNE_SPLIT_FREQ_X;
+		font_width = SMALL_FONT_WIDTH;
+	}
+	else if(mode == 3)	{					// small digits in lower location
+		digit_size = 0;
+		pos_y_loc = POS_TUNE_SPLIT_FREQ_Y_TX;
+		pos_x_loc = POS_TUNE_SPLIT_FREQ_X;
+		font_width = SMALL_FONT_WIDTH;
+	}
+	else	{			// default:  normal sized (large) digits
+		digit_size = 1;
+		pos_y_loc = POS_TUNE_FREQ_Y;
+		pos_x_loc = POS_TUNE_FREQ_X;
+		font_width = LARGE_FONT_WIDTH;
+	}
 
 	// -----------------------
 	// See if 100 Mhz needs update
@@ -3301,9 +3631,9 @@ static void UiDriverUpdateLcdFreq(ulong dial_freq,ushort color)
 
 		// Update segment
 		if(d_100mhz)
-			UiLcdHy28_PrintText((POS_TUNE_FREQ_X - LARGE_FONT_WIDTH),POS_TUNE_FREQ_Y,digit,color,Black,1);
+			UiLcdHy28_PrintText((pos_x_loc - font_width),pos_y_loc,digit,color,Black,digit_size);
 		else
-			UiLcdHy28_PrintText((POS_TUNE_FREQ_X - LARGE_FONT_WIDTH),POS_TUNE_FREQ_Y,digit,Black,Black,1);	// mask the zero
+			UiLcdHy28_PrintText((pos_x_loc - font_width),pos_y_loc,digit,Black,Black,digit_size);	// mask the zero
 
 		// Save value
 		df.dial_100_mhz = d_100mhz;
@@ -3321,12 +3651,12 @@ static void UiDriverUpdateLcdFreq(ulong dial_freq,ushort color)
 		digit[0] = 0x30 + (d_10mhz & 0x0F);
 
 		if(d_100mhz)	// update if 100 MHz digit is being displayed
-			UiLcdHy28_PrintText((POS_TUNE_FREQ_X + 0),POS_TUNE_FREQ_Y,digit,color,Black,1);
+			UiLcdHy28_PrintText((pos_x_loc + 0),pos_y_loc,digit,color,Black,digit_size);
 		else	{
 			if(d_10mhz)
-				UiLcdHy28_PrintText((POS_TUNE_FREQ_X + 0),POS_TUNE_FREQ_Y,digit,color,Black,1);
+				UiLcdHy28_PrintText((pos_x_loc + 0),pos_y_loc,digit,color,Black,digit_size);
 			else
-				UiLcdHy28_PrintText((POS_TUNE_FREQ_X + 0),POS_TUNE_FREQ_Y,digit,Black,Black,1);	// mask the zero
+				UiLcdHy28_PrintText((pos_x_loc + 0),pos_y_loc,digit,Black,Black,digit_size);	// mask the zero
 		}
 		// Save value
 		df.dial_010_mhz = d_10mhz;
@@ -3343,7 +3673,7 @@ static void UiDriverUpdateLcdFreq(ulong dial_freq,ushort color)
 		digit[0] = 0x30 + (d_1mhz & 0x0F);
 
 		// Update segment
-		UiLcdHy28_PrintText((POS_TUNE_FREQ_X + LARGE_FONT_WIDTH),POS_TUNE_FREQ_Y,digit,color,Black,1);
+		UiLcdHy28_PrintText((pos_x_loc + font_width),pos_y_loc,digit,color,Black,digit_size);
 
 		// Save value
 		df.dial_001_mhz = d_1mhz;
@@ -3360,7 +3690,7 @@ static void UiDriverUpdateLcdFreq(ulong dial_freq,ushort color)
 		digit[0] = 0x30 + (d_100khz & 0x0F);
 
 		// Update segment
-		UiLcdHy28_PrintText((POS_TUNE_FREQ_X + LARGE_FONT_WIDTH*3),POS_TUNE_FREQ_Y,digit,color,Black,1);
+		UiLcdHy28_PrintText((pos_x_loc + font_width*3),pos_y_loc,digit,color,Black,digit_size);
 
 		// Save value
 		df.dial_100_khz = d_100khz;
@@ -3377,7 +3707,7 @@ static void UiDriverUpdateLcdFreq(ulong dial_freq,ushort color)
 		digit[0] = 0x30 + (d_10khz & 0x0F);
 
 		// Update segment
-		UiLcdHy28_PrintText((POS_TUNE_FREQ_X + LARGE_FONT_WIDTH*4),POS_TUNE_FREQ_Y,digit,color,Black,1);
+		UiLcdHy28_PrintText((pos_x_loc +font_width*4),pos_y_loc,digit,color,Black,digit_size);
 
 		// Save value
 		df.dial_010_khz = d_10khz;
@@ -3394,7 +3724,7 @@ static void UiDriverUpdateLcdFreq(ulong dial_freq,ushort color)
 		digit[0] = 0x30 + (d_1khz & 0x0F);
 
 		// Update segment
-		UiLcdHy28_PrintText((POS_TUNE_FREQ_X + LARGE_FONT_WIDTH*5),POS_TUNE_FREQ_Y,digit,color,Black,1);
+		UiLcdHy28_PrintText((pos_x_loc + font_width*5),pos_y_loc,digit,color,Black,digit_size);
 
 		// Save value
 		df.dial_001_khz = d_1khz;
@@ -3411,7 +3741,7 @@ static void UiDriverUpdateLcdFreq(ulong dial_freq,ushort color)
 		digit[0] = 0x30 + (d_100hz & 0x0F);
 
 		// Update segment
-		UiLcdHy28_PrintText((POS_TUNE_FREQ_X + LARGE_FONT_WIDTH*7),POS_TUNE_FREQ_Y,digit,color,Black,1);
+		UiLcdHy28_PrintText((pos_x_loc + font_width*7),pos_y_loc,digit,color,Black,digit_size);
 
 		// Save value
 		df.dial_100_hz = d_100hz;
@@ -3428,7 +3758,7 @@ static void UiDriverUpdateLcdFreq(ulong dial_freq,ushort color)
 		digit[0] = 0x30 + (d_10hz & 0x0F);
 
 		// Update segment
-		UiLcdHy28_PrintText((POS_TUNE_FREQ_X + LARGE_FONT_WIDTH*8),POS_TUNE_FREQ_Y,digit,color,Black,1);
+		UiLcdHy28_PrintText((pos_x_loc + font_width*8),pos_y_loc,digit,color,Black,digit_size);
 
 		// Save value
 		df.dial_010_hz = d_10hz;
@@ -3445,7 +3775,7 @@ static void UiDriverUpdateLcdFreq(ulong dial_freq,ushort color)
 		digit[0] = 0x30 + (d_1hz & 0x0F);
 
 		// Update segment
-		UiLcdHy28_PrintText((POS_TUNE_FREQ_X + LARGE_FONT_WIDTH*9),POS_TUNE_FREQ_Y,digit,color,Black,1);
+		UiLcdHy28_PrintText((pos_x_loc + font_width*9),pos_y_loc,digit,color,Black,digit_size);
 
 		// Save value
 		df.dial_001_hz = d_1hz;
@@ -3465,6 +3795,7 @@ static void UiDriverUpdateSecondLcdFreq(ulong dial_freq)
 	uchar		d_100mhz,d_10mhz,d_1mhz;
 	uchar		d_100khz,d_10khz,d_1khz;
 	uchar		d_100hz,d_10hz,d_1hz;
+	static bool	digit_100 = 1, digit_10 = 1;	// set active first time through to make sure that digit is erased, if it exists
 
 	char		digit[2];
 
@@ -3526,11 +3857,14 @@ static void UiDriverUpdateSecondLcdFreq(ulong dial_freq)
 
 		// Save value
 		df.sdial_100_mhz = d_100mhz;
+		digit_100 = 1;		// indicate that a 100 MHz digit has been painted
 	}
-	else if(!d_100mhz)	// no digit in the 10's place?
-		UiLcdHy28_PrintText((POS_TUNE_SFREQ_X + 0),POS_TUNE_SFREQ_Y,digit,Black,Black,0);	// mask the leading first digit
-
-
+	else if(!d_100mhz)	{	// no digit in the 100's MHz place?
+		if(digit_100)	{	// was a digit present there before?
+			UiLcdHy28_PrintText((POS_TUNE_SFREQ_X - SMALL_FONT_WIDTH),POS_TUNE_SFREQ_Y,digit,Black,Black,0);	// yes - mask the leading first digit
+			digit_100 = 0;		// clear flag indicating that there was a digit so that we do not "paint" at that location again
+		}
+	}
 	// -----------------------
 	// See if 10 Mhz needs update
 	d_10mhz = (dial_freq%100000000)/10000000;
@@ -3552,9 +3886,14 @@ static void UiDriverUpdateSecondLcdFreq(ulong dial_freq)
 		}
 		// Save value
 		df.sdial_010_mhz = d_10mhz;
+		digit_10 = 1;		// indicate that a 10's MHz digit has been displayed
 	}
-	else if(!d_10mhz)	// no digit in the 10's place?
-		UiLcdHy28_PrintText((POS_TUNE_SFREQ_X + 0),POS_TUNE_SFREQ_Y,digit,Black,Black,0);	// mask the leading first digit
+	else if(!d_10mhz)	{	// no digit in the 10's MHz  place?
+		if(digit_10)	{	// had a 10's MHz digit been painted?
+			UiLcdHy28_PrintText((POS_TUNE_SFREQ_X + 0),POS_TUNE_SFREQ_Y,digit,Black,Black,0);	// yes - mask the leading first digit
+			digit_10 = 0;	// clear indicator so that a "blank" digit is not repainted every time
+		}
+	}
 
 	// -----------------------
 	// See if 1 Mhz needs update
@@ -3753,8 +4092,8 @@ static uchar UiDriverButtonCheck(ulong button_num)
 }
 //
 //*----------------------------------------------------------------------------
-//* Function Name       : UiDriverKeypadCheck, adjust volume and return to RX from TX
-//* Object              : implemented as state machine, to avoid interrupts
+//* Function Name       : UiDriverKeypadCheck, adjust volume and return to RX from TX and other time-related functions
+//* Object              : implemented as state machine, to avoid (additional) interrupts
 //* Object              : and stall of app loop
 //* Input Parameters    :
 //* Output Parameters   :
@@ -3941,6 +4280,7 @@ static void UiDriverTimeScheduler(void)
 			UiDriverClearSpectrumDisplay();			// clear display under spectrum scope
 			UiLcdHy28_PrintText(110,156,"- New F/W detected -",Cyan,Black,0);
 			UiLcdHy28_PrintText(110,168," Preparing EEPROM ",Cyan,Black,0);
+			UiDriverSaveEepromValuesPowerDown();	// rewrite EEPROM values
 			Write_VirtEEPROM(EEPROM_VERSION_NUMBER, ts.version_number_release);	// save version number information to EEPROM
 			Write_VirtEEPROM(EEPROM_VERSION_BUILD, ts.version_number_build);	//
 			for(i = 0; i < 6; i++)			// delay so that it may be read
@@ -3960,6 +4300,15 @@ static void UiDriverTimeScheduler(void)
 		//
 	}
 	//
+
+	if((ts.sysclock >= ts.rx_blanking_time) && (ts.rx_muting) && (ts.rx_blanking_time> RX_MUTE_START_DELAY))	{
+			// is it time to un-mute audio AND have we NOT done it already AND is it long enough after start-up to allow muting?
+		ads.agc_val = ads.agc_holder;			// restore AGC setting
+		ts.dsp_inhibit = ts.dsp_inhibit_mute;	// restore previous state of DSP inhibit flag
+		ts.rx_muting = 0;						// unmute receiver audio
+	}
+
+
 	//
 	// Process LCD auto-blanking
 	if(ts.lcd_backlight_blanking & 0x80)	{	// is LCD auto-blanking enabled?
@@ -4217,10 +4566,7 @@ static void UiDriverChangeBand(uchar is_up)
 		df.tune_new = new_band_freq;
 	}
 
-	df.transv_freq = 0;
-
-	// Display frequency update
-	UiDriverUpdateFrequency(1);
+//	UiDriverUpdateFrequency(1,0);
 
 //	// Also reset second freq display
 //	UiDriverUpdateSecondLcdFreq(df.tune_new/4);
@@ -4255,7 +4601,18 @@ static void UiDriverChangeBand(uchar is_up)
 
 	// Finally update public flag
 	ts.band = new_band_index;
-
+	// Display frequency update
+	//
+	ts.refresh_freq_disp = 1;	// make frequency display refresh all digits
+	//
+	if(ts.vfo_mem_mode & 0x80)	{	// in SPLIT mode?
+		UiDriverUpdateFrequency(1,3);	// force display of second (TX) VFO frequency
+		UiDriverUpdateFrequency(1,2);	// update RX frequency
+	}
+	else	// not in SPLIT mode - standard update
+		UiDriverUpdateFrequency(1,0);
+	//
+	ts.refresh_freq_disp = 0;
 }
 
 //*----------------------------------------------------------------------------
@@ -4724,7 +5081,7 @@ static void UiDriverCheckEncoderThree(void)
 				UiDriverChangeRit(1);
 
 				// Change frequency
-				UiDriverUpdateFrequency(1);
+				UiDriverUpdateFrequency(1,0);
 			}
 			break;
 		}
@@ -5967,24 +6324,27 @@ static void UiDriverHandleSmeter(void)
 }
 
 //*----------------------------------------------------------------------------
-//* Function Name       : UiDriverHandleSWRMeter
+//* Function Name       : UiDriverHandleLowerMeter
 //* Object              : Power, SWR, ALC and Audio indicator
 //* Input Parameters    :
 //* Output Parameters   :
 //* Functions called    :
 //*----------------------------------------------------------------------------
-static void UiDriverHandleSWRMeter(void)
+static void UiDriverHandleLowerMeter(void)
 {
 	ushort	val_p,val_s = 0;
-	float	scale_calc;
-	static float	vswr_dampened;
-
+	float	sensor_null, coupling_calc, scale_calc;
+	char txt[32];
+	static float fwd_pwr_avg, rev_pwr_avg;
+	static uchar	old_power_level = 99;
 
 	//float 	rho,swr;
 
 	// Only in TX mode
 	if(ts.txrx_mode != TRX_MODE_TX)	{
-		vswr_dampened = 0;		// reset averaged VSWR reading when not in TX mode
+		swrm.vswr_dampened = 0;		// reset averaged readings when not in TX mode
+		fwd_pwr_avg = -1;
+		rev_pwr_avg = -1;
 		return;
 	}
 
@@ -6017,8 +6377,9 @@ static void UiDriverHandleSWRMeter(void)
 		return;
 	}
 
-	scale_calc = (float)swrm.fwd_cal;	// get calibration factor
-	scale_calc /= 100;					// divide by 100 so 100 = unity
+	sensor_null = (float)swrm.sensor_null;	// get calibration factor
+	sensor_null -= 100;						// offset it so that 100 = 0
+	sensor_null /= 1000;					// divide so that each step = 1 millivolt
 
 	// Compute average values
 
@@ -6030,34 +6391,101 @@ static void UiDriverHandleSWRMeter(void)
 
 	swrm.fwd_calc *= SWR_ADC_VOLT_REFERENCE;	// get nominal A/D reference voltage
 	swrm.fwd_calc /= SWR_ADC_FULL_SCALE;		// divide by full-scale A/D count to yield actual input voltage from detector
-	swrm.fwd_calc *= scale_calc;				// multiply by A/D calibration factor
+	swrm.fwd_calc += sensor_null;				// offset result
 
 	swrm.rev_calc *= SWR_ADC_VOLT_REFERENCE;	// get nominal A/D reference voltage
 	swrm.rev_calc /= SWR_ADC_FULL_SCALE;		// divide by full-scale A/D count to yield actual input voltage from detector
-	swrm.rev_calc *= scale_calc;				// multiply by A/D calibration factor
+	swrm.rev_calc += sensor_null;
 
-	// calculate forward and reverse RF power in watts (p = a + bx + cx^2)
 
-	swrm.fwd_pwr = RF_PWR_COEFF_A + RF_PWR_COEFF_B * swrm.fwd_calc + RF_PWR_COEFF_C * swrm.fwd_calc * swrm.fwd_calc;
-	swrm.rev_pwr = RF_PWR_COEFF_A + RF_PWR_COEFF_B * swrm.rev_calc + RF_PWR_COEFF_C * swrm.rev_calc * swrm.rev_calc;
+	// calculate forward and reverse RF power in watts (p = a + bx + cx^2) for high power (above 50-60 milliwatts) and (p = a + bx + cx^2 + dx^3) for low power.
+
+	if(swrm.fwd_calc <= LOW_POWER_CALC_THRESHOLD)	// is this low power as evidenced by low voltage from the sensor?
+		swrm.fwd_pwr = LOW_RF_PWR_COEFF_A + (LOW_RF_PWR_COEFF_B * swrm.fwd_calc) + (LOW_RF_PWR_COEFF_C * pow(swrm.fwd_calc,2 )) + (LOW_RF_PWR_COEFF_D * pow(swrm.fwd_calc, 3));
+	else		// it is high power
+		swrm.fwd_pwr = HIGH_RF_PWR_COEFF_A + (HIGH_RF_PWR_COEFF_B * swrm.fwd_calc) + (HIGH_RF_PWR_COEFF_C * pow(swrm.fwd_calc, 2));
+
+	if(swrm.rev_calc <= LOW_POWER_CALC_THRESHOLD)	// is this low power as evidenced by low voltage from the sensor?
+		swrm.rev_pwr = LOW_RF_PWR_COEFF_A + (LOW_RF_PWR_COEFF_B * swrm.rev_calc) + (LOW_RF_PWR_COEFF_C * pow(swrm.rev_calc, 2)) + (LOW_RF_PWR_COEFF_D * pow(swrm.rev_calc,3));
+	else
+		swrm.rev_pwr = HIGH_RF_PWR_COEFF_A + (HIGH_RF_PWR_COEFF_B * swrm.rev_calc) + (HIGH_RF_PWR_COEFF_C * pow(swrm.rev_calc, 2));
+	//
+	if(swrm.fwd_pwr < 0)	// prevent negative power readings from emerging from the equations - particularly at zero output power
+		swrm.fwd_pwr = 0;
+	//
+	if(swrm.rev_pwr < 0)
+		swrm.rev_pwr = 0;
+
+	// obtain and calculate power meter coupling coefficients
+	switch(ts.filter_band)	{
+		case	FILTER_BAND_80:
+			coupling_calc = (float)swrm.coupling_80m_calc;	// get coupling coefficient calibration for 80 meters
+			break;
+		case	FILTER_BAND_20:
+			coupling_calc = (float)swrm.coupling_20m_calc;	// get coupling coefficient calibration for 30/20 meters
+			break;
+		case	FILTER_BAND_15:
+			coupling_calc = (float)swrm.coupling_15m_calc;	// get coupling coefficient calibration for 17/15/12/10 meters
+			break;
+		case	FILTER_BAND_40:
+		default:
+			coupling_calc = (float)swrm.coupling_40m_calc;	// get coupling coefficient calibration for 40/60 meters
+			break;
+	}
+	//
+	coupling_calc -= 100;						// offset to zero
+	coupling_calc /= 10;						// rescale to 0.1 dB/unit
 
 	// calculate forward and reverse RF power in dBm  (We are using dBm - just because!)
 
-	swrm.fwd_dbm = (10 * (log10(swrm.fwd_pwr * 10)))+30;
-	swrm.rev_dbm = (10 * (log10(swrm.rev_pwr * 10)))+30;
+	swrm.fwd_dbm = (10 * (log10(swrm.fwd_pwr))) + 30 + coupling_calc;
+	swrm.rev_dbm = (10 * (log10(swrm.rev_pwr))) + 30 + coupling_calc;
 
-	swrm.vswr = swrm.fwd_dbm-swrm.rev_dbm;		// calculate return loss in dB since this method is power-insensitive!
+	// now convert back to watts with the coupling coefficient included
 
-	// Calculate VSWR from return loss
+	swrm.fwd_pwr = pow10(swrm.fwd_dbm/10)/1000;
+	swrm.rev_pwr = pow10(swrm.rev_dbm/10)/1000;
 
-	swrm.vswr = (pow10(0.05*swrm.vswr)+1)/(pow10(0.05*swrm.vswr)-1);
+	swrm.vswr = swrm.fwd_dbm-swrm.rev_dbm;		// calculate VSWR
+
+	// Calculate VSWR from power readings
+
+	swrm.vswr = (1+sqrt(swrm.rev_pwr/swrm.fwd_pwr))/(1-sqrt(swrm.rev_pwr/swrm.fwd_pwr));
+
+	// display FWD, REV power, in milliwatts - used for calibration - IF ENABLED
+	if(swrm.pwr_meter_disp)	{
+		if((fwd_pwr_avg < 0) || (ts.power_level != old_power_level))	// initialize with current value if it was zero (e.g. reset) or power level changed
+			fwd_pwr_avg = swrm.fwd_pwr;
+		//
+		fwd_pwr_avg = fwd_pwr_avg * (1-PWR_DAMPENING_FACTOR);	// apply IIR smoothing to forward power reading
+		fwd_pwr_avg += swrm.fwd_pwr * PWR_DAMPENING_FACTOR;
+		//
+		if((rev_pwr_avg < 0) || (ts.power_level != old_power_level))	{	// initialize with current value if it was zero (e.g. reset) or power level changed
+			rev_pwr_avg = swrm.rev_pwr;
+		}
+		//
+		old_power_level = ts.power_level;		// update power level change detector
+		//
+		//
+		rev_pwr_avg = rev_pwr_avg * (1-PWR_DAMPENING_FACTOR);	// apply IIR smoothing to reverse power reading
+		rev_pwr_avg += swrm.rev_pwr * PWR_DAMPENING_FACTOR;
+		//
+		sprintf(txt, "%d,%d   ", (ulong)(fwd_pwr_avg*1000), (ulong)(rev_pwr_avg*1000));
+		UiLcdHy28_PrintText    (POS_PWR_NUM_IND_X, POS_PWR_NUM_IND_Y,txt,Grey,Black,0);
+		swrm.pwr_meter_was_disp = 1;	// indicate the power meter WAS displayed
+	}
+	//
+	if((swrm.pwr_meter_was_disp) && (!swrm.pwr_meter_disp))	{	// had the numerical display been enabled - and it is now disabled?
+		UiLcdHy28_PrintText    (POS_PWR_NUM_IND_X, POS_PWR_NUM_IND_Y,"            ",White,Black,0);	// yes - overwrite location of numerical power meter display to blank it
+		swrm.pwr_meter_was_disp = 0;	// clear flag so we don't do this again
+	}
 
 	//
-
-// used for debugging
-//	char txt[32];
-//	sprintf(txt, "  %d   ", (ulong)(fwd_pwr*100));
-//	UiLcdHy28_PrintText    ((POS_RIT_IND_X + 1), (POS_RIT_IND_Y + 20),txt,White,Grid,0);
+	// used for debugging
+//		char txt[32];
+//		sprintf(txt, " %d,%d,%d   ", (ulong)(swrm.fwd_pwr*100), (ulong)(swrm.rev_pwr*100),(ulong)(swrm.vswr*10));
+//		UiLcdHy28_PrintText    ((POS_RIT_IND_X + 1), (POS_RIT_IND_Y + 20),txt,White,Grid,0);
+	//
 
 	//printf("aver power %d, aver ret %d\n\r", val_p,val_s);
 
@@ -6087,14 +6515,14 @@ static void UiDriverHandleSWRMeter(void)
 		if(swrm.fwd_pwr >= SWR_MIN_CALC_POWER)	{		// is the forward power high enough for valid VSWR calculation?
 														// (Do nothing/freeze old data if below this power level)
 			//
-			if(vswr_dampened < 1)	// initialize averaging if this is the first time (e.g. VSWR <1 = just returned from RX)
-				vswr_dampened = swrm.vswr;
+			if(swrm.vswr_dampened < 1)	// initialize averaging if this is the first time (e.g. VSWR <1 = just returned from RX)
+				swrm.vswr_dampened = swrm.vswr;
 			else	{
-				vswr_dampened = vswr_dampened * (1 - VSWR_DAMPENING_FACTOR);
-				vswr_dampened += swrm.vswr * VSWR_DAMPENING_FACTOR;
+				swrm.vswr_dampened = swrm.vswr_dampened * (1 - VSWR_DAMPENING_FACTOR);
+				swrm.vswr_dampened += swrm.vswr * VSWR_DAMPENING_FACTOR;
 			}
 			//
-			scale_calc = (uchar)(vswr_dampened * 4);		// yes - four dots per unit of VSWR
+			scale_calc = (uchar)(swrm.vswr_dampened * 4);		// yes - four dots per unit of VSWR
 			if(scale_calc > 34)					// limit maximum scale
 				scale_calc = 34;
 			UiDriverUpdateBtmMeter((uchar)(scale_calc), 13);	// update the meter, setting the "red" threshold
@@ -6145,7 +6573,7 @@ static void UiDriverHandleSWRMeter(void)
 //*----------------------------------------------------------------------------
 static void UiDriverHandlePowerSupply(void)
 {
-	ulong	val_p;
+	ulong	val_p, calib;
 	uchar	v10,v100,v1000,v10000;
 	//char 	cap1[50];
 	char	digit[2];
@@ -6181,6 +6609,11 @@ static void UiDriverHandlePowerSupply(void)
 
 	// Get average
 	val_p  = pwmt.pwr_aver/POWER_SAMPLES_CNT;
+
+	calib = (ulong)ts.voltmeter_calibrate;	// get local copy of calibration factor
+	calib += 900;					// offset to 1000 (nominal)
+	val_p = (calib) * val_p;		// multiply by calibration factor, sample count and A/D scale full scale count
+	val_p /= (1000);				// divide by 1000 (unity calibration factor), sample count and A/D full scale count
 
 	// Correct for divider
 	//val_p -= 550;
@@ -7501,6 +7934,84 @@ void UiDriverLoadEepromValues(void)
 		}
 	}
 	//
+	for(i = 0; i < MAX_BANDS; i++)	{		// read from stored bands for VFO A
+		// ------------------------------------------------------------------------------------
+		// Try to read Band and Mode saved values for VFO A
+		//
+		if(Read_VirtEEPROM(EEPROM_BAND0_MODE_A + i, &value) == 0)			{
+			// Note that ts.band will, by definition, be equal to index "i"
+			//
+			band_decod_mode_a[i] = (value >> 8) & 0x0F;		// demodulator mode might not be right for saved band!
+			if(band_decod_mode_a[i] > DEMOD_MAX_MODE)		// valid mode value from EEPROM?
+				band_decod_mode_a[i] = DEMOD_LSB;			// no - set to LSB
+			//
+			band_filter_mode_a[i] = (value >> 12) & 0x0F;	// get filter setting
+			if((band_filter_mode_a[i] >= AUDIO_MAX_FILTER) || (ts.filter_id < AUDIO_MIN_FILTER))		// audio filter invalid?
+				band_filter_mode_a[i] = AUDIO_DEFAULT_FILTER;	// set default audio filter
+			//
+			//printf("-->band, mode and filter setting loaded\n\r");
+		}
+
+		// ------------------------------------------------------------------------------------
+		// Try to read Freq saved values
+		if(	(Read_VirtEEPROM(EEPROM_BAND0_FREQ_HIGH_A + i, &value) == 0) && (Read_VirtEEPROM(EEPROM_BAND0_FREQ_LOW_A + i, &value1) == 0))	{
+			saved = (value << 16) | (value1);
+			//
+			// We have loaded from eeprom the last used band, but can't just
+			// load saved frequency, as it could be out of band, so do a
+			// boundary check first
+			//
+			if((saved >= tune_bands[i]) && (saved <= (tune_bands[i] + size_bands[i])))	{
+				band_dial_value_a[i] = saved;
+				//printf("-->frequency loaded\n\r");
+			}
+			else	{
+				// Load default for this band
+				band_dial_value_a[i] = tune_bands[i] + 100;
+				//printf("-->base frequency loaded\n\r");
+			}
+		}
+	}
+	//
+	for(i = 0; i < MAX_BANDS; i++)	{		// read from stored bands for VFO B
+		// ------------------------------------------------------------------------------------
+		// Try to read Band and Mode saved values for VFO B
+		//
+		if(Read_VirtEEPROM(EEPROM_BAND0_MODE_A + i, &value) == 0)			{
+			// Note that ts.band will, by definition, be equal to index "i"
+			//
+			band_decod_mode_b[i] = (value >> 8) & 0x0F;		// demodulator mode might not be right for saved band!
+			if(band_decod_mode_b[i] > DEMOD_MAX_MODE)		// valid mode value from EEPROM?
+				band_decod_mode_b[i] = DEMOD_LSB;			// no - set to LSB
+			//
+			band_filter_mode_b[i] = (value >> 12) & 0x0F;	// get filter setting
+			if((band_filter_mode_b[i] >= AUDIO_MAX_FILTER) || (ts.filter_id < AUDIO_MIN_FILTER))		// audio filter invalid?
+				band_filter_mode_b[i] = AUDIO_DEFAULT_FILTER;	// set default audio filter
+			//
+			//printf("-->band, mode and filter setting loaded\n\r");
+		}
+
+		// ------------------------------------------------------------------------------------
+		// Try to read Freq saved values
+		if(	(Read_VirtEEPROM(EEPROM_BAND0_FREQ_HIGH_B + i, &value) == 0) && (Read_VirtEEPROM(EEPROM_BAND0_FREQ_LOW_B + i, &value1) == 0))	{
+			saved = (value << 16) | (value1);
+			//
+			// We have loaded from eeprom the last used band, but can't just
+			// load saved frequency, as it could be out of band, so do a
+			// boundary check first
+			//
+			if((saved >= tune_bands[i]) && (saved <= (tune_bands[i] + size_bands[i])))	{
+				band_dial_value_b[i] = saved;
+				//printf("-->frequency loaded\n\r");
+			}
+			else	{
+				// Load default for this band
+				band_dial_value_b[i] = tune_bands[i] + 100;
+				//printf("-->base frequency loaded\n\r");
+			}
+		}
+	}
+	//
 	// ------------------------------------------------------------------------------------
 	// Try to read Step saved values
 	if(Read_VirtEEPROM(EEPROM_FREQ_STEP, &value) == 0)
@@ -7622,8 +8133,7 @@ void UiDriverLoadEepromValues(void)
 		ts.keyer_speed = value;
 		//printf("-->Keyer speed loaded\n\r");
 
-		// Extra init needed
-		UiDriverChangeKeyerSpeed(1);
+		// Note - init will be done below, when Keyer Mode is loaded
 
 	}
 	//
@@ -7882,6 +8392,17 @@ void UiDriverLoadEepromValues(void)
 	}
 	//
 	// ------------------------------------------------------------------------------------
+	// Try to read color for spectrum scope center line grid saved values
+	if(Read_VirtEEPROM(EEPROM_SPECTRUM_CENTRE_GRID_COLOUR, &value) == 0)
+	{
+		if(value > SPEC_MAX_COLOUR)	// out of range Spectrum Scope color settings?
+			value = SPEC_COLOUR_GRID_DEFAULT;				// yes, use default
+		//
+		ts.scope_centre_grid_colour = value;
+		//printf("-->Spectrum Scope centre grid line color loaded\n\r");
+	}
+	//
+	// ------------------------------------------------------------------------------------
 	// Try to read color for spectrum scope scale saved values
 	if(Read_VirtEEPROM(EEPROM_SPECTRUM_SCALE_COLOUR, &value) == 0)
 	{
@@ -7993,12 +8514,12 @@ void UiDriverLoadEepromValues(void)
 	//
 	// ------------------------------------------------------------------------------------
 	// Try to read calibration factor for forward power meter
-	if(Read_VirtEEPROM(EEPROM_FWD_PWR_CAL, &value) == 0)
+	if(Read_VirtEEPROM(EEPROM_SENSOR_NULL, &value) == 0)
 	{
-		if((value > SWR_CAL_MAX) || (value < SWR_CAL_MIN))	// out range of calibration factor for forward power meter settings?
-			value = SWR_CAL_DEFAULT;	// yes, use default
+		if((value > SENSOR_NULL_MAX) || (value < SENSOR_NULL_MIN))	// out range of calibration factor for forward power meter settings?
+			value = SENSOR_NULL_DEFAULT;	// yes, use default
 		//
-		swrm.fwd_cal = value;
+		swrm.sensor_null = value;
 		//printf("-->calibration factor for forward power meter setting loaded\n\r");
 	}
 	//
@@ -8533,6 +9054,72 @@ void UiDriverLoadEepromValues(void)
 		//printf("-->auto LCD backlight blanking mode loaded\n\r");
 	}
 	//
+	// ------------------------------------------------------------------------------------
+	// Try to read VFO/SPLIT/Memory mode
+	if(Read_VirtEEPROM(EEPROM_VFO_MEM_MODE, &value) == 0)
+	{
+		if(value > 255)				// if out of range, it was bogus
+			value = 0;		// reset to OFF
+		//
+		ts.vfo_mem_mode = value;
+		//printf("-->VFO/SPLIT/Memory mode loaded\n\r");
+	}
+	//
+	// ------------------------------------------------------------------------------------
+	// Try to read power sensor coupling coefficient for 80m
+	if(Read_VirtEEPROM(EEPROM_DETECTOR_COUPLING_COEFF_80M, &value) == 0)
+	{
+		if((value > SWR_COUPLING_MAX) || (value < SWR_COUPLING_MIN))	// if out of range, it was bogus
+			value = SWR_COUPLING_DEFAULT;		// reset to OFF
+		//
+		swrm.coupling_80m_calc = value;
+		//printf("-->Power sensor coupling coefficient for 80m loaded\n\r");
+	}
+	//
+	// ------------------------------------------------------------------------------------
+	// Try to read power sensor coupling coefficient for 40m
+	if(Read_VirtEEPROM(EEPROM_DETECTOR_COUPLING_COEFF_40M, &value) == 0)
+	{
+		if((value > SWR_COUPLING_MAX) || (value < SWR_COUPLING_MIN))	// if out of range, it was bogus
+			value = SWR_COUPLING_DEFAULT;		// reset to OFF
+		//
+		swrm.coupling_40m_calc = value;
+		//printf("-->Power sensor coupling coefficient for 40m loaded\n\r");
+	}
+	//
+	// ------------------------------------------------------------------------------------
+	// Try to read power sensor coupling coefficient for 20m
+	if(Read_VirtEEPROM(EEPROM_DETECTOR_COUPLING_COEFF_20M, &value) == 0)
+	{
+		if((value > SWR_COUPLING_MAX) || (value < SWR_COUPLING_MIN))	// if out of range, it was bogus
+			value = SWR_COUPLING_DEFAULT;		// reset to OFF
+		//
+		swrm.coupling_20m_calc = value;
+		//printf("-->Power sensor coupling coefficient for 20m loaded\n\r");
+	}
+	//
+	// ------------------------------------------------------------------------------------
+	// Try to read power sensor coupling coefficient for 15m
+	if(Read_VirtEEPROM(EEPROM_DETECTOR_COUPLING_COEFF_15M, &value) == 0)
+	{
+		if((value > SWR_COUPLING_MAX) || (value < SWR_COUPLING_MIN))	// if out of range, it was bogus
+			value = SWR_COUPLING_DEFAULT;		// reset to OFF
+		//
+		swrm.coupling_15m_calc = value;
+		//printf("-->Power sensor coupling coefficient for 15m loaded\n\r");
+	}
+	//
+	// ------------------------------------------------------------------------------------
+	// Try to read voltmeter calibration
+	if(Read_VirtEEPROM(EEPROM_VOLTMETER_CALIBRATE, &value) == 0)
+	{
+		if((value > POWER_VOLTMETER_CALIBRATE_MAX) || (value < POWER_VOLTMETER_CALIBRATE_MIN))	// if out of range, it was bogus
+			value = POWER_VOLTMETER_CALIBRATE_DEFAULT;		// reset to OFF
+		//
+		ts.voltmeter_calibrate = value;
+		//printf("-->Voltmeter calibration loaded\n\r");
+	}
+	//
 	// Next setting...
 }
 //
@@ -8615,6 +9202,14 @@ void UiDriverSaveEepromValuesPowerDown(void)
 		//printf("-->freq vars created\n\r");
 	}
 	//
+	// save current band/frequency/mode settings
+	//
+	// save frequency
+	band_dial_value[ts.band] = df.tune_new;
+	// Save decode mode
+	band_decod_mode[ts.band] = ts.dmod_mode;
+	// Save filter setting
+	band_filter_mode[ts.band] = ts.filter_id;
 	//
 	// Save stored band/mode/frequency memory from RAM
 	//
@@ -8650,6 +9245,84 @@ void UiDriverSaveEepromValuesPowerDown(void)
 		{
 			Write_VirtEEPROM(EEPROM_BAND0_FREQ_HIGH + i,(band_dial_value[i] >> 16));
 			Write_VirtEEPROM(EEPROM_BAND0_FREQ_LOW + i,(band_dial_value[i] & 0xFFFF));
+			//printf("-->freq vars created\n\r");
+		}
+	}
+	//
+	// Save data for VFO A
+	//
+	for(i = 0; i < MAX_BANDS; i++)	{	// scan through each band's frequency/mode data
+		// ------------------------------------------------------------------------------------
+		// Read Band and Mode saved values - update if changed
+		if(Read_VirtEEPROM(EEPROM_BAND0_MODE_A + i, &value) == 0)
+		{
+			ushort new;
+			new 	= 0;
+
+			// We do NOT check the band stored in the bottom byte as we have, by definition, saved that band at this index.
+			//
+			new	   |= (band_decod_mode_a[i] << 8);
+			new	   |= (band_filter_mode_a[i] << 12);
+			Write_VirtEEPROM(EEPROM_BAND0_MODE_A + i, new);
+		}
+		else	// create
+		{
+			Write_VirtEEPROM(EEPROM_BAND0_MODE_A + i,(((band_decod_mode[i] & 0x0f) << 8) | (band_filter_mode[i] << 12) ));	// use generic band value when creating
+			//printf("-->band and mode var created\n\r");
+		}
+		//
+		// Try to read Freq saved values - update if changed
+		//
+		if((Read_VirtEEPROM(EEPROM_BAND0_FREQ_HIGH_A + i, &value) == 0) && (Read_VirtEEPROM(EEPROM_BAND0_FREQ_LOW_A + i, &value1) == 0))	{
+			//
+			Write_VirtEEPROM(EEPROM_BAND0_FREQ_HIGH_A + i,(band_dial_value_a[i] >> 16));
+			//printf("-->freq high saved\n\r");
+			Write_VirtEEPROM(EEPROM_BAND0_FREQ_LOW_A + i,(band_dial_value_a[i] & 0xFFFF));
+			//printf("-->freq low saved\n\r");
+		}
+		else	// create
+		{
+			Write_VirtEEPROM(EEPROM_BAND0_FREQ_HIGH_A + i,(band_dial_value[i] >> 16));		// use generic band value when creating
+			Write_VirtEEPROM(EEPROM_BAND0_FREQ_LOW_A + i,(band_dial_value[i] & 0xFFFF));
+			//printf("-->freq vars created\n\r");
+		}
+	}
+	//
+	// Save data for VFO B
+	//
+	for(i = 0; i < MAX_BANDS; i++)	{	// scan through each band's frequency/mode data
+		// ------------------------------------------------------------------------------------
+		// Read Band and Mode saved values - update if changed
+		if(Read_VirtEEPROM(EEPROM_BAND0_MODE_B + i, &value) == 0)
+		{
+			ushort new;
+			new 	= 0;
+
+			// We do NOT check the band stored in the bottom byte as we have, by definition, saved that band at this index.
+			//
+			new	   |= (band_decod_mode_b[i] << 8);
+			new	   |= (band_filter_mode_b[i] << 12);
+			Write_VirtEEPROM(EEPROM_BAND0_MODE_B + i, new);
+		}
+		else	// create
+		{
+			Write_VirtEEPROM(EEPROM_BAND0_MODE_B + i,(((band_decod_mode[i] & 0x0f) << 8) | (band_filter_mode[i] << 12) ));	// use generic band value when creating
+			//printf("-->band and mode var created\n\r");
+		}
+		//
+		// Try to read Freq saved values - update if changed
+		//
+		if((Read_VirtEEPROM(EEPROM_BAND0_FREQ_HIGH_B + i, &value) == 0) && (Read_VirtEEPROM(EEPROM_BAND0_FREQ_LOW_B + i, &value1) == 0))	{
+			//
+			Write_VirtEEPROM(EEPROM_BAND0_FREQ_HIGH_B + i,(band_dial_value_b[i] >> 16));
+			//printf("-->freq high saved\n\r");
+			Write_VirtEEPROM(EEPROM_BAND0_FREQ_LOW_B + i,(band_dial_value_b[i] & 0xFFFF));
+			//printf("-->freq low saved\n\r");
+		}
+		else	// create
+		{
+			Write_VirtEEPROM(EEPROM_BAND0_FREQ_HIGH_B + i,(band_dial_value[i] >> 16));		// use generic band value when creating
+			Write_VirtEEPROM(EEPROM_BAND0_FREQ_LOW_B + i,(band_dial_value[i] & 0xFFFF));
 			//printf("-->freq vars created\n\r");
 		}
 	}
@@ -8928,6 +9601,19 @@ void UiDriverSaveEepromValuesPowerDown(void)
 	}
 	//
 	// ------------------------------------------------------------------------------------
+	// Try to read Scope centre line grid color saved values - update if changed
+	if(Read_VirtEEPROM(EEPROM_SPECTRUM_CENTRE_GRID_COLOUR, &value) == 0)
+	{
+		Write_VirtEEPROM(EEPROM_SPECTRUM_CENTRE_GRID_COLOUR,ts.scope_centre_grid_colour);
+		//printf("-->Scope Grid Center Line Color value saved\n\r");
+	}
+	else	// create
+	{
+		Write_VirtEEPROM(EEPROM_SPECTRUM_CENTRE_GRID_COLOUR,SPEC_COLOUR_GRID_DEFAULT);
+		//printf("-->Scope Grid Center Line Color value created\n\r");
+	}
+	//
+	// ------------------------------------------------------------------------------------
 	// Try to read Scope scale color saved values - update if changed
 	if(Read_VirtEEPROM(EEPROM_SPECTRUM_SCALE_COLOUR, &value) == 0)
 	{
@@ -9203,14 +9889,14 @@ void UiDriverSaveEepromValuesPowerDown(void)
 	//
 	// ------------------------------------------------------------------------------------
 	// Try to read SWR Forward power meter calibration value - update if changed
-	if(Read_VirtEEPROM(EEPROM_FWD_PWR_CAL, &value) == 0)
+	if(Read_VirtEEPROM(EEPROM_SENSOR_NULL, &value) == 0)
 	{
-		Write_VirtEEPROM(EEPROM_FWD_PWR_CAL, swrm.fwd_cal);
+		Write_VirtEEPROM(EEPROM_SENSOR_NULL, swrm.sensor_null);
 		//printf("-->SWR Forward power meter calibration value saved\n\r");
 	}
 	else	// create
 	{
-		Write_VirtEEPROM(EEPROM_FWD_PWR_CAL,SWR_CAL_DEFAULT);
+		Write_VirtEEPROM(EEPROM_SENSOR_NULL, SENSOR_NULL_DEFAULT);
 		//printf("-->SWR Forward power meter calibration value created\n\r");
 	}
 	//
@@ -9829,6 +10515,84 @@ void UiDriverSaveEepromValuesPowerDown(void)
 	{
 		Write_VirtEEPROM(EEPROM_LCD_BLANKING_CONFIG, 0);
 		//printf("-->LCD blanking configuration\n\r");
+	}
+	//
+	// ------------------------------------------------------------------------------------
+	// Try to read VFO/Split/Memory configuration - update if changed
+	if(Read_VirtEEPROM(EEPROM_VFO_MEM_MODE, &value) == 0)
+	{
+		Write_VirtEEPROM(EEPROM_VFO_MEM_MODE, ts.vfo_mem_mode);
+		//printf("-->VFO/Split/Memory configuration\n\r");
+	}
+	else	// create
+	{
+		Write_VirtEEPROM(EEPROM_VFO_MEM_MODE, 0);
+		//printf("-->VFO/Split/Memory configuration\n\r");
+	}
+	//
+	// ------------------------------------------------------------------------------------
+	// Try to read power sensor coupling coefficient for 80m - update if changed
+	if(Read_VirtEEPROM(EEPROM_DETECTOR_COUPLING_COEFF_80M, &value) == 0)
+	{
+		Write_VirtEEPROM(EEPROM_DETECTOR_COUPLING_COEFF_80M, swrm.coupling_80m_calc);
+		//printf("-->Power sensor coupling 80m coefficient configuration written\n\r");
+	}
+	else	// create
+	{
+		Write_VirtEEPROM(EEPROM_DETECTOR_COUPLING_COEFF_80M, SWR_COUPLING_DEFAULT);
+		//printf("-->Power sensor couplingn 80m coefficient configuration created\n\r");
+	}
+	//
+	// ------------------------------------------------------------------------------------
+	// Try to read power sensor coupling coefficient for 40m - update if changed
+	if(Read_VirtEEPROM(EEPROM_DETECTOR_COUPLING_COEFF_40M, &value) == 0)
+	{
+		Write_VirtEEPROM(EEPROM_DETECTOR_COUPLING_COEFF_40M, swrm.coupling_40m_calc);
+		//printf("-->Power sensor coupling 40m coefficient configuration written\n\r");
+	}
+	else	// create
+	{
+		Write_VirtEEPROM(EEPROM_DETECTOR_COUPLING_COEFF_40M, SWR_COUPLING_DEFAULT);
+		//printf("-->Power sensor couplingn 40m coefficient configuration created\n\r");
+	}
+	//
+	// ------------------------------------------------------------------------------------
+	// Try to read power sensor coupling coefficient for 20m - update if changed
+	if(Read_VirtEEPROM(EEPROM_DETECTOR_COUPLING_COEFF_20M, &value) == 0)
+	{
+		Write_VirtEEPROM(EEPROM_DETECTOR_COUPLING_COEFF_20M, swrm.coupling_20m_calc);
+		//printf("-->Power sensor coupling 20m coefficient configuration written\n\r");
+	}
+	else	// create
+	{
+		Write_VirtEEPROM(EEPROM_DETECTOR_COUPLING_COEFF_20M, SWR_COUPLING_DEFAULT);
+		//printf("-->Power sensor couplingn 20m coefficient configuration created\n\r");
+	}
+	//
+	// ------------------------------------------------------------------------------------
+	// Try to read power sensor coupling coefficient for 15m - update if changed
+	if(Read_VirtEEPROM(EEPROM_DETECTOR_COUPLING_COEFF_15M, &value) == 0)
+	{
+		Write_VirtEEPROM(EEPROM_DETECTOR_COUPLING_COEFF_15M, swrm.coupling_15m_calc);
+		//printf("-->Power sensor coupling 15m coefficient configuration written\n\r");
+	}
+	else	// create
+	{
+		Write_VirtEEPROM(EEPROM_DETECTOR_COUPLING_COEFF_15M, SWR_COUPLING_DEFAULT);
+		//printf("-->Power sensor couplingn 15m coefficient configuration created\n\r");
+	}
+	//
+	// ------------------------------------------------------------------------------------
+	// Try to read the voltmeter calibration - update if changed
+	if(Read_VirtEEPROM(EEPROM_VOLTMETER_CALIBRATE, &value) == 0)
+	{
+		Write_VirtEEPROM(EEPROM_VOLTMETER_CALIBRATE, ts.voltmeter_calibrate);
+		//printf("-->Voltmeter calibration written\n\r");
+	}
+	else	// create
+	{
+		Write_VirtEEPROM(EEPROM_VOLTMETER_CALIBRATE, POWER_VOLTMETER_CALIBRATE_DEFAULT);
+		//printf("-->Voltmeter calibration created\n\r");
 	}
 	//
 	//

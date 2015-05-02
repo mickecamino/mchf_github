@@ -53,6 +53,9 @@
 #define Grey3				RGB(0xA6,0xA8,0xAD)
 #define Grey4				RGB(0x40,0x40,0x40)
 #define	Grey6				RGB(0x78,0x78,0x78)
+//
+#define	RX_Grey				RGB(0xb8,0xdb,0xa8)	// slightly green grey
+#define TX_Grey				RGB(0xe8,0xad,0xa0)	// slightly red(ish) grey (more magenta, actually...)
 
 // Dark grey colour used for spectrum scope grid
 #define Grid				RGB(COL_SPECTRUM_GRAD,COL_SPECTRUM_GRAD,COL_SPECTRUM_GRAD)		// COL_SPECTRUM_GRAD = 0x40

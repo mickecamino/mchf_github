@@ -1069,7 +1069,7 @@ void    UiLcdHy28_DrawSpectrum_Interleaved(q15_t *fft_old, q15_t *fft_new, ushor
 
    for(x = (SPECTRUM_START_X + sh + 0); x < (POS_SPECTRUM_IND_X + SPECTRUM_WIDTH/2 + sh); x++)
    {
-      y_old = *fft_old++;
+	  y_old = *fft_old++;
       y_new = *fft_new++;
 
       // Limit vertical
@@ -1104,7 +1104,14 @@ void    UiLcdHy28_DrawSpectrum_Interleaved(q15_t *fft_old, q15_t *fft_new, ushor
             {
                // New data for repaint
                x   = sd.vert_grid_id[k];
-               clr = ts.scope_grid_colour_active;
+               if((ts.iq_freq_mode == FREQ_IQ_CONV_LO_LOW) && (k == 4))		// place the (spectrum) center line with the selected color based on translate mode
+            	   clr = ts.scope_centre_grid_colour_active;
+               else if((ts.iq_freq_mode == FREQ_IQ_CONV_LO_HIGH) && (k == 2))
+            	   clr = ts.scope_centre_grid_colour_active;
+               else if ((ts.iq_freq_mode == FREQ_IQ_CONV_MODE_OFF) && (k == 3))
+            	   clr = ts.scope_centre_grid_colour_active;
+               else
+            	   clr = ts.scope_grid_colour_active;
                repaint_v_grid = true;
                break;
             }
@@ -1215,7 +1222,14 @@ void    UiLcdHy28_DrawSpectrum_Interleaved(q15_t *fft_old, q15_t *fft_new, ushor
             {
                // New data for repaint
                x   = sd.vert_grid_id[k];
-               clr = ts.scope_grid_colour_active;
+               if((ts.iq_freq_mode == FREQ_IQ_CONV_LO_LOW) && (k == 4))			// place the (spectrum) center line with the selected color based on translate mode
+            	   clr = ts.scope_centre_grid_colour_active;
+               else if((ts.iq_freq_mode == FREQ_IQ_CONV_LO_HIGH) && (k == 2))
+            	   clr = ts.scope_centre_grid_colour_active;
+               else if ((ts.iq_freq_mode == FREQ_IQ_CONV_MODE_OFF) && (k == 3))
+            	   clr = ts.scope_centre_grid_colour_active;
+               else
+            	   clr = ts.scope_grid_colour_active;
                repaint_v_grid = true;
                break;
             }
@@ -1653,7 +1667,7 @@ void UiLcdHy28_ShowStartUpScreen(ulong hold_time)
 
    // Show first line
    sprintf(tx,"%s",DEVICE_STRING);
-   UiLcdHy28_PrintText(70,60,tx,White,Black,0);
+   UiLcdHy28_PrintText(78,60,tx,White,Black,0);
 
    // Show second line
    sprintf(tx,"%s",AUTHOR_STRING);
@@ -1694,7 +1708,7 @@ void UiLcdHy28_ShowStartUpScreen(ulong hold_time)
    else
 	   sprintf(tx,"LCD: Parallel Mode");
 
-   UiLcdHy28_PrintText(88,170,tx,Grey2,Black,0);
+   UiLcdHy28_PrintText(88,170,tx,Grey1,Black,0);
 
    if(ts.ee_init_stat != FLASH_COMPLETE)	{	// Show error code if problem with EEPROM init
 	   sprintf(tx, "EEPROM Init Error Code:  %d", ts.ee_init_stat);

@@ -52,9 +52,6 @@ typedef struct DialFrequency
 //	ulong	last_tune_step;		// last tunning step used during dial rotation
 	ulong	step_new;			// Eth driver req step
 
-	// First OSC frequency
-	ulong	transv_freq;
-
 	ulong	update_skip;
 
 	// Shift used on TX
